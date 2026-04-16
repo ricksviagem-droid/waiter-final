@@ -187,7 +187,7 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
       {/* Scene image 55% */}
       <div style={{ height: '55%', position: 'relative', background: '#0a1520', flexShrink: 0, overflow: 'hidden' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`/scenes/scene-${String(scene.id).padStart(2, '0')}.svg`} alt={scene.title}
+        <img src={`/scenes/scene-${String(scene.id).padStart(2, '0')}.jpg`} alt={scene.title}
           style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85 }} />
 
         {/* Badges */}
