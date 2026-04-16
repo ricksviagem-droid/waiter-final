@@ -187,18 +187,18 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
     }}>
       {/* Forbes badge + title */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.35)', borderRadius: 20, padding: '5px 14px' }}>
-          <span style={{ fontSize: 13, color: '#f59e0b' }}>★★★★★</span>
-          <span style={{ fontSize: 10, color: '#fcd34d', fontWeight: 700, letterSpacing: 2 }}>FORBES 5-STAR</span>
-          <span style={{ fontSize: 13, color: '#f59e0b' }}>★★★★★</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: 20, padding: '5px 14px' }}>
+          <span style={{ fontSize: 12, color: '#c9a84c' }}>★★★★★</span>
+          <span style={{ fontSize: 10, color: '#e8d090', fontWeight: 700, letterSpacing: 2 }}>FORBES 5-STAR</span>
+          <span style={{ fontSize: 12, color: '#c9a84c' }}>★★★★★</span>
         </div>
-        <h1 style={{ fontSize: 32, fontWeight: 900, color: '#fff', letterSpacing: 3, margin: 0, textShadow: '0 0 30px rgba(59,158,255,0.3)' }}>
+        <h1 style={{ fontSize: 32, fontWeight: 900, color: '#f4f0e8', letterSpacing: 3, margin: 0, textShadow: '0 0 30px rgba(201,168,76,0.25)' }}>
           Career Simulator
         </h1>
-        <p style={{ fontSize: 11, color: '#3b9eff', fontWeight: 700, letterSpacing: 3, margin: 0, textTransform: 'uppercase' }}>
+        <p style={{ fontSize: 10, color: '#9a8868', fontWeight: 600, letterSpacing: 4, margin: 0, textTransform: 'uppercase' }}>
           Professional Waiter · English · AI
         </p>
-        <p style={{ fontSize: 13, color: '#f59e0b', fontStyle: 'italic', margin: 0, opacity: 0.85 }}>
+        <p style={{ fontSize: 13, color: '#c9a84c', fontStyle: 'italic', margin: 0, opacity: 0.8 }}>
           "Train like Forbes. Speak like a native."
         </p>
       </div>
@@ -211,7 +211,7 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
           { icon: '📋', label: 'Full Report', sub: 'Rick + PDF' },
         ].map(({ icon, label, sub }) => (
           <div key={label} style={{
-            background: 'rgba(59,158,255,0.06)', border: '1px solid #1e3a5f',
+            background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.18)',
             borderRadius: 12, padding: '10px 6px', textAlign: 'center',
           }}>
             <div style={{ fontSize: 20 }}>{icon}</div>
@@ -249,10 +249,10 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
         onClick={onStart}
         style={{
           width: '100%', padding: '16px', borderRadius: 14, border: 'none',
-          background: 'linear-gradient(135deg, #3b9eff, #1a5fa8)',
-          color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer',
-          boxShadow: '0 0 28px rgba(59,158,255,0.45)',
-          letterSpacing: 2,
+          background: 'linear-gradient(135deg,#c9a84c,#8b6914)',
+          color: '#07050b', fontSize: 15, fontWeight: 900, cursor: 'pointer',
+          boxShadow: '0 0 30px rgba(201,168,76,0.45)',
+          letterSpacing: 3,
         }}
       >
         BEGIN SIMULATION

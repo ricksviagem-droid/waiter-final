@@ -314,11 +314,11 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
       </div>
 
       {/* Interaction panel 45% */}
-      <div style={{ flex: 1, background: 'rgba(8,15,26,0.98)', borderTop: '1px solid #1e3a5f', padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 10, overflow: 'hidden' }}>
+      <div style={{ flex: 1, background: 'rgba(10,8,5,0.98)', borderTop: '1px solid rgba(201,168,76,0.18)', padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 10, overflow: 'hidden' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div style={{ flex: 1, paddingRight: 10 }}>
-            <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#fff' }}>{scene.title}</h2>
-            <p style={{ margin: '2px 0 0', fontSize: 11, color: '#3b9eff', fontWeight: 600 }}>{scene.sopReference}</p>
+            <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#f4f0e8' }}>{scene.title}</h2>
+            <p style={{ margin: '2px 0 0', fontSize: 11, color: '#c9a84c', fontWeight: 600 }}>{scene.sopReference}</p>
           </div>
           {phase === 'recording' && <Timer seconds={timeLeft} total={TIMER_SECONDS} onExpire={handleTimerExpire} running={timerRunning} />}
         </div>
@@ -331,8 +331,8 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
         )}
 
         {/* Guest speech */}
-        <div style={{ background: 'rgba(59,158,255,0.06)', border: '1px solid #1a3050', borderRadius: 10, padding: '10px 13px' }}>
-          <p style={{ margin: 0, fontSize: 13, color: phase === 'loading-audio' ? '#3b5a7a' : '#c8dff5', lineHeight: 1.55, fontStyle: 'italic' }}>
+        <div style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.18)', borderRadius: 10, padding: '10px 13px' }}>
+          <p style={{ margin: 0, fontSize: 13, color: phase === 'loading-audio' ? '#4a3e2c' : '#e8d5a8', lineHeight: 1.55, fontStyle: 'italic' }}>
             {phase === 'loading-audio' ? 'Loading guest audio…' : `"${scene.guestAudio}"`}
           </p>
         </div>
@@ -365,7 +365,7 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
               </div>
             )}
             <button onClick={handleSend}
-              style={{ padding: '13px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#ef4444,#b91c1c)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 0 20px rgba(239,68,68,0.3)' }}>
+              style={{ padding: '13px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#c9a84c,#8b6914)', color: '#07050b', fontSize: 14, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 0 22px rgba(201,168,76,0.35)', letterSpacing: 1 }}>
               📤 Send Response
             </button>
           </div>

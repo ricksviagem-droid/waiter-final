@@ -170,13 +170,13 @@ export default function ShiftReport({ results, totalScore, maxScore, onRestart }
   }
 
   const gradeColor = (g: string) =>
-    g === 'Distinction' ? '#22c55e' : g === 'Merit' ? '#3b9eff' : g === 'Pass' ? '#f59e0b' : '#ef4444'
+    g === 'Distinction' ? '#5a9e6e' : g === 'Merit' ? '#c9a84c' : g === 'Pass' ? '#d4820a' : '#c45050'
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 16, color: '#c8dff5' }}>
-        <div style={{ width: 40, height: 40, border: '4px solid #3b9eff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-        <p>Generating your Forbes report…</p>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 16, color: '#9a8868', background: '#08060a' }}>
+        <div style={{ width: 40, height: 40, border: '3px solid #c9a84c', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <p style={{ fontSize: 13 }}>Generating your Forbes report…</p>
       </div>
     )
   }
@@ -184,32 +184,33 @@ export default function ShiftReport({ results, totalScore, maxScore, onRestart }
   if (!report) return null
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', background: '#08060a' }}>
       {/* Header */}
-      <div style={{ padding: '16px 20px', borderBottom: '1px solid #1e3a5f', background: 'rgba(10,18,30,0.97)', flexShrink: 0 }}>
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(201,168,76,0.18)', background: 'rgba(10,8,5,0.97)', flexShrink: 0, position:'relative' }}>
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,rgba(201,168,76,0.5),transparent)' }}/>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#fff' }}>SHIFT Complete</h1>
-            <p style={{ margin: '2px 0 0', fontSize: 12, color: '#7aa8cc' }}>18 scenes · Full performance review</p>
+            <h1 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: '#f4f0e8' }}>Simulation Complete</h1>
+            <p style={{ margin: '2px 0 0', fontSize: 12, color: '#9a8868' }}>18 scenes · Forbes performance review</p>
           </div>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: 28, fontWeight: 800, color: gradeColor(report.grade) }}>{report.grade}</div>
-            <div style={{ fontSize: 13, color: '#7aa8cc' }}>{percentage}% · {totalScore}/{maxScore}</div>
+            <div style={{ fontSize: 13, color: '#9a8868' }}>{percentage}% · {totalScore}/{maxScore}</div>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', borderBottom: '1px solid #1e3a5f', background: 'rgba(10,18,30,0.97)', flexShrink: 0 }}>
+      <div style={{ display: 'flex', borderBottom: '1px solid rgba(201,168,76,0.15)', background: 'rgba(10,8,5,0.97)', flexShrink: 0 }}>
         {(['forbes', 'rick'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             style={{
               flex: 1, padding: '12px', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600,
-              background: activeTab === tab ? 'rgba(59,158,255,0.1)' : 'transparent',
-              color: activeTab === tab ? '#3b9eff' : '#556b82',
-              borderBottom: activeTab === tab ? '2px solid #3b9eff' : '2px solid transparent',
+              background: activeTab === tab ? 'rgba(201,168,76,0.08)' : 'transparent',
+              color: activeTab === tab ? '#c9a84c' : '#6b5840',
+              borderBottom: activeTab === tab ? '2px solid #c9a84c' : '2px solid transparent',
               transition: 'all 0.2s',
             }}
           >
@@ -223,50 +224,50 @@ export default function ShiftReport({ results, totalScore, maxScore, onRestart }
         {activeTab === 'forbes' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {/* Verdict */}
-            <div style={{ background: 'rgba(59,158,255,0.06)', border: '1px solid #1e3a5f', borderRadius: 12, padding: '12px 16px' }}>
-              <p style={{ margin: 0, fontSize: 13, color: '#c8dff5', lineHeight: 1.6 }}>{report.overallVerdict}</p>
+            <div style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 12, padding: '12px 16px' }}>
+              <p style={{ margin: 0, fontSize: 13, color: '#c8b88a', lineHeight: 1.6 }}>{report.overallVerdict}</p>
             </div>
 
             {/* Category scores */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {Object.entries(report.forbes).map(([cat, data]) => {
                 const label = cat.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase())
-                const c = data.score >= 7 ? '#22c55e' : data.score >= 5 ? '#f59e0b' : '#ef4444'
+                const c = data.score >= 7 ? '#c9a84c' : data.score >= 5 ? '#d4820a' : '#c45050'
                 return (
-                  <div key={cat} style={{ background: 'rgba(14,26,42,0.8)', border: '1px solid #1e3a5f', borderRadius: 10, padding: '10px 14px' }}>
+                  <div key={cat} style={{ background: 'rgba(20,15,8,0.8)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: 10, padding: '10px 14px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: '#c8dff5' }}>{label}</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#e8d5a8' }}>{label}</span>
                       <span style={{ fontSize: 16, fontWeight: 700, color: c }}>{data.score}/10</span>
                     </div>
-                    <div style={{ height: 4, background: '#1e3a5f', borderRadius: 4 }}>
-                      <div style={{ height: '100%', width: `${data.score * 10}%`, background: c, borderRadius: 4, transition: 'width 1s ease' }} />
+                    <div style={{ height: 3, background: 'rgba(201,168,76,0.1)', borderRadius: 4 }}>
+                      <div style={{ height: '100%', width: `${data.score * 10}%`, background: `linear-gradient(90deg,${c},${c}aa)`, borderRadius: 4, transition: 'width 1s ease' }} />
                     </div>
-                    <p style={{ margin: '6px 0 0', fontSize: 11, color: '#7aa8cc' }}>{data.comment}</p>
+                    <p style={{ margin: '6px 0 0', fontSize: 11, color: '#9a8868' }}>{data.comment}</p>
                   </div>
                 )
               })}
             </div>
 
             {/* Strengths */}
-            <div style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid #166534', borderRadius: 10, padding: '10px 14px' }}>
-              <h4 style={{ margin: '0 0 8px', fontSize: 13, color: '#22c55e' }}>Strengths</h4>
+            <div style={{ background: 'rgba(90,158,110,0.05)', border: '1px solid rgba(90,158,110,0.25)', borderRadius: 10, padding: '10px 14px' }}>
+              <h4 style={{ margin: '0 0 8px', fontSize: 13, color: '#5a9e6e' }}>Strengths</h4>
               {report.strengths.map((s, i) => (
-                <p key={i} style={{ margin: '4px 0', fontSize: 12, color: '#86efac' }}>✓ {s}</p>
+                <p key={i} style={{ margin: '4px 0', fontSize: 12, color: '#86c899' }}>✓ {s}</p>
               ))}
             </div>
 
             {/* Improvements */}
-            <div style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid #92400e', borderRadius: 10, padding: '10px 14px' }}>
-              <h4 style={{ margin: '0 0 8px', fontSize: 13, color: '#f59e0b' }}>Areas to Improve</h4>
+            <div style={{ background: 'rgba(212,130,10,0.05)', border: '1px solid rgba(212,130,10,0.25)', borderRadius: 10, padding: '10px 14px' }}>
+              <h4 style={{ margin: '0 0 8px', fontSize: 13, color: '#d4820a' }}>Areas to Improve</h4>
               {report.improvements.map((s, i) => (
-                <p key={i} style={{ margin: '4px 0', fontSize: 12, color: '#fcd34d' }}>→ {s}</p>
+                <p key={i} style={{ margin: '4px 0', fontSize: 12, color: '#e8b870' }}>→ {s}</p>
               ))}
             </div>
 
             <button onClick={downloadPDF} style={{
               padding: '12px', borderRadius: 10, border: 'none',
-              background: 'linear-gradient(135deg,#3b9eff,#1a5fa8)',
-              color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer',
+              background: 'linear-gradient(135deg,#c9a84c,#8b6914)',
+              color: '#07050b', fontSize: 14, fontWeight: 800, cursor: 'pointer', letterSpacing: 1,
             }}>
               ↓ Download PDF Report
             </button>

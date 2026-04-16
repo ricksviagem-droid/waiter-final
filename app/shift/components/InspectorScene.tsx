@@ -73,12 +73,12 @@ export default function InspectorScene({ scene, sceneNumber, totalScenes, onComp
   }
 
   const optionStyle = (i: number) => {
-    if (!revealed) return { border: '1px solid #1e3a5f', bg: 'rgba(14,26,42,0.6)', text: '#c8dff5' }
+    if (!revealed) return { border: 'rgba(201,168,76,0.2)', bg: 'rgba(20,15,8,0.6)', text: '#c8b88a' }
     const isCorrect = i === scene.correctIndex
     const isSelected = selected === i
-    if (isCorrect) return { border: '#16a34a', bg: 'rgba(34,197,94,0.1)', text: '#86efac' }
-    if (isSelected && !isCorrect) return { border: '#b91c1c', bg: 'rgba(239,68,68,0.1)', text: '#fca5a5' }
-    return { border: '#1e3a5f', bg: 'rgba(14,26,42,0.3)', text: '#556b82' }
+    if (isCorrect) return { border: '#5a9e6e', bg: 'rgba(90,158,110,0.1)', text: '#86c899' }
+    if (isSelected && !isCorrect) return { border: '#c45050', bg: 'rgba(196,80,80,0.1)', text: '#e09090' }
+    return { border: 'rgba(201,168,76,0.1)', bg: 'rgba(14,10,4,0.4)', text: '#6b5840' }
   }
 
   const passed = selected === scene.correctIndex
@@ -104,18 +104,18 @@ export default function InspectorScene({ scene, sceneNumber, totalScenes, onComp
       </div>
 
       {/* Interaction panel 45% */}
-      <div style={{ flex: 1, background: 'rgba(10,18,30,0.97)', borderTop: '1px solid #2d2000', padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 8, overflow: 'hidden' }}>
+      <div style={{ flex: 1, background: 'rgba(10,8,5,0.98)', borderTop: '1px solid rgba(201,168,76,0.18)', padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 8, overflow: 'hidden' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div style={{ flex: 1, paddingRight: 10 }}>
-            <h2 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#fff' }}>{scene.title}</h2>
-            <p style={{ margin: '2px 0 0', fontSize: 11, color: '#f59e0b', fontWeight: 600 }}>{scene.sopReference}</p>
+            <h2 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#f4f0e8' }}>{scene.title}</h2>
+            <p style={{ margin: '2px 0 0', fontSize: 11, color: '#c9a84c', fontWeight: 600 }}>{scene.sopReference}</p>
           </div>
           {!revealed && <Timer seconds={timeLeft} total={TIMER_SECONDS} onExpire={handleExpire} running={!revealed} />}
         </div>
 
         {/* Inspector question */}
-        <div style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid #2d2000', borderRadius: 10, padding: '8px 12px' }}>
-          <p style={{ margin: 0, fontSize: 12, color: '#fcd34d', lineHeight: 1.5, fontStyle: 'italic' }}>"{scene.inspectorMessage}"</p>
+        <div style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 10, padding: '8px 12px' }}>
+          <p style={{ margin: 0, fontSize: 12, color: '#e8d090', lineHeight: 1.5, fontStyle: 'italic' }}>"{scene.inspectorMessage}"</p>
         </div>
 
         {/* Options */}
@@ -136,12 +136,12 @@ export default function InspectorScene({ scene, sceneNumber, totalScenes, onComp
         {revealed && (
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={() => { if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current); setShowFeedback(v => !v) }}
-              style={{ flex: 1, padding: '8px', borderRadius: 10, border: '1px solid #1e3a5f', background: showFeedback ? 'rgba(59,158,255,0.15)' : 'transparent', color: '#3b9eff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ flex: 1, padding: '8px', borderRadius: 10, border: '1px solid rgba(201,168,76,0.25)', background: showFeedback ? 'rgba(201,168,76,0.1)' : 'transparent', color: '#c9a84c', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
               📋 Why?
             </button>
             {showFeedback && (
               <button onClick={handleManualAdvance}
-                style={{ flex: 1, padding: '8px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#f59e0b,#b45309)', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                style={{ flex: 1, padding: '8px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#c9a84c,#8b6914)', color: '#07050b', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
                 Next →
               </button>
             )}
@@ -149,18 +149,18 @@ export default function InspectorScene({ scene, sceneNumber, totalScenes, onComp
         )}
 
         {revealed && showFeedback && (
-          <div style={{ background: 'rgba(59,158,255,0.06)', border: '1px solid #1e3a5f', borderRadius: 10, padding: '8px 12px' }}>
-            <p style={{ margin: 0, fontSize: 12, color: '#c8dff5', lineHeight: 1.5 }}>
+          <div style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 10, padding: '8px 12px' }}>
+            <p style={{ margin: 0, fontSize: 12, color: '#c8b88a', lineHeight: 1.5 }}>
               {scene.options[scene.correctIndex].explanation}
             </p>
           </div>
         )}
 
         {revealed && !showFeedback && (
-          <p style={{ margin: 0, fontSize: 11, color: '#3b5a7a', textAlign: 'center' }}>Advancing to next scene…</p>
+          <p style={{ margin: 0, fontSize: 11, color: '#4a3e2c', textAlign: 'center' }}>Advancing to next scene…</p>
         )}
 
-        <button onClick={onPartialReport} style={{ background: 'none', border: 'none', color: '#2a4a6a', fontSize: 11, cursor: 'pointer', textDecoration: 'underline', padding: 0, alignSelf: 'center' }}>
+        <button onClick={onPartialReport} style={{ background: 'none', border: 'none', color: '#3d3525', fontSize: 11, cursor: 'pointer', textDecoration: 'underline', padding: 0, alignSelf: 'center' }}>
           View partial report
         </button>
       </div>
