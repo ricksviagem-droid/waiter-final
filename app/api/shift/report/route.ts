@@ -1,9 +1,8 @@
 import OpenAI from 'openai'
 import type { SceneResult } from '@/lib/shift/types'
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
 export async function POST(req: Request) {
+  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const { results, totalScore, maxScore }: { results: SceneResult[]; totalScore: number; maxScore: number } =
     await req.json()
 
