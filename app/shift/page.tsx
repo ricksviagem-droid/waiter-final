@@ -182,55 +182,66 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
     <div style={{
       flex: 1, display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
-      padding: '32px 28px', gap: 28, textAlign: 'center',
-      animation: 'fadeIn 0.4s ease',
+      padding: '28px 24px', gap: 20, textAlign: 'center',
+      animation: 'fadeIn 0.4s ease', overflow: 'auto',
     }}>
-      {/* Logo */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-        <div style={{
-          width: 80, height: 80, borderRadius: 20,
-          background: 'linear-gradient(135deg, #0a2a4a, #1a5fa8)',
-          border: '1px solid #3b9eff',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 30px rgba(59,158,255,0.3)',
-          fontSize: 36,
-        }}>
-          🍽
+      {/* Forbes badge + title */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.35)', borderRadius: 20, padding: '5px 14px' }}>
+          <span style={{ fontSize: 13, color: '#f59e0b' }}>★★★★★</span>
+          <span style={{ fontSize: 10, color: '#fcd34d', fontWeight: 700, letterSpacing: 2 }}>FORBES 5-STAR</span>
+          <span style={{ fontSize: 13, color: '#f59e0b' }}>★★★★★</span>
         </div>
-        <div>
-          <h1 style={{ fontSize: 36, fontWeight: 900, color: '#fff', letterSpacing: 4, margin: 0 }}>SHIFT</h1>
-          <p style={{ fontSize: 12, color: '#3b9eff', fontWeight: 600, letterSpacing: 3, margin: 0 }}>
-            CAREER ANALYTIC MODULE
-          </p>
-        </div>
-      </div>
-
-      {/* Description */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 320 }}>
-        <p style={{ fontSize: 15, color: '#c8dff5', lineHeight: 1.7, margin: 0 }}>
-          A complete simulation of a real Forbes 5-star restaurant shift. You are the waiter. No script. No second chances.
+        <h1 style={{ fontSize: 32, fontWeight: 900, color: '#fff', letterSpacing: 3, margin: 0, textShadow: '0 0 30px rgba(59,158,255,0.3)' }}>
+          Career Simulator
+        </h1>
+        <p style={{ fontSize: 11, color: '#3b9eff', fontWeight: 700, letterSpacing: 3, margin: 0, textTransform: 'uppercase' }}>
+          Professional Waiter · English · AI
         </p>
-        <p style={{ fontSize: 13, color: '#556b82', lineHeight: 1.6, margin: 0 }}>
-          18 scenes · 45 seconds each · AI evaluation · Full report
+        <p style={{ fontSize: 13, color: '#f59e0b', fontStyle: 'italic', margin: 0, opacity: 0.85 }}>
+          "Train like Forbes. Speak like a native."
         </p>
       </div>
 
       {/* Stats grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, width: '100%' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, width: '100%' }}>
         {[
-          { icon: '🎙', label: '9 Guest Audio', sub: 'Speak your response' },
-          { icon: '🔍', label: '9 Inspector', sub: 'Choose wisely' },
-          { icon: '📋', label: 'Full Report', sub: 'Forbes + Rick audio' },
+          { icon: '🎙', label: '9 Scenes', sub: 'Speak English' },
+          { icon: '🔍', label: '9 Inspector', sub: 'Forbes SOPs' },
+          { icon: '📋', label: 'Full Report', sub: 'Rick + PDF' },
         ].map(({ icon, label, sub }) => (
           <div key={label} style={{
             background: 'rgba(59,158,255,0.06)', border: '1px solid #1e3a5f',
-            borderRadius: 12, padding: '12px 8px', textAlign: 'center',
+            borderRadius: 12, padding: '10px 6px', textAlign: 'center',
           }}>
-            <div style={{ fontSize: 22 }}>{icon}</div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#fff', marginTop: 4 }}>{label}</div>
-            <div style={{ fontSize: 10, color: '#556b82', marginTop: 2 }}>{sub}</div>
+            <div style={{ fontSize: 20 }}>{icon}</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#fff', marginTop: 4 }}>{label}</div>
+            <div style={{ fontSize: 9, color: '#556b82', marginTop: 2 }}>{sub}</div>
           </div>
         ))}
+      </div>
+
+      {/* Rick card */}
+      <div style={{ display:'flex', alignItems:'center', gap:14, background:'linear-gradient(135deg,rgba(10,20,35,0.95),rgba(6,12,24,0.95))', border:'1px solid rgba(245,158,11,0.25)', borderRadius:16, padding:'14px 16px', width:'100%', position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,rgba(245,158,11,0.4),transparent)' }} />
+        <div style={{ position:'relative', flexShrink:0 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/rick.jpg" alt="Rick" style={{ width:54, height:54, borderRadius:'50%', objectFit:'cover', objectPosition:'center top', display:'block' }}
+            onError={e => { const el = e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
+          />
+          <div style={{ width:54, height:54, borderRadius:'50%', background:'linear-gradient(135deg,#0a2a4a,#1a5fa8)', display:'none', alignItems:'center', justifyContent:'center', fontSize:20, fontWeight:900, color:'#fff' }}>R</div>
+          <div style={{ position:'absolute', inset:-2, borderRadius:'50%', border:'2px solid transparent', background:'linear-gradient(#020810,#020810) padding-box, linear-gradient(135deg,#f59e0b,#fcd34d,#b45309) border-box' }} />
+          <div style={{ position:'absolute', bottom:1, right:1, width:11, height:11, borderRadius:'50%', background:'#22c55e', border:'2px solid #020810' }} />
+        </div>
+        <div style={{ textAlign:'left' }}>
+          <div style={{ fontSize:13, fontWeight:800, color:'#fff', marginBottom:3 }}>
+            Rick — Your Mentor
+            <span style={{ marginLeft:7, fontSize:9, color:'#f59e0b', background:'rgba(245,158,11,0.12)', border:'1px solid rgba(245,158,11,0.3)', borderRadius:5, padding:'1px 6px' }}>ONLINE</span>
+          </div>
+          <p style={{ fontSize:11, color:'#7aa8cc', margin:0, lineHeight:1.5 }}>
+            Vai avaliar cada cena, corrigir seu inglês e te dar feedback de voz personalizado no final.
+          </p>
+        </div>
       </div>
 
       {/* CTA */}
@@ -239,16 +250,16 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
         style={{
           width: '100%', padding: '16px', borderRadius: 14, border: 'none',
           background: 'linear-gradient(135deg, #3b9eff, #1a5fa8)',
-          color: '#fff', fontSize: 16, fontWeight: 800, cursor: 'pointer',
-          boxShadow: '0 0 24px rgba(59,158,255,0.4)',
-          letterSpacing: 1,
+          color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer',
+          boxShadow: '0 0 28px rgba(59,158,255,0.45)',
+          letterSpacing: 2,
         }}
       >
-        BEGIN SHIFT
+        BEGIN SIMULATION
       </button>
 
-      <p style={{ fontSize: 11, color: '#3b5a7a', margin: 0 }}>
-        Requires microphone access · OpenAI Whisper transcription
+      <p style={{ fontSize: 10, color: '#3b5a7a', margin: 0 }}>
+        Microphone required · English responses · AI evaluation
       </p>
     </div>
   )

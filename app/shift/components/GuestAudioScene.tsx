@@ -292,10 +292,21 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
 
         {/* Rick tip overlay */}
         {showRick && (
-          <div style={{ position: 'absolute', bottom: 46, left: 12, width: 230, background: 'rgba(8,16,28,0.97)', border: '1px solid #3b9eff', borderRadius: 12, padding: '10px 12px', backdropFilter: 'blur(12px)', boxShadow: '0 0 20px rgba(59,158,255,0.25)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-              <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg,#3b9eff,#1a5fa8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 800, color: '#fff', flexShrink: 0 }}>R</div>
-              <span style={{ fontSize: 11, fontWeight: 700, color: '#3b9eff', letterSpacing: 1 }}>RICK TUTOR</span>
+          <div style={{ position: 'absolute', bottom: 46, left: 12, width: 235, background: 'rgba(6,12,22,0.97)', border: '1px solid rgba(245,158,11,0.35)', borderRadius: 14, padding: '10px 12px', backdropFilter: 'blur(16px)', boxShadow: '0 0 24px rgba(245,158,11,0.15)' }}>
+            <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,rgba(245,158,11,0.5),transparent)', borderRadius:'14px 14px 0 0' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
+              <div style={{ position:'relative', flexShrink:0 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/rick.jpg" alt="Rick" style={{ width:30, height:30, borderRadius:'50%', objectFit:'cover', objectPosition:'center top', display:'block' }}
+                  onError={e => { const el = e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
+                />
+                <div style={{ width:30, height:30, borderRadius:'50%', background:'linear-gradient(135deg,#0a2a4a,#1a5fa8)', display:'none', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:800, color:'#fff' }}>R</div>
+                <div style={{ position:'absolute', inset:-1.5, borderRadius:'50%', border:'1.5px solid transparent', background:'linear-gradient(#020810,#020810) padding-box, linear-gradient(135deg,#f59e0b,#b45309) border-box' }} />
+              </div>
+              <div>
+                <span style={{ fontSize: 11, fontWeight: 800, color: '#fcd34d', letterSpacing: 1 }}>RICK</span>
+                <span style={{ fontSize: 9, color: '#7aa8cc', marginLeft: 5 }}>Mentor Tip</span>
+              </div>
             </div>
             <p style={{ fontSize: 12, color: '#c8dff5', lineHeight: 1.6, margin: 0 }}>{scene.rickTip}</p>
           </div>
