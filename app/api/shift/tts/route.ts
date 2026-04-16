@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   const voice = VOICE_MAP[key] ?? 'alloy'
 
   const mp3 = await client.audio.speech.create({
-    model: 'tts-1',
+    model: 'tts-1-hd',
     voice,
     input: text,
     speed: 0.95,
