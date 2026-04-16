@@ -88,7 +88,7 @@ export default function InspectorScene({ scene, sceneNumber, totalScenes, onComp
       {/* Scene image 55% */}
       <div style={{ height: '55%', position: 'relative', background: '#0a1520', flexShrink: 0, overflow: 'hidden' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`/scenes/scene-${String(scene.id).padStart(2, '0')}.svg`} alt={scene.title}
+        <img src={`/scenes/scene-${String(scene.id).padStart(2, '0')}.jpg`} alt={scene.title}
           style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85 }} />
         <div style={{ position: 'absolute', top: 14, left: 14, background: 'rgba(10,20,35,0.85)', backdropFilter: 'blur(8px)', border: '1px solid #f59e0b', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 600, color: '#f59e0b' }}>
           SCENE {sceneNumber} / {totalScenes}
