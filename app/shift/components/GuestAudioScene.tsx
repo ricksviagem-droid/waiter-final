@@ -23,8 +23,11 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
   const [showFeedback, setShowFeedback] = useState(false)
   const [showRick, setShowRick] = useState(false)
   const [recording, setRecording] = useState(false)
+  const [liveTranscript, setLiveTranscript] = useState('')
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const playClick = () => { try { new Audio('/click.mp3').play() } catch {} }
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -78,6 +81,7 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
         recorder.onstop = async () => {
           stream.getTracks().forEach(t => t.stop())
           const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+          setAudioBlob(blob)
           await transcribeAndEvaluate(blob)
         }
         recorder.start()
@@ -100,6 +104,8 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
     setResult(null)
     setShowFeedback(false)
     setShowRick(false)
+    setLiveTranscript('')
+    setAudioBlob(null)
 
     async function loadAudio() {
       try {
@@ -132,12 +138,13 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
     }
   }, [scene, stopTimer])
 
-  async function transcribeAndEvaluate(audioBlob: Blob) {
+  async function transcribeAndEvaluate(blob: Blob) {
     try {
       const formData = new FormData()
-      formData.append('audio', audioBlob, 'response.webm')
+      formData.append('audio', blob, 'response.webm')
       const whisperRes = await fetch('/api/shift/whisper', { method: 'POST', body: formData })
       const { transcript } = await whisperRes.json()
+      setLiveTranscript(transcript || '')
 
       const evalRes = await fetch('/api/shift/evaluate', {
         method: 'POST',
@@ -180,7 +187,7 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
       {/* Scene image 55% */}
       <div style={{ height: '55%', position: 'relative', background: '#0a1520', flexShrink: 0, overflow: 'hidden' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`/scenes/scene-${String(scene.id).padStart(2, '0')}.jpg`} alt={scene.title}
+        <img src={`/scenes/scene-${String(scene.id).padStart(2, '0')}.svg`} alt={scene.title}
           style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85 }} />
 
         {/* Badges */}
@@ -254,10 +261,17 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#ef4444', fontSize: 13, fontWeight: 600 }}>
               <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', display: 'inline-block', animation: 'micPulse 1s ease-in-out infinite' }} />
-              Speak your response now
+              🎙 Gravando… fale sua resposta agora
             </div>
-            <button onClick={stopRecording} style={{ padding: '10px', borderRadius: 10, border: '1px solid #ef4444', background: 'rgba(239,68,68,0.1)', color: '#ef4444', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-              ⏹ Done — submit response
+            {liveTranscript && (
+              <div style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid #7f1d1d', borderRadius: 10, padding: '8px 12px' }}>
+                <p style={{ margin: 0, fontSize: 12, color: '#fca5a5', lineHeight: 1.5, fontStyle: 'italic' }}>"{liveTranscript}"</p>
+              </div>
+            )}
+            <button
+              onClick={() => { playClick(); stopRecording() }}
+              style={{ padding: '12px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#ef4444,#b91c1c)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              📤 Enviar resposta
             </button>
           </div>
         )}
@@ -271,6 +285,13 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
 
         {phase === 'result' && result && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1, overflow: 'auto' }}>
+            {/* Transcript */}
+            {result.transcript && (
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid #1e3a5f', borderRadius: 10, padding: '8px 12px' }}>
+                <p style={{ margin: '0 0 2px', fontSize: 10, color: '#3b9eff', fontWeight: 600 }}>VOCÊ DISSE:</p>
+                <p style={{ margin: 0, fontSize: 12, color: '#c8dff5', lineHeight: 1.5, fontStyle: 'italic' }}>"{result.transcript}"</p>
+              </div>
+            )}
             {/* Score pills */}
             <div style={{ display: 'flex', gap: 8 }}>
               <div style={{ flex: 1, background: 'rgba(10,20,35,0.8)', border: `1px solid ${scoreColor(result.score)}`, borderRadius: 10, padding: '6px 10px', textAlign: 'center' }}>
