@@ -47,6 +47,7 @@ export interface GuestAudioResult {
   sceneId: number
   type: 'guest-audio'
   transcript: string
+  audioUrl?: string
   score: number // 0-10
   sopScore: number // 0-10
   feedback: string

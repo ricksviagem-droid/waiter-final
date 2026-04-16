@@ -15,9 +15,27 @@ interface Props {
 
 type Phase = 'loading-audio' | 'playing' | 'recording' | 'processing' | 'result'
 type WordColor = 'idle' | 'red' | 'yellow' | 'green'
+type MicStatus = 'checking' | 'ok' | 'denied' | 'unavailable'
+
+function playSendSound() {
+  try {
+    const ctx = new AudioContext()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.connect(gain); gain.connect(ctx.destination)
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(440, ctx.currentTime)
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12)
+    gain.gain.setValueAtTime(0.25, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22)
+    osc.start(ctx.currentTime)
+    osc.stop(ctx.currentTime + 0.22)
+  } catch {}
+}
 
 export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onComplete, onPartialReport }: Props) {
   const [phase, setPhase] = useState<Phase>('loading-audio')
+  const [micStatus, setMicStatus] = useState<MicStatus>('checking')
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS)
   const [timerRunning, setTimerRunning] = useState(false)
   const [result, setResult] = useState<GuestAudioResult | null>(null)
@@ -26,6 +44,7 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
   const [recording, setRecording] = useState(false)
   const [liveTranscript, setLiveTranscript] = useState('')
   const [wordColor, setWordColor] = useState<WordColor>('idle')
+  const [audioUrl, setAudioUrl] = useState<string | null>(null)
 
   const guestAudioRef = useRef<HTMLAudioElement | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -34,8 +53,25 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
   const streamRef = useRef<MediaStream | null>(null)
   const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const speechRef = useRef<InstanceType<typeof window.SpeechRecognition> | null>(null)
+  const showFeedbackRef = useRef(false)
 
   const playClick = useCallback(() => { try { new Audio('/click.mp3').play() } catch {} }, [])
+
+  // Mic permission check on mount
+  useEffect(() => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setMicStatus('unavailable')
+      return
+    }
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => {
+        stream.getTracks().forEach(t => t.stop())
+        setMicStatus('ok')
+      })
+      .catch(err => {
+        setMicStatus(err.name === 'NotAllowedError' ? 'denied' : 'unavailable')
+      })
+  }, [])
 
   const stopTimer = useCallback(() => {
     setTimerRunning(false)
@@ -80,7 +116,9 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
         recorder.onstop = async () => {
           stream.getTracks().forEach(t => t.stop())
           const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
-          await transcribeAndEvaluate(blob)
+          const url = URL.createObjectURL(blob)
+          setAudioUrl(url)
+          await transcribeAndEvaluate(blob, url)
         }
         recorder.start()
         setRecording(true)
@@ -112,6 +150,7 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
 
     startRecording()
     return () => { cancelled = true }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, startTimer])
 
   // Load and play guest audio
@@ -121,9 +160,11 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
     setTimeLeft(TIMER_SECONDS)
     setResult(null)
     setShowFeedback(false)
+    showFeedbackRef.current = false
     setShowRick(false)
     setLiveTranscript('')
     setWordColor('idle')
+    setAudioUrl(null)
 
     async function loadAudio() {
       try {
@@ -157,7 +198,7 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
     }
   }, [scene, stopTimer])
 
-  async function transcribeAndEvaluate(blob: Blob) {
+  async function transcribeAndEvaluate(blob: Blob, blobUrl: string) {
     try {
       const formData = new FormData()
       formData.append('audio', blob, 'response.webm')
@@ -172,23 +213,34 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
       })
       const evalData = await evalRes.json()
       const r: GuestAudioResult = {
-        sceneId: scene.id, type: 'guest-audio', transcript: transcript || '',
+        sceneId: scene.id, type: 'guest-audio',
+        transcript: transcript || '',
+        audioUrl: blobUrl,
         score: evalData.score ?? 5, sopScore: evalData.sopScore ?? 5,
         feedback: evalData.feedback ?? '', betterPhrase: evalData.betterPhrase ?? '',
         passed: evalData.passed ?? false,
       }
       setResult(r)
       setPhase('result')
-      autoAdvanceRef.current = setTimeout(() => { if (!showFeedback) onComplete(r) }, 3000)
+      autoAdvanceRef.current = setTimeout(() => {
+        if (!showFeedbackRef.current) onComplete(r)
+      }, 3000)
     } catch {
       const r: GuestAudioResult = {
-        sceneId: scene.id, type: 'guest-audio', transcript: liveTranscript || '',
+        sceneId: scene.id, type: 'guest-audio',
+        transcript: liveTranscript || '', audioUrl: blobUrl,
         score: 0, sopScore: 0, feedback: '', betterPhrase: '', passed: false,
       }
       setResult(r)
       setPhase('result')
       autoAdvanceRef.current = setTimeout(() => onComplete(r), 2000)
     }
+  }
+
+  const handleSend = () => {
+    playSendSound()
+    playClick()
+    stopRecording()
   }
 
   const handleManualAdvance = () => {
@@ -201,6 +253,9 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
   const DOT_COLORS: Record<WordColor, string> = {
     idle: '#3b5a7a', red: '#ef4444', yellow: '#f59e0b', green: '#22c55e'
   }
+
+  const MIC_ICON = micStatus === 'ok' ? '🎙' : micStatus === 'denied' ? '🚫' : micStatus === 'checking' ? '⏳' : '⚠️'
+  const MIC_COLOR = micStatus === 'ok' ? '#22c55e' : micStatus === 'denied' ? '#ef4444' : '#f59e0b'
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -218,15 +273,16 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
           🎙 GUEST AUDIO
         </div>
 
-        {/* Live color indicator during recording */}
-        {recording && (
-          <div style={{ position: 'absolute', bottom: 14, right: 14, display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(0,0,0,0.6)', borderRadius: 20, padding: '5px 12px', border: `1px solid ${DOT_COLORS[wordColor]}` }}>
-            <span style={{ width: 10, height: 10, borderRadius: '50%', background: DOT_COLORS[wordColor], display: 'inline-block', animation: 'micPulse 0.8s ease-in-out infinite', boxShadow: `0 0 8px ${DOT_COLORS[wordColor]}` }} />
-            <span style={{ fontSize: 11, color: DOT_COLORS[wordColor], fontWeight: 600 }}>
-              {wordColor === 'green' ? 'Great' : wordColor === 'yellow' ? 'Keep going' : 'Speak up'}
-            </span>
-          </div>
-        )}
+        {/* Mic status indicator */}
+        <div style={{ position: 'absolute', bottom: 14, right: 14, background: 'rgba(0,0,0,0.7)', border: `1px solid ${MIC_COLOR}`, borderRadius: 20, padding: '4px 10px', display: 'flex', alignItems: 'center', gap: 5, backdropFilter: 'blur(8px)' }}>
+          <span style={{ fontSize: 11 }}>{MIC_ICON}</span>
+          <span style={{ fontSize: 10, color: MIC_COLOR, fontWeight: 600 }}>
+            {micStatus === 'ok' ? 'Mic OK' : micStatus === 'denied' ? 'Mic blocked' : micStatus === 'checking' ? 'Checking…' : 'No mic'}
+          </span>
+          {recording && (
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: DOT_COLORS[wordColor], display: 'inline-block', animation: 'micPulse 0.8s ease-in-out infinite', boxShadow: `0 0 6px ${DOT_COLORS[wordColor]}`, marginLeft: 2 }} />
+          )}
+        </div>
 
         {/* Rick tip button */}
         <button onClick={() => { playClick(); setShowRick(v => !v) }}
@@ -256,6 +312,13 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
           {phase === 'recording' && <Timer seconds={timeLeft} total={TIMER_SECONDS} onExpire={handleTimerExpire} running={timerRunning} />}
         </div>
 
+        {/* Mic denied warning */}
+        {micStatus === 'denied' && (
+          <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid #ef4444', borderRadius: 10, padding: '8px 12px' }}>
+            <p style={{ margin: 0, fontSize: 12, color: '#fca5a5' }}>🚫 Microphone access blocked. Please allow it in your browser settings to continue.</p>
+          </div>
+        )}
+
         {/* Guest speech */}
         <div style={{ background: 'rgba(59,158,255,0.06)', border: '1px solid #1a3050', borderRadius: 10, padding: '10px 13px' }}>
           <p style={{ margin: 0, fontSize: 13, color: phase === 'loading-audio' ? '#3b5a7a' : '#c8dff5', lineHeight: 1.55, fontStyle: 'italic' }}>
@@ -281,8 +344,8 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {/* Live transcript */}
             {liveTranscript ? (
-              <div style={{ background: 'rgba(239,68,68,0.06)', border: `1px solid ${DOT_COLORS[wordColor]}40`, borderRadius: 10, padding: '8px 12px', minHeight: 40 }}>
-                <p style={{ margin: 0, fontSize: 12, color: '#fca5a5', lineHeight: 1.5, fontStyle: 'italic' }}>"{liveTranscript}"</p>
+              <div style={{ background: `${DOT_COLORS[wordColor]}10`, border: `1px solid ${DOT_COLORS[wordColor]}40`, borderRadius: 10, padding: '8px 12px', minHeight: 40 }}>
+                <p style={{ margin: 0, fontSize: 12, color: '#e2e8f0', lineHeight: 1.5, fontStyle: 'italic' }}>"{liveTranscript}"</p>
               </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#ef4444', fontSize: 13, fontWeight: 600 }}>
@@ -290,8 +353,8 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
                 🎙 Speak your response now
               </div>
             )}
-            <button onClick={() => { playClick(); stopRecording() }}
-              style={{ padding: '13px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#ef4444,#b91c1c)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <button onClick={handleSend}
+              style={{ padding: '13px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#ef4444,#b91c1c)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 0 20px rgba(239,68,68,0.3)' }}>
               📤 Send Response
             </button>
           </div>
@@ -300,7 +363,7 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
         {phase === 'processing' && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#7aa8cc', fontSize: 13 }}>
             <div style={{ width: 18, height: 18, border: '2px solid #3b9eff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-            Evaluating…
+            Evaluating your response…
           </div>
         )}
 
@@ -312,6 +375,12 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
                 <p style={{ margin: 0, fontSize: 12, color: '#c8dff5', lineHeight: 1.5, fontStyle: 'italic' }}>"{result.transcript}"</p>
               </div>
             )}
+
+            {/* Play back recorded audio */}
+            {result.audioUrl && (
+              <audio controls src={result.audioUrl} style={{ width: '100%', height: 32, filter: 'invert(0.8) hue-rotate(180deg)' }} />
+            )}
+
             <div style={{ display: 'flex', gap: 8 }}>
               <div style={{ flex: 1, background: 'rgba(10,20,35,0.8)', border: `1px solid ${scoreColor(result.score)}`, borderRadius: 10, padding: '6px 10px', textAlign: 'center' }}>
                 <div style={{ fontSize: 20, fontWeight: 700, color: scoreColor(result.score) }}>{result.score}/10</div>
@@ -321,7 +390,13 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
                 <div style={{ fontSize: 20, fontWeight: 700, color: result.passed ? '#22c55e' : '#ef4444' }}>{result.passed ? '✓' : '✗'}</div>
                 <div style={{ fontSize: 10, color: '#7aa8cc' }}>{result.passed ? 'Passed' : 'Needs work'}</div>
               </div>
-              <button onClick={() => { playClick(); if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current); setShowFeedback(v => !v) }}
+              <button onClick={() => {
+                  playClick()
+                  if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current)
+                  const next = !showFeedback
+                  setShowFeedback(next)
+                  showFeedbackRef.current = next
+                }}
                 style={{ flex: 1, border: '1px solid #1e3a5f', borderRadius: 10, background: showFeedback ? 'rgba(59,158,255,0.15)' : 'transparent', color: '#3b9eff', fontSize: 11, fontWeight: 600, cursor: 'pointer', padding: '6px 4px' }}>
                 📋 Feedback
               </button>
