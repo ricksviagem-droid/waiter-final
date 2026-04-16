@@ -366,9 +366,25 @@ export default function Home() {
     <div style={styles.page}>
       <div style={styles.phone}>
         <div style={styles.header}>
-          <div>
-            <div style={styles.title}>🍽️ Luxury Training</div>
-            <div style={styles.subTitle}>Waiter — Phase 1</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div>
+              <div style={styles.title}>🍽️ Luxury Training</div>
+              <div style={styles.subTitle}>Waiter — Phase 1</div>
+            </div>
+            <a
+              href="/shift"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+                padding: '5px 10px', borderRadius: 20,
+                background: 'linear-gradient(135deg,#3b9eff,#1a5fa8)',
+                color: '#fff', fontSize: 11, fontWeight: 700,
+                textDecoration: 'none', letterSpacing: 0.5,
+                boxShadow: '0 0 10px rgba(59,158,255,0.4)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              ⚡ SHIFT
+            </a>
           </div>
 
           <div style={styles.headerRight}>
