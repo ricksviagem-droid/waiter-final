@@ -1,7 +1,5 @@
 import OpenAI from 'openai'
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
 const VOICE_MAP: Record<string, 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer'> = {
   american_male: 'onyx',
   american_female: 'nova',
@@ -25,6 +23,7 @@ const VOICE_MAP: Record<string, 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | '
 }
 
 export async function POST(req: Request) {
+  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const { text, nationality, gender, speaker } = await req.json()
 
   const key = speaker === 'rick' ? 'rick' : `${nationality}_${gender}`

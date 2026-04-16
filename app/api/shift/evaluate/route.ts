@@ -1,9 +1,8 @@
 import OpenAI from 'openai'
 import type { GuestAudioScene } from '@/lib/shift/types'
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
 export async function POST(req: Request) {
+  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const { transcript, scene }: { transcript: string; scene: GuestAudioScene } = await req.json()
 
   const response = await client.responses.create({
