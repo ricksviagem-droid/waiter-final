@@ -4,12 +4,22 @@ import { useEffect, useRef, useState } from 'react'
 import type { SceneResult } from '@/lib/shift/types'
 import { jsPDF } from 'jspdf'
 
+interface SceneReview {
+  sceneId: number
+  guestAsked: string
+  youSaid: string
+  verdict: 'good' | 'needs-work' | 'wrong'
+  rickSays: string
+  betterPhrase: string
+}
+
 interface ReportData {
   grade: string
   overallVerdict: string
   forbes: Record<string, { score: number; comment: string }>
   strengths: string[]
   improvements: string[]
+  sceneReviews: SceneReview[]
   rickScript: string
 }
 
@@ -265,15 +275,16 @@ export default function ShiftReport({ results, totalScore, maxScore, onRestart }
 
         {activeTab === 'rick' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {/* Rick header + audio */}
             <div style={{ background: 'rgba(59,158,255,0.06)', border: '1px solid #1e3a5f', borderRadius: 12, padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#3b9eff,#1a5fa8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff' }}>R</div>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#3b9eff,#1a5fa8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff', flexShrink: 0 }}>R</div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>Rick Tutor</div>
-                  <div style={{ fontSize: 11, color: '#7aa8cc' }}>Personal feedback audio</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>Rick — Mentor Feedback</div>
+                  <div style={{ fontSize: 11, color: '#7aa8cc' }}>Scene-by-scene English coaching</div>
                 </div>
               </div>
-              <p style={{ margin: 0, fontSize: 13, color: '#c8dff5', lineHeight: 1.6, fontStyle: 'italic' }}>
+              <p style={{ margin: 0, fontSize: 12, color: '#c8dff5', lineHeight: 1.6, fontStyle: 'italic' }}>
                 "{report.rickScript}"
               </p>
             </div>
@@ -291,7 +302,7 @@ export default function ShiftReport({ results, totalScore, maxScore, onRestart }
               >
                 {rickLoading
                   ? <><div style={{ width: 18, height: 18, border: '3px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Generating audio…</>
-                  : '▶ Play Rick\'s Feedback'}
+                  : '▶ Play Rick\'s Audio Feedback'}
               </button>
             ) : (
               <div style={{ display: 'flex', gap: 10 }}>
@@ -307,6 +318,41 @@ export default function ShiftReport({ results, totalScore, maxScore, onRestart }
                 >
                   ↓ Download MP3
                 </button>
+              </div>
+            )}
+
+            {/* Scene-by-scene reviews */}
+            {report.sceneReviews && report.sceneReviews.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <h4 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: '#3b9eff' }}>Scene-by-Scene Review</h4>
+                {report.sceneReviews.map((rev) => {
+                  const verdictColor = rev.verdict === 'good' ? '#22c55e' : rev.verdict === 'needs-work' ? '#f59e0b' : '#ef4444'
+                  const verdictBg = rev.verdict === 'good' ? 'rgba(34,197,94,0.07)' : rev.verdict === 'needs-work' ? 'rgba(245,158,11,0.07)' : 'rgba(239,68,68,0.07)'
+                  const verdictBorder = rev.verdict === 'good' ? '#166534' : rev.verdict === 'needs-work' ? '#92400e' : '#7f1d1d'
+                  const verdictLabel = rev.verdict === 'good' ? '✓ Good' : rev.verdict === 'needs-work' ? '~ Needs Work' : '✗ Incorrect'
+                  return (
+                    <div key={rev.sceneId} style={{ background: verdictBg, border: `1px solid ${verdictBorder}`, borderRadius: 12, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 7 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: '#c8dff5' }}>Scene {rev.sceneId}</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: verdictColor, background: `${verdictColor}22`, border: `1px solid ${verdictColor}44`, borderRadius: 20, padding: '2px 8px' }}>{verdictLabel}</span>
+                      </div>
+                      <div style={{ fontSize: 11, color: '#7aa8cc' }}>
+                        <span style={{ fontWeight: 600, color: '#556b82' }}>Guest asked: </span>{rev.guestAsked}
+                      </div>
+                      <div style={{ fontSize: 11, color: '#7aa8cc' }}>
+                        <span style={{ fontWeight: 600, color: '#556b82' }}>You said: </span>
+                        <span style={{ fontStyle: 'italic' }}>"{rev.youSaid}"</span>
+                      </div>
+                      <p style={{ margin: 0, fontSize: 12, color: '#c8dff5', lineHeight: 1.55 }}>{rev.rickSays}</p>
+                      {rev.verdict !== 'good' && (
+                        <div style={{ background: 'rgba(59,158,255,0.1)', border: '1px solid #1e3a5f', borderRadius: 8, padding: '7px 10px' }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: '#3b9eff', display: 'block', marginBottom: 3 }}>BETTER PHRASE</span>
+                          <p style={{ margin: 0, fontSize: 12, color: '#93c5fd', fontStyle: 'italic' }}>"{rev.betterPhrase}"</p>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             )}
           </div>

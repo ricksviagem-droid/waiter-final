@@ -40,10 +40,13 @@ export default function Home() {
               cursor: 'pointer', textAlign: 'left',
               boxShadow: '0 0 40px rgba(59,158,255,0.2)',
               transition: 'transform 0.15s, box-shadow 0.15s',
+              position: 'relative', overflow: 'hidden',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.02)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 50px rgba(59,158,255,0.35)' }}
             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 40px rgba(59,158,255,0.2)' }}
           >
+            {/* PRO badge */}
+            <div style={{ position: 'absolute', top: 14, right: 14, background: 'linear-gradient(135deg,#f59e0b,#b45309)', borderRadius: 8, padding: '3px 10px', fontSize: 11, fontWeight: 800, color: '#fff', letterSpacing: 1, boxShadow: '0 2px 8px rgba(245,158,11,0.4)' }}>PRO</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 10 }}>
               <div style={{ fontSize: 32 }}>⚡</div>
               <div>
@@ -54,8 +57,8 @@ export default function Home() {
             <p style={{ fontSize: 13, color: '#7aa8cc', lineHeight: 1.6 }}>
               18 cenas completas de um turno real. Fale com os guests, responda ao Inspector, receba avaliação Forbes + relatório Rick Tutor.
             </p>
-            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-              {['18 Cenas', '45s Timer', 'Voz IA', 'PDF Report'].map(tag => (
+            <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
+              {['18 Cenas', '45s Timer', 'Voz IA', 'PDF Report', 'Rick Tutor'].map(tag => (
                 <span key={tag} style={{ fontSize: 10, fontWeight: 700, color: '#3b9eff', background: 'rgba(59,158,255,0.1)', border: '1px solid rgba(59,158,255,0.3)', borderRadius: 10, padding: '3px 8px' }}>{tag}</span>
               ))}
             </div>

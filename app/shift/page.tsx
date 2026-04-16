@@ -22,21 +22,48 @@ export default function ShiftPage() {
   const [state, setState] = useState<AppState>('intro')
   const [sceneIndex, setSceneIndex] = useState(0)
   const [results, setResults] = useState<SceneResult[]>([])
-  const ambientRef = useRef<HTMLAudioElement | null>(null)
+  const ambientRef = useRef<{ ctx: AudioContext; gain: GainNode } | null>(null)
 
   useEffect(() => {
-    const audio = new Audio('/ambient.mp3')
-    audio.loop = true
-    audio.volume = 0.18
-    ambientRef.current = audio
-    if (state === 'scene') audio.play().catch(() => {})
-    return () => { audio.pause(); audio.src = '' }
+    return () => { ambientRef.current?.ctx.close() }
   }, [])
 
   useEffect(() => {
-    if (!ambientRef.current) return
-    if (state === 'scene') ambientRef.current.play().catch(() => {})
-    else ambientRef.current.pause()
+    if (state === 'scene') {
+      if (!ambientRef.current) {
+        try {
+          const ctx = new AudioContext()
+          const bufferSize = ctx.sampleRate * 3
+          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
+          const data = buffer.getChannelData(0)
+          let b0 = 0, b1 = 0, b2 = 0
+          for (let i = 0; i < bufferSize; i++) {
+            const white = Math.random() * 2 - 1
+            b0 = 0.99886 * b0 + white * 0.0555179
+            b1 = 0.99332 * b1 + white * 0.0750759
+            b2 = 0.96900 * b2 + white * 0.1538520
+            data[i] = (b0 + b1 + b2 + white * 0.0782232) * 0.11
+          }
+          const src = ctx.createBufferSource()
+          src.buffer = buffer
+          src.loop = true
+          const gain = ctx.createGain()
+          gain.gain.value = 0.06
+          const filter = ctx.createBiquadFilter()
+          filter.type = 'lowpass'
+          filter.frequency.value = 800
+          src.connect(filter)
+          filter.connect(gain)
+          gain.connect(ctx.destination)
+          src.start()
+          ambientRef.current = { ctx, gain }
+        } catch {}
+      } else {
+        ambientRef.current.ctx.resume().catch(() => {})
+      }
+    } else {
+      ambientRef.current?.ctx.suspend().catch(() => {})
+    }
   }, [state])
 
   const currentScene = SCENES[sceneIndex]

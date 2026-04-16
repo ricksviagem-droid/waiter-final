@@ -19,7 +19,7 @@ const VOICE_MAP: Record<string, 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | '
   german_female: 'alloy',
   russian_male: 'onyx',
   russian_female: 'shimmer',
-  rick: 'alloy',
+  rick: 'echo',
 }
 
 export async function POST(req: Request) {
