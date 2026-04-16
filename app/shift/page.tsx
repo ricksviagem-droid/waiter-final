@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import type { SceneResult, GuestAudioResult, InspectorResult } from '@/lib/shift/types'
 import { SCENES, TOTAL_SCENES } from '@/lib/shift/scenes'
 import GuestAudioScene from './components/GuestAudioScene'
@@ -22,6 +22,22 @@ export default function ShiftPage() {
   const [state, setState] = useState<AppState>('intro')
   const [sceneIndex, setSceneIndex] = useState(0)
   const [results, setResults] = useState<SceneResult[]>([])
+  const ambientRef = useRef<HTMLAudioElement | null>(null)
+
+  useEffect(() => {
+    const audio = new Audio('/ambient.mp3')
+    audio.loop = true
+    audio.volume = 0.18
+    ambientRef.current = audio
+    if (state === 'scene') audio.play().catch(() => {})
+    return () => { audio.pause(); audio.src = '' }
+  }, [])
+
+  useEffect(() => {
+    if (!ambientRef.current) return
+    if (state === 'scene') ambientRef.current.play().catch(() => {})
+    else ambientRef.current.pause()
+  }, [state])
 
   const currentScene = SCENES[sceneIndex]
 
