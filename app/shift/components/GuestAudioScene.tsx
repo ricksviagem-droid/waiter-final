@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import Image from 'next/image'
 import type { GuestAudioScene as GuestAudioSceneType, GuestAudioResult } from '@/lib/shift/types'
 import Timer from './Timer'
 import RickTutor from './RickTutor'
@@ -196,13 +195,11 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Scene image — 55% */}
       <div style={{ height: '55%', position: 'relative', background: '#0a1520', flexShrink: 0 }}>
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={`/scenes/scene-${String(scene.id).padStart(2, '0')}.jpg`}
           alt={scene.title}
-          fill
-          style={{ objectFit: 'cover', opacity: 0.85 }}
-          onError={() => {}}
-          priority
+          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85 }}
         />
         {/* Scene badge */}
         <div style={{

@@ -1,5 +1,136 @@
-<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'>
-  <rect width='800' height='500' fill='#0a1520'/>
-  <text x='400' y='220' font-family='Arial' font-size='48' fill='#1e3a5f' text-anchor='middle'>SCENE 7</text>
-  <text x='400' y='280' font-family='Arial' font-size='18' fill='#3b5a7a' text-anchor='middle'>Add scene-07.jpg to /public/scenes/</text>
-  </svg>
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500' width='800' height='500'>
+  <defs>
+    <linearGradient id='bg07' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0%' stop-color='#040c14'/>
+      <stop offset='50%' stop-color='#071220'/>
+      <stop offset='100%' stop-color='#050e1a'/>
+    </linearGradient>
+    <linearGradient id='floor07' x1='0' y1='0' x2='0' y2='1'>
+      <stop offset='0%' stop-color='#0d1f30' stop-opacity='0'/>
+      <stop offset='100%' stop-color='#0a1825' stop-opacity='1'/>
+    </linearGradient>
+    <radialGradient id='candle07' cx='50%' cy='50%' r='50%'>
+      <stop offset='0%' stop-color='#fff7d6' stop-opacity='0.9'/>
+      <stop offset='40%' stop-color='#f59e0b' stop-opacity='0.4'/>
+      <stop offset='100%' stop-color='#f59e0b' stop-opacity='0'/>
+    </radialGradient>
+    <radialGradient id='amb07' cx='50%' cy='30%' r='60%'>
+      <stop offset='0%' stop-color='#1a3a5c' stop-opacity='0.6'/>
+      <stop offset='100%' stop-color='#040c14' stop-opacity='0'/>
+    </radialGradient>
+    <filter id='glow07'>
+      <feGaussianBlur stdDeviation='3' result='blur'/>
+      <feMerge><feMergeNode in='blur'/><feMergeNode in='SourceGraphic'/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width='800' height='500' fill='url(#bg07)'/>
+  <rect width='800' height='500' fill='url(#amb07)'/>
+
+  <!-- Floor -->
+  <rect x='0' y='320' width='800' height='180' fill='#08141f' opacity='0.8'/>
+  <rect x='0' y='316' width='800' height='4' fill='#1e3a5f' opacity='0.3'/>
+
+  <!-- Wall panels -->
+  <rect x='40' y='40' width='4' height='280' rx='2' fill='#1e3a5f' opacity='0.5'/>
+  <rect x='756' y='40' width='4' height='280' rx='2' fill='#1e3a5f' opacity='0.5'/>
+  <rect x='40' y='40' width='720' height='3' rx='1' fill='#1e3a5f' opacity='0.4'/>
+
+  <!-- Wall art left -->
+  <rect x='70' y='80' width='80' height='120' rx='4' fill='none' stroke='#1e3a5f' stroke-width='2' opacity='0.6'/>
+  <rect x='78' y='88' width='64' height='104' rx='2' fill='#0d1f30' opacity='0.8'/>
+  <ellipse cx='110' cy='140' rx='20' ry='28' fill='none' stroke='#3b9eff' stroke-width='1' opacity='0.3'/>
+
+  <!-- Wall art right -->
+  <rect x='650' y='80' width='80' height='120' rx='4' fill='none' stroke='#1e3a5f' stroke-width='2' opacity='0.6'/>
+  <rect x='658' y='88' width='64' height='104' rx='2' fill='#0d1f30' opacity='0.8'/>
+  <ellipse cx='690' cy='140' rx='20' ry='28' fill='none' stroke='#3b9eff' stroke-width='1' opacity='0.3'/>
+
+  <!-- Table -->
+  <ellipse cx='400' cy='310' rx='160' ry='40' fill='#0d1e2e'/>
+  <ellipse cx='400' cy='308' rx='158' ry='38' fill='none' stroke='#1e3a5f' stroke-width='1.5'/>
+  <rect x='240' y='308' width='320' height='18' rx='2' fill='#0a1825'/>
+
+  <!-- Table cloth highlight -->
+  <ellipse cx='400' cy='308' rx='120' ry='26' fill='none' stroke='#1e3a5f' stroke-width='0.5' opacity='0.5'/>
+
+  <!-- Tablecloth -->
+  <ellipse cx='400' cy='306' rx='155' ry='36' fill='#0f1e2d' opacity='0.7'/>
+
+  <!-- Candle center -->
+  <rect x='394' y='270' width='12' height='36' rx='2' fill='#f5f0e0' opacity='0.9'/>
+  <ellipse cx='400' cy='268' rx='30' ry='30' fill='url(#candle07)' opacity='0.8'/>
+  <rect x='399' y='260' width='2' height='10' fill='#f59e0b' opacity='0.8'/>
+  <ellipse cx='400' cy='260' rx='4' ry='6' fill='#fff7d6' opacity='0.9'/>
+
+  <!-- Wine glasses -->
+  <path d='M350 285 Q345 300 340 305 L360 305 Q355 300 350 285Z' fill='none' stroke='#c8dff5' stroke-width='1.5' opacity='0.6'/>
+  <line x1='350' y1='305' x2='350' y2='315' stroke='#c8dff5' stroke-width='1' opacity='0.6'/>
+  <line x1='344' y1='315' x2='356' y2='315' stroke='#c8dff5' stroke-width='1' opacity='0.6'/>
+
+  <path d='M450 285 Q445 300 440 305 L460 305 Q455 300 450 285Z' fill='none' stroke='#c8dff5' stroke-width='1.5' opacity='0.6'/>
+  <line x1='450' y1='305' x2='450' y2='315' stroke='#c8dff5' stroke-width='1' opacity='0.6'/>
+  <line x1='444' y1='315' x2='456' y2='315' stroke='#c8dff5' stroke-width='1' opacity='0.6'/>
+
+  <!-- Plates -->
+  <circle cx='370' cy='300' r='22' fill='none' stroke='#c8dff5' stroke-width='1' opacity='0.4'/>
+  <circle cx='370' cy='300' r='16' fill='none' stroke='#c8dff5' stroke-width='0.5' opacity='0.3'/>
+  <circle cx='430' cy='300' r='22' fill='none' stroke='#c8dff5' stroke-width='1' opacity='0.4'/>
+  <circle cx='430' cy='300' r='16' fill='none' stroke='#c8dff5' stroke-width='0.5' opacity='0.3'/>
+
+  <!-- Chairs -->
+  <rect x='310' y='320' width='70' height='10' rx='5' fill='#1a2e40'/>
+  <rect x='315' y='330' width='60' height='60' rx='6' fill='#142030'/>
+  <rect x='310' y='330' width='5' height='60' rx='2' fill='#0f1a26'/>
+  <rect x='375' y='330' width='5' height='60' rx='2' fill='#0f1a26'/>
+
+  <rect x='420' y='320' width='70' height='10' rx='5' fill='#1a2e40'/>
+  <rect x='425' y='330' width='60' height='60' rx='6' fill='#142030'/>
+  <rect x='420' y='330' width='5' height='60' rx='2' fill='#0f1a26'/>
+  <rect x='485' y='330' width='5' height='60' rx='2' fill='#0f1a26'/>
+
+  <!-- Silhouette guests -->
+  <ellipse cx='345' cy='310' rx='22' ry='28' fill='#071220' opacity='0.7'/>
+  <circle cx='345' cy='285' r='16' fill='#071220' opacity='0.7'/>
+  <ellipse cx='455' cy='310' rx='22' ry='28' fill='#071220' opacity='0.7'/>
+  <circle cx='455' cy='285' r='16' fill='#071220' opacity='0.7'/>
+
+  <!-- Ambient lights top -->
+  <circle cx='200' cy='30' r='60' fill='#3b9eff' opacity='0.04'/>
+  <circle cx='600' cy='30' r='60' fill='#3b9eff' opacity='0.04'/>
+  <circle cx='400' cy='20' r='80' fill='#3b9eff' opacity='0.03'/>
+
+  <!-- Pendant lights -->
+  <line x1='200' y1='0' x2='200' y2='80' stroke='#1e3a5f' stroke-width='1'/>
+  <circle cx='200' cy='85' r='12' fill='#0d1f30' stroke='#1e3a5f' stroke-width='1'/>
+  <circle cx='200' cy='85' r='6' fill='#3b9eff' opacity='0.6'/>
+
+  <line x1='600' y1='0' x2='600' y2='80' stroke='#1e3a5f' stroke-width='1'/>
+  <circle cx='600' cy='85' r='12' fill='#0d1f30' stroke='#1e3a5f' stroke-width='1'/>
+  <circle cx='600' cy='85' r='6' fill='#3b9eff' opacity='0.6'/>
+
+  <line x1='400' y1='0' x2='400' y2='60' stroke='#1e3a5f' stroke-width='1'/>
+  <circle cx='400' cy='65' r='14' fill='#0d1f30' stroke='#1e3a5f' stroke-width='1'/>
+  <circle cx='400' cy='65' r='7' fill='#3b9eff' opacity='0.7'/>
+
+  <!-- Floor overlay gradient -->
+  <rect x='0' y='0' width='800' height='500' fill='url(#floor07)'/>
+
+  <!-- Scene number badge -->
+  <rect x='20' y='20' width='80' height='26' rx='13' fill='#07111d' opacity='0.9'/>
+  <rect x='20' y='20' width='80' height='26' rx='13' fill='none' stroke='#3b9eff' stroke-width='1.2'/>
+  <text x='60' y='37' font-family='Arial' font-size='11' font-weight='700' fill='#3b9eff' text-anchor='middle'>SCENE 7 / 18</text>
+
+  <!-- Type badge -->
+  <rect x='680' y='20' width='100' height='26' rx='13' fill='#3b9eff' opacity='0.15'/>
+  <rect x='680' y='20' width='100' height='26' rx='13' fill='none' stroke='#3b9eff' stroke-width='1.2'/>
+  <text x='730' y='37' font-family='Arial' font-size='10' font-weight='700' fill='#3b9eff' text-anchor='middle'>GUEST AUDIO</text>
+
+  <!-- Scene title -->
+  <text x='400' y='200' font-family='Arial' font-size='32' font-weight='900' fill='#ffffff' text-anchor='middle' opacity='0.9'>📝 Taking the Order</text>
+  <text x='400' y='232' font-family='Arial' font-size='14' fill='#7aa8cc' text-anchor='middle' opacity='0.8'>Couple ready to order</text>
+
+  <!-- Forbes watermark -->
+  <text x='400' y='480' font-family='Arial' font-size='10' fill='#3b9eff' text-anchor='middle' opacity='0.3' letter-spacing='4'>FORBES 5-STAR SIMULATION</text>
+</svg>
