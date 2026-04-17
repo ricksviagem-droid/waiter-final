@@ -14,20 +14,21 @@ interface Props {
   onComplete: (result: QuestionResult) => void
 }
 
-type Phase = 'loading-audio' | 'playing' | 'camera-preview' | 'recording' | 'processing' | 'result'
+type Phase = 'opening' | 'active' | 'processing' | 'result'
 
 export default function QuestionScene({ question, questionIndex, onComplete }: Props) {
-  const [phase, setPhase] = useState<Phase>('loading-audio')
+  const [phase, setPhase] = useState<Phase>('opening')
   const [timeLeft, setTimeLeft] = useState(question.timeSeconds)
   const [liveTranscript, setLiveTranscript] = useState('')
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [result, setResult] = useState<QuestionResult | null>(null)
-  const [showCaption, setShowCaption] = useState(false)
   const [showPt, setShowPt] = useState(false)
   const [ptText, setPtText] = useState<string | null>(null)
   const [ptLoading, setPtLoading] = useState(false)
   const [wordTooltip, setWordTooltip] = useState<{ word: string; pt: string; hint: string; x: number; y: number } | null>(null)
   const [wordLoadingKey, setWordLoadingKey] = useState<string | null>(null)
+  const [cameraReady, setCameraReady] = useState(false)
+  const [ricksAudioPlaying, setRicksAudioPlaying] = useState(false)
 
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const recorderRef = useRef<MediaRecorder | null>(null)
@@ -36,120 +37,108 @@ export default function QuestionScene({ question, questionIndex, onComplete }: P
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const speechRef = useRef<any>(null)
   const autoRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const didStart = useRef(false)
 
-  // Reset when question changes
-  useEffect(() => {
-    setPhase('loading-audio')
-    setTimeLeft(question.timeSeconds)
-    setLiveTranscript('')
-    setVideoUrl(null)
-    setResult(null)
-    setShowCaption(false)
-    setShowPt(false)
-    setPtText(null)
-    setWordTooltip(null)
-  }, [question])
+  const stopAll = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current)
+    try { speechRef.current?.stop() } catch {}
+    if (recorderRef.current?.state === 'recording') recorderRef.current.stop()
+  }, [])
 
-  // Load and play Rick's question audio
+  // On mount: open camera + play Rick audio + start timer simultaneously
   useEffect(() => {
-    if (phase !== 'loading-audio') return
+    if (didStart.current) return
+    didStart.current = true
+
     let cancelled = false
-    async function loadAudio() {
-      try {
-        const res = await fetch('/api/shift/tts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: question.question, speaker: 'rick' }),
-        })
-        if (!res.ok) throw new Error()
-        const blob = await res.blob()
-        if (cancelled) return
-        const url = URL.createObjectURL(blob)
-        const audio = new Audio(url)
-        audio.onended = () => { if (!cancelled) setPhase('camera-preview') }
-        audio.onerror = () => { if (!cancelled) setPhase('camera-preview') }
-        setPhase('playing')
-        audio.play().catch(() => { if (!cancelled) setPhase('camera-preview') })
-      } catch {
-        if (!cancelled) setPhase('camera-preview')
-      }
-    }
-    loadAudio()
-    return () => { cancelled = true }
-  }, [phase, question])
 
-  // Open camera on camera-preview or recording
-  useEffect(() => {
-    if (phase !== 'camera-preview' && phase !== 'recording') return
-    let cancelled = false
-    async function openCamera() {
+    async function init() {
+      // 1. Open camera
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true })
         if (cancelled) { stream.getTracks().forEach(t => t.stop()); return }
         streamRef.current = stream
         if (videoRef.current) {
           videoRef.current.srcObject = stream
           videoRef.current.muted = true
-          videoRef.current.play().catch(() => {})
+          await videoRef.current.play().catch(() => {})
+        }
+        setCameraReady(true)
+
+        // 2. Start recording immediately
+        chunksRef.current = []
+        const recorder = new MediaRecorder(stream)
+        recorderRef.current = recorder
+        recorder.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data) }
+        recorder.onstop = async () => {
+          stream.getTracks().forEach(t => t.stop())
+          const blob = new Blob(chunksRef.current, { type: 'video/webm' })
+          const url = URL.createObjectURL(blob)
+          setVideoUrl(url)
+          if (!cancelled) await transcribeAndEvaluate(blob, url)
+        }
+        recorder.start()
+        setPhase('active')
+
+        // 3. Start timer
+        timerRef.current = setInterval(() => {
+          setTimeLeft(t => {
+            if (t <= 1) {
+              clearInterval(timerRef.current!)
+              if (recorderRef.current?.state === 'recording') recorderRef.current.stop()
+              try { speechRef.current?.stop() } catch {}
+              setPhase('processing')
+              return 0
+            }
+            return t - 1
+          })
+        }, 1000)
+
+        // 4. Live transcript
+        const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+        if (SR) {
+          const recog = new SR()
+          recog.continuous = true; recog.interimResults = true; recog.lang = 'en-US'
+          recog.onresult = (e: any) => {
+            const text = Array.from(e.results as any[]).map((r: any) => r[0].transcript).join(' ')
+            setLiveTranscript(text)
+          }
+          recog.onerror = () => {}
+          recog.start()
+          speechRef.current = recog
+        }
+      } catch {
+        if (!cancelled) setPhase('active') // no camera, proceed anyway
+      }
+
+      // 5. Play Rick's question audio in background
+      try {
+        const res = await fetch('/api/shift/tts', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: question.question, speaker: 'rick' }),
+        })
+        if (res.ok) {
+          const blob = await res.blob()
+          if (!cancelled) {
+            const audio = new Audio(URL.createObjectURL(blob))
+            setRicksAudioPlaying(true)
+            audio.onended = () => setRicksAudioPlaying(false)
+            audio.play().catch(() => setRicksAudioPlaying(false))
+          }
         }
       } catch {}
     }
-    openCamera()
+
+    init()
     return () => {
       cancelled = true
+      if (autoRef.current) clearTimeout(autoRef.current)
     }
-  }, [phase])
-
-  const stopRecording = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current)
-    try { speechRef.current?.stop() } catch {}
-    if (recorderRef.current?.state === 'recording') recorderRef.current.stop()
-    setPhase('processing')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const startRecording = useCallback(() => {
-    if (!streamRef.current) return
-    chunksRef.current = []
-    const recorder = new MediaRecorder(streamRef.current)
-    recorderRef.current = recorder
-
-    recorder.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data) }
-    recorder.onstop = async () => {
-      streamRef.current?.getTracks().forEach(t => t.stop())
-      const blob = new Blob(chunksRef.current, { type: 'video/webm' })
-      const url = URL.createObjectURL(blob)
-      setVideoUrl(url)
-      await transcribeAndEvaluate(blob, url)
-    }
-    recorder.start()
-    setPhase('recording')
-
-    // Timer
-    timerRef.current = setInterval(() => {
-      setTimeLeft(t => {
-        if (t <= 1) { clearInterval(timerRef.current!); stopRecording(); return 0 }
-        return t - 1
-      })
-    }, 1000)
-
-    // Live transcript
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-    if (SR) {
-      const recog = new SR()
-      recog.continuous = true; recog.interimResults = true; recog.lang = 'en-US'
-      recog.onresult = (e: any) => {
-        const text = Array.from(e.results as any[]).map((r: any) => r[0].transcript).join(' ')
-        setLiveTranscript(text)
-      }
-      recog.onerror = () => {}
-      recog.start()
-      speechRef.current = recog
-    }
-  }, [stopRecording])
 
   async function transcribeAndEvaluate(blob: Blob, blobUrl: string) {
     try {
-      // Extract audio blob for Whisper (send full webm — it has audio track)
       const formData = new FormData()
       formData.append('audio', blob, 'response.webm')
       const whisperRes = await fetch('/api/shift/whisper', { method: 'POST', body: formData })
@@ -158,8 +147,7 @@ export default function QuestionScene({ question, questionIndex, onComplete }: P
       if (finalTranscript) setLiveTranscript(finalTranscript)
 
       const evalRes = await fetch('/api/interview/evaluate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ transcript: finalTranscript, question: question.question, skipped: false }),
       })
       const evalData = await evalRes.json()
@@ -172,7 +160,7 @@ export default function QuestionScene({ question, questionIndex, onComplete }: P
       }
       setResult(r)
       setPhase('result')
-      autoRef.current = setTimeout(() => onComplete(r), 5000)
+      autoRef.current = setTimeout(() => onComplete(r), 4000)
     } catch {
       const r: QuestionResult = {
         questionId: question.id, question: question.question,
@@ -182,23 +170,13 @@ export default function QuestionScene({ question, questionIndex, onComplete }: P
       }
       setResult(r)
       setPhase('result')
-      autoRef.current = setTimeout(() => onComplete(r), 3000)
+      autoRef.current = setTimeout(() => onComplete(r), 2000)
     }
   }
 
-  function handleSkip() {
-    if (timerRef.current) clearInterval(timerRef.current)
-    try { speechRef.current?.stop() } catch {}
-    if (recorderRef.current?.state === 'recording') recorderRef.current.stop()
-    streamRef.current?.getTracks().forEach(t => t.stop())
-    const r: QuestionResult = {
-      questionId: question.id, question: question.question,
-      videoUrl: null, transcript: '', timeUsed: 0, skipped: true,
-      score: 0, verdict: 'skipped', rickFeedback: "Question skipped.", betterAnswer: '',
-    }
-    setResult(r)
-    setPhase('result')
-    autoRef.current = setTimeout(() => onComplete(r), 2000)
+  function handleSend() {
+    stopAll()
+    setPhase('processing')
   }
 
   async function togglePt() {
@@ -234,8 +212,8 @@ export default function QuestionScene({ question, questionIndex, onComplete }: P
     } finally { setWordLoadingKey(null) }
   }
 
+  const timerColor = timeLeft > 60 ? S : timeLeft > 30 ? '#f59e0b' : '#f87171'
   const scoreColor = (s: number) => s >= 7 ? '#4ade80' : s >= 5 ? '#fbbf24' : '#f87171'
-  const timerColor = timeLeft > 30 ? S : timeLeft > 15 ? '#f59e0b' : '#f87171'
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }} onClick={() => setWordTooltip(null)}>
@@ -249,161 +227,134 @@ export default function QuestionScene({ question, questionIndex, onComplete }: P
           zIndex: 999, boxShadow: '0 4px 24px rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)',
         }}>
           <div style={{ fontSize: 11, color: '#6a8a9a', marginBottom: 3 }}>{wordTooltip.word}</div>
-          <div style={{ fontSize: 15, fontWeight: 800, color: S, marginBottom: wordTooltip.hint ? 4 : 0 }}>{wordTooltip.pt}</div>
-          {wordTooltip.hint && <div style={{ fontSize: 11, color: '#4a6a7a', lineHeight: 1.4 }}>{wordTooltip.hint}</div>}
+          <div style={{ fontSize: 15, fontWeight: 800, color: S }}>{wordTooltip.pt}</div>
+          {wordTooltip.hint && <div style={{ fontSize: 11, color: '#4a6a7a', lineHeight: 1.4, marginTop: 3 }}>{wordTooltip.hint}</div>}
         </div>
       )}
 
       {/* Header */}
-      <div style={{ padding: '12px 16px', background: 'rgba(6,9,14,0.98)', borderBottom: '1px solid ' + SB, flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ padding: '10px 16px', background: 'rgba(6,9,14,0.98)', borderBottom: '1px solid ' + SB, flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <span style={{ fontSize: 10, color: S, fontWeight: 700, letterSpacing: 1 }}>QUESTION {questionIndex + 1} / {TOTAL_QUESTIONS}</span>
-          <div style={{ fontSize: 9, color: '#4a6a7a', marginTop: 1, letterSpacing: 1 }}>{question.blockLabel.toUpperCase()}</div>
+          <span style={{ fontSize: 10, color: S, fontWeight: 700, letterSpacing: 1 }}>Q {questionIndex + 1} / {TOTAL_QUESTIONS}</span>
+          <div style={{ fontSize: 9, color: '#4a6a7a', letterSpacing: 1 }}>{question.blockLabel.toUpperCase()}</div>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          {(phase === 'recording') && (
-            <span style={{ fontSize: 13, fontWeight: 700, color: timerColor }}>{timeLeft}s</span>
+          {/* Timer */}
+          {(phase === 'active') && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'rgba(0,0,0,0.4)', border: `1px solid ${timerColor}40`, borderRadius: 20, padding: '3px 10px' }}>
+              <span style={{ fontSize: 13, fontWeight: 800, color: timerColor, fontVariantNumeric: 'tabular-nums' }}>
+                {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
+              </span>
+            </div>
           )}
-          <button onClick={() => setShowCaption(v => !v)}
-            style={{ background: showCaption ? SBG : 'transparent', border: '1px solid ' + SB, borderRadius: 8, padding: '3px 8px', fontSize: 10, color: S, cursor: 'pointer', fontWeight: 700 }}>
-            EN
-          </button>
           <button onClick={() => void togglePt()}
             style={{ background: showPt ? SBG : 'transparent', border: '1px solid ' + SB, borderRadius: 8, padding: '3px 8px', fontSize: 10, color: S, cursor: 'pointer', fontWeight: 700 }}>
-            {ptLoading ? '…' : '🇧🇷'}
+            {ptLoading ? '…' : '🇧🇷 PT'}
           </button>
         </div>
       </div>
 
-      {/* Camera / video area */}
-      <div style={{ flex: 1, background: '#04060a', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {(phase === 'camera-preview' || phase === 'recording') && (
-          <video ref={videoRef} autoPlay muted playsInline
-            style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} />
-        )}
+      {/* Camera view — always shown */}
+      <div style={{ flex: 1, position: 'relative', background: '#02040a', overflow: 'hidden' }}>
+        <video ref={videoRef} autoPlay muted playsInline
+          style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)', display: cameraReady ? 'block' : 'none' }} />
 
-        {(phase === 'loading-audio' || phase === 'playing') && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, padding: 24 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/scenes/rick.jpeg" alt="Rick"
-              style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', objectPosition: '50% 25%', border: '2px solid ' + S }}
-              onError={e => { const el = e.currentTarget; el.style.display = 'none'; (el.nextSibling as HTMLElement).style.display = 'flex' }}
-            />
-            <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(122,176,204,0.15)', display: 'none', alignItems: 'center', justifyContent: 'center', fontSize: 24, color: S, border: '2px solid ' + S }}>R</div>
-            {phase === 'loading-audio' && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#4a6a7a', fontSize: 13 }}>
-                <div style={{ width: 16, height: 16, border: `2px solid ${S}`, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                Preparing question…
-              </div>
-            )}
-            {phase === 'playing' && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: S, fontSize: 13, fontWeight: 600 }}>
-                <span style={{ width: 8, height: 8, borderRadius: '50%', background: S, animation: 'micPulse 0.9s ease-in-out infinite', display: 'inline-block' }} />
-                Rick is asking…
-              </div>
-            )}
+        {/* No camera fallback */}
+        {!cameraReady && phase !== 'result' && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 10 }}>
+            <div style={{ width: 32, height: 32, border: `2px solid ${S}`, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+            <span style={{ fontSize: 12, color: '#4a6a7a' }}>Opening camera…</span>
           </div>
         )}
 
+        {/* Processing overlay */}
         {phase === 'processing' && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, color: '#4a6a7a' }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(4,6,10,0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
             <div style={{ width: 36, height: 36, border: `2px solid ${S}`, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-            <span style={{ fontSize: 13 }}>Analysing your response…</span>
+            <span style={{ fontSize: 13, color: '#4a6a7a' }}>Analysing your response…</span>
           </div>
         )}
 
+        {/* Result overlay */}
         {phase === 'result' && result && (
-          <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 20 }}>
-            {result.videoUrl && (
-              <video src={result.videoUrl} controls playsInline
-                style={{ width: '100%', maxHeight: 200, borderRadius: 12, objectFit: 'cover', border: '1px solid ' + SB }} />
-            )}
-            <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-              <div style={{ flex: 1, background: SBG, border: '1px solid ' + SB, borderRadius: 10, padding: '8px', textAlign: 'center' }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: scoreColor(result.score ?? 0) }}>{result.score ?? 0}/10</div>
-                <div style={{ fontSize: 10, color: '#4a6a7a' }}>Score</div>
-              </div>
-              <div style={{ flex: 2, background: SBG, border: '1px solid ' + SB, borderRadius: 10, padding: '8px 10px' }}>
-                <div style={{ fontSize: 10, color: S, fontWeight: 700, marginBottom: 3 }}>RICK SAYS</div>
-                <div style={{ fontSize: 11, color: '#a8c8dc', lineHeight: 1.5 }}>{result.rickFeedback}</div>
-              </div>
-            </div>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(4,6,10,0.92)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14, padding: 20 }}>
+            <div style={{ fontSize: 36, fontWeight: 800, color: scoreColor(result.score ?? 0) }}>{result.score ?? 0}/10</div>
+            <div style={{ fontSize: 13, color: '#a8c8dc', textAlign: 'center', lineHeight: 1.6, maxWidth: 280 }}>{result.rickFeedback}</div>
+            <div style={{ fontSize: 11, color: '#4a6a7a' }}>Next question in 4s…</div>
           </div>
         )}
 
-        {/* Recording indicator */}
-        {phase === 'recording' && (
-          <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(0,0,0,0.7)', borderRadius: 20, padding: '4px 10px' }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#f87171', animation: 'micPulse 0.8s ease-in-out infinite', display: 'inline-block' }} />
+        {/* REC badge */}
+        {phase === 'active' && (
+          <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(0,0,0,0.65)', borderRadius: 20, padding: '4px 10px' }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#f87171', display: 'inline-block', animation: 'micPulse 0.8s ease-in-out infinite' }} />
             <span style={{ fontSize: 10, color: '#fca5a5', fontWeight: 700 }}>REC</span>
           </div>
         )}
+
+        {/* Rick audio playing indicator */}
+        {ricksAudioPlaying && phase === 'active' && (
+          <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(0,0,0,0.65)', borderRadius: 20, padding: '4px 10px' }}>
+            <span style={{ fontSize: 10 }}>🎙</span>
+            <span style={{ fontSize: 10, color: S, fontWeight: 600 }}>Rick</span>
+          </div>
+        )}
       </div>
 
-      {/* Question panel */}
+      {/* Bottom panel — question text always visible */}
       <div style={{ background: 'rgba(6,9,14,0.98)', borderTop: '1px solid ' + SB, padding: '12px 16px', flexShrink: 0 }}>
-        <div style={{ background: SBG, border: '1px solid ' + SB, borderRadius: 10, padding: '10px 13px', marginBottom: 10 }}>
-          {showCaption ? (
-            <p style={{ margin: 0, fontSize: 13, color: '#c8dce8', lineHeight: 1.65, fontStyle: 'italic' }}>
-              "
+
+        {/* Rick label + question */}
+        <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 10 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/scenes/rick.jpeg" alt="Rick"
+            style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover', objectPosition: '50% 25%', flexShrink: 0, border: `1.5px solid ${S}` }}
+            onError={e => { const el = e.currentTarget; el.style.display = 'none'; (el.nextSibling as HTMLElement).style.display = 'flex' }}
+          />
+          <div style={{ width: 28, height: 28, borderRadius: '50%', background: SBG, display: 'none', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: S, flexShrink: 0 }}>R</div>
+          <div style={{ flex: 1 }}>
+            <p style={{ margin: 0, fontSize: 13, color: '#c8dce8', lineHeight: 1.65 }}>
               {question.question.split(/(\s+)/).map((token, i) => {
                 const isWord = /\S/.test(token)
                 const clean = token.replace(/[^a-zA-Z''-]/g, '')
                 return isWord ? (
-                  <span key={i} onClick={e => { e.stopPropagation(); handleWordTap(token, (e.target as HTMLElement).getBoundingClientRect()) }}
+                  <span key={i}
+                    onClick={e => { e.stopPropagation(); handleWordTap(token, (e.target as HTMLElement).getBoundingClientRect()) }}
                     style={{ cursor: 'pointer', borderBottom: wordLoadingKey === clean ? `1px solid ${S}` : `1px dashed ${SB}`, paddingBottom: 1 }}
                   >{token}</span>
                 ) : token
               })}
-              "
             </p>
-          ) : (
-            <p style={{ margin: 0, fontSize: 12, color: '#4a6a7a', fontStyle: 'italic' }}>Tap EN to see question caption</p>
-          )}
-          {showPt && (
-            <p style={{ margin: '7px 0 0', fontSize: 12, color: '#4a7a8a', lineHeight: 1.5, borderTop: '1px solid ' + SB, paddingTop: 7 }}>
-              {ptLoading ? 'Traduzindo…' : (ptText ?? '—')}
-            </p>
-          )}
+            {showPt && (
+              <p style={{ margin: '6px 0 0', fontSize: 11, color: '#4a6a7a', lineHeight: 1.5, borderTop: '1px solid ' + SB, paddingTop: 6 }}>
+                {ptLoading ? 'Traduzindo…' : (ptText ?? '—')}
+              </p>
+            )}
+          </div>
         </div>
 
-        {/* Live transcript while recording */}
-        {phase === 'recording' && liveTranscript && (
-          <div style={{ background: 'rgba(122,176,204,0.04)', border: '1px solid rgba(122,176,204,0.15)', borderRadius: 8, padding: '7px 10px', marginBottom: 10 }}>
-            <p style={{ margin: 0, fontSize: 11, color: '#7a9aaa', fontStyle: 'italic', lineHeight: 1.5 }}>"{liveTranscript}"</p>
+        {/* Live transcript */}
+        {phase === 'active' && liveTranscript && (
+          <div style={{ background: SBG, border: '1px solid ' + SB, borderRadius: 8, padding: '7px 10px', marginBottom: 10 }}>
+            <p style={{ margin: 0, fontSize: 11, color: '#6a8a9a', fontStyle: 'italic', lineHeight: 1.5 }}>"{liveTranscript}"</p>
           </div>
         )}
 
-        {/* Action buttons */}
-        {phase === 'camera-preview' && (
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={startRecording}
-              style={{ flex: 1, padding: '13px', borderRadius: 12, border: 'none', background: `linear-gradient(135deg,${S},#4a88a8)`, color: '#04060a', fontSize: 14, fontWeight: 800, cursor: 'pointer', letterSpacing: 1 }}>
-              ● START RECORDING
-            </button>
-            <button onClick={handleSkip}
-              style={{ padding: '13px 16px', borderRadius: 12, border: '1px solid ' + SB, background: 'transparent', color: '#4a6a7a', fontSize: 13, cursor: 'pointer' }}>
-              Skip
-            </button>
-          </div>
-        )}
-
-        {phase === 'recording' && (
-          <button onClick={stopRecording}
-            style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#5a8898,#3a6878)', color: '#fff', fontSize: 14, fontWeight: 800, cursor: 'pointer', letterSpacing: 1 }}>
-            ■ SEND ANSWER
+        {/* Send button */}
+        {phase === 'active' && (
+          <button onClick={handleSend}
+            style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: `linear-gradient(135deg,${S},#4a88a8)`, color: '#04060a', fontSize: 14, fontWeight: 800, cursor: 'pointer', letterSpacing: 1 }}>
+            ✓ SEND ANSWER
           </button>
         )}
+
+        {(phase === 'opening' || phase === 'processing') && <div style={{ height: 46 }} />}
 
         {phase === 'result' && (
           <button onClick={() => { if (autoRef.current) clearTimeout(autoRef.current); if (result) onComplete(result) }}
             style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: `linear-gradient(135deg,${S},#4a88a8)`, color: '#04060a', fontSize: 14, fontWeight: 800, cursor: 'pointer', letterSpacing: 1 }}>
-            NEXT QUESTION →
+            NEXT →
           </button>
-        )}
-
-        {(phase === 'loading-audio' || phase === 'playing' || phase === 'processing') && (
-          <div style={{ height: 46 }} />
         )}
       </div>
     </div>
