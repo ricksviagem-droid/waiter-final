@@ -281,7 +281,7 @@ export default function ShiftReport({ results, totalScore, maxScore, onRestart }
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
                 <div style={{ position:'relative', flexShrink:0 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/rick.jpg" alt="Rick" style={{ width:44, height:44, borderRadius:'50%', objectFit:'cover', objectPosition:'center top', display:'block' }}
+                  <img src="/scenes/rick.jpeg" alt="Rick" style={{ width:44, height:44, borderRadius:'50%', objectFit:'cover', objectPosition:'center top', display:'block' }}
                     onError={e => { const el = e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
                   />
                   <div style={{ width:44, height:44, borderRadius:'50%', background:'linear-gradient(135deg,#0a2a4a,#1a5fa8)', display:'none', alignItems:'center', justifyContent:'center', fontSize:18, fontWeight:900, color:'#fff' }}>R</div>

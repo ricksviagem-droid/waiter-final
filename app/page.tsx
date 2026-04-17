@@ -232,7 +232,7 @@ export default function Home() {
             <div style={{ position:'absolute', top:0, left:0, right:0, height:'1px', background:`linear-gradient(90deg,transparent,${G},transparent)` }}/>
             <div style={{ position:'relative', flexShrink:0 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/rick.jpg" alt="Rick"
+              <img src="/scenes/rick.jpeg" alt="Rick"
                 style={{ width:60, height:60, borderRadius:'50%', objectFit:'cover', objectPosition:'center top', display:'block' }}
                 onError={e=>{ const el=e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
               />
