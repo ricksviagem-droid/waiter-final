@@ -107,9 +107,9 @@ export default function Home() {
       <div style={{
         minHeight:'100dvh',
         background:`radial-gradient(ellipse at 35% 45%, #120e08 0%, ${BG} 55%, #09060d 100%)`,
-        display:'flex', alignItems:'center', justifyContent:'center',
+        display:'flex', alignItems:'flex-start', justifyContent:'center',
         fontFamily:'var(--font-geist-sans, Arial, sans-serif)',
-        padding:'24px 20px', position:'relative', overflow:'hidden',
+        padding:'24px 20px', position:'relative', overflowX:'hidden',
       }}>
         {/* Floating dust particles */}
         {Array.from({ length: 50 }, (_, i) => (
@@ -233,7 +233,7 @@ export default function Home() {
             <div style={{ position:'relative', flexShrink:0 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/scenes/rick.jpeg" alt="Rick"
-                style={{ width:60, height:60, borderRadius:'50%', objectFit:'cover', objectPosition:'50% 30%', display:'block' }}
+                style={{ width:60, height:60, borderRadius:'50%', objectFit:'cover', objectPosition:'50% 25%', display:'block' }}
                 onError={e=>{ const el=e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
               />
               <div style={{ width:60, height:60, borderRadius:'50%', background:`linear-gradient(135deg,#1a1005,#2a1e08)`, display:'none', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:900, color:G }}>R</div>

@@ -226,7 +226,7 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
         <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,rgba(245,158,11,0.4),transparent)' }} />
         <div style={{ position:'relative', flexShrink:0 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/scenes/rick.jpeg" alt="Rick" style={{ width:54, height:54, borderRadius:'50%', objectFit:'cover', objectPosition:'50% 30%', display:'block' }}
+          <img src="/scenes/rick.jpeg" alt="Rick" style={{ width:54, height:54, borderRadius:'50%', objectFit:'cover', objectPosition:'50% 25%', display:'block' }}
             onError={e => { const el = e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
           />
           <div style={{ width:54, height:54, borderRadius:'50%', background:'linear-gradient(135deg,#0a2a4a,#1a5fa8)', display:'none', alignItems:'center', justifyContent:'center', fontSize:20, fontWeight:900, color:'#fff' }}>R</div>
