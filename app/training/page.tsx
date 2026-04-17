@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createAmbient, type AmbientHandle } from '@/lib/ambient'
 
 type Role = 'user' | 'assistant'
 
@@ -48,6 +49,14 @@ const CREAM = '#f4f0e8'
 const MUTED = '#9a8868'
 
 export default function Home() {
+  const [muted, setMuted] = useState(false)
+  const ambientRef = useRef<AmbientHandle | null>(null)
+  useEffect(() => {
+    ambientRef.current = createAmbient('training')
+    return () => { ambientRef.current?.destroy() }
+  }, [])
+  function toggleMute() { const n = !muted; setMuted(n); ambientRef.current?.setMuted(n) }
+
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: 'assistant', text: 'Good evening.' },
@@ -271,6 +280,7 @@ export default function Home() {
         ::-webkit-scrollbar-thumb { background: #2a1f0a; border-radius: 4px; }
       `}</style>
 
+      <button onClick={toggleMute} style={{ position:'fixed', top:12, right:12, zIndex:100, background:'rgba(7,5,11,0.9)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:8, padding:'5px 9px', fontSize:14, cursor:'pointer' }}>{muted ? '🔇' : '🔊'}</button>
       <div style={{ height: '100dvh', overflow: 'hidden', background: `linear-gradient(160deg,${DARK} 0%,#100d07 50%,${DARK} 100%)`, display: 'flex', justifyContent: 'center', fontFamily: 'var(--font-geist-sans,Arial,sans-serif)' }}>
         <div style={{ width: '100%', maxWidth: 520, height: '100dvh', background: PANEL, display: 'flex', flexDirection: 'column', border: '1px solid ' + GOLD_BORDER, boxShadow: '0 0 60px rgba(201,168,76,0.06)', overflow: 'hidden' }}>
 

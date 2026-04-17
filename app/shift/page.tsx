@@ -6,6 +6,7 @@ import { SCENES, TOTAL_SCENES } from '@/lib/shift/scenes'
 import GuestAudioScene from './components/GuestAudioScene'
 import InspectorScene from './components/InspectorScene'
 import ShiftReport from './components/ShiftReport'
+import { createAmbient, type AmbientHandle } from '@/lib/ambient'
 
 type AppState = 'intro' | 'scene' | 'report'
 
@@ -22,49 +23,17 @@ export default function ShiftPage() {
   const [state, setState] = useState<AppState>('intro')
   const [sceneIndex, setSceneIndex] = useState(0)
   const [results, setResults] = useState<SceneResult[]>([])
-  const ambientRef = useRef<{ ctx: AudioContext; gain: GainNode } | null>(null)
+  const [muted, setMuted] = useState(false)
+  const ambientRef = useRef<AmbientHandle | null>(null)
 
   useEffect(() => {
-    return () => { ambientRef.current?.ctx.close() }
+    ambientRef.current = createAmbient('field')
+    return () => { ambientRef.current?.destroy() }
   }, [])
 
-  useEffect(() => {
-    if (state === 'scene') {
-      if (!ambientRef.current) {
-        try {
-          const ctx = new AudioContext()
-          const bufferSize = ctx.sampleRate * 3
-          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
-          const data = buffer.getChannelData(0)
-          let b0 = 0, b1 = 0, b2 = 0
-          for (let i = 0; i < bufferSize; i++) {
-            const white = Math.random() * 2 - 1
-            b0 = 0.99886 * b0 + white * 0.0555179
-            b1 = 0.99332 * b1 + white * 0.0750759
-            b2 = 0.96900 * b2 + white * 0.1538520
-            data[i] = (b0 + b1 + b2 + white * 0.0782232) * 0.11
-          }
-          const src = ctx.createBufferSource()
-          src.buffer = buffer
-          src.loop = true
-          const gain = ctx.createGain()
-          gain.gain.value = 0.06
-          const filter = ctx.createBiquadFilter()
-          filter.type = 'lowpass'
-          filter.frequency.value = 800
-          src.connect(filter)
-          filter.connect(gain)
-          gain.connect(ctx.destination)
-          src.start()
-          ambientRef.current = { ctx, gain }
-        } catch {}
-      } else {
-        ambientRef.current.ctx.resume().catch(() => {})
-      }
-    } else {
-      ambientRef.current?.ctx.suspend().catch(() => {})
-    }
-  }, [state])
+  function toggleMute() {
+    const next = !muted; setMuted(next); ambientRef.current?.setMuted(next)
+  }
 
   const currentScene = SCENES[sceneIndex]
 
@@ -109,6 +78,7 @@ export default function ShiftPage() {
         ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
       `}</style>
 
+      <button onClick={toggleMute} style={{ position:'fixed', top:12, right:12, zIndex:100, background:'rgba(6,13,23,0.9)', border:'1px solid rgba(0,220,130,0.2)', borderRadius:8, padding:'5px 9px', fontSize:14, cursor:'pointer' }}>{muted ? '🔇' : '🔊'}</button>
       <div style={{
         minHeight: '100dvh',
         background: 'linear-gradient(160deg, #060d17 0%, #0a1520 50%, #06111e 100%)',

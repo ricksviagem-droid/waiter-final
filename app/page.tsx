@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
+import { createAmbient, type AmbientHandle } from '@/lib/ambient'
 
 const G  = '#00dc82'
 const GB = 'rgba(0,220,130,0.18)'
@@ -95,13 +96,32 @@ export default function LandingPage() {
   const [sparks, setSparks] = useState<Spark[]>([])
   const [activeCard, setActiveCard] = useState<string | null>(null)
   const [booted, setBooted] = useState(false)
+  const [muted, setMuted] = useState(false)
   const idRef = useRef(0)
-  const audioCtxRef = useRef<AudioContext | null>(null)
+  const ambientRef = useRef<AmbientHandle | null>(null)
 
   useEffect(() => {
     const t = setTimeout(() => setBooted(true), 100)
     return () => clearTimeout(t)
   }, [])
+
+  // Start ambient on first interaction
+  function ensureMusic() {
+    if (!ambientRef.current) {
+      ambientRef.current = createAmbient('landing')
+    }
+  }
+
+  useEffect(() => {
+    return () => { ambientRef.current?.destroy() }
+  }, [])
+
+  function toggleMute() {
+    ensureMusic()
+    const next = !muted
+    setMuted(next)
+    ambientRef.current?.setMuted(next)
+  }
 
   function spawnSparks(x: number, y: number, color: string) {
     const arr: Spark[] = Array.from({ length: 8 }, (_, i) => ({
@@ -112,6 +132,7 @@ export default function LandingPage() {
   }
 
   function handleNav(e: React.MouseEvent, mod: typeof MODULES[0]) {
+    ensureMusic()
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
     spawnSparks(e.clientX - rect.left, e.clientY - rect.top, mod.color)
     playClick(mod.freq)
@@ -260,12 +281,16 @@ export default function LandingPage() {
             <p style={{ fontSize: 10, color: '#2a3a2a', letterSpacing: 1 }}>
               Hold any text to translate to Portuguese · AI powered · All simulations in English
             </p>
-            <p style={{ fontSize: 9, color: '#1a2a1a', marginTop: 6, letterSpacing: 2 }}>ON DUTY v2.0</p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 10 }}>
+              <p style={{ fontSize: 9, color: '#1a2a1a', letterSpacing: 2 }}>ON DUTY v2.0</p>
+              <button onClick={toggleMute} style={{ background: 'transparent', border: '1px solid #1a2a1a', borderRadius: 8, padding: '3px 8px', fontSize: 11, color: '#2a4a2a', cursor: 'pointer' }}>
+                {muted ? '🔇' : '🔊'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {audioCtxRef.current && null}
     </>
   )
 }
