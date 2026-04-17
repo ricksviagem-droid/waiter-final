@@ -194,7 +194,7 @@ export default function Home() {
             style={{
               width:'100%', padding:'24px 22px', borderRadius:20, cursor:'pointer',
               textAlign:'left', position:'relative', overflow:'hidden',
-              background:'linear-gradient(155deg,#080a0f 0%,#0d1118 50%,#080a0f 100%)',
+              background:'linear-gradient(155deg,#0c0a06 0%,#141008 50%,#0c0a06 100%)',
               border:`1px solid rgba(201,168,76,0.28)`,
               boxShadow:`0 4px 35px rgba(201,168,76,0.07), inset 0 1px 0 rgba(201,168,76,0.05)`,
               transition:'transform 0.15s, box-shadow 0.15s',
@@ -233,7 +233,7 @@ export default function Home() {
             <div style={{ position:'relative', flexShrink:0 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/scenes/rick.jpeg" alt="Rick"
-                style={{ width:60, height:60, borderRadius:'50%', objectFit:'cover', objectPosition:'center 15%', display:'block' }}
+                style={{ width:60, height:60, borderRadius:'50%', objectFit:'cover', objectPosition:'50% 30%', display:'block' }}
                 onError={e=>{ const el=e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
               />
               <div style={{ width:60, height:60, borderRadius:'50%', background:`linear-gradient(135deg,#1a1005,#2a1e08)`, display:'none', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:900, color:G }}>R</div>
