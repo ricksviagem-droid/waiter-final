@@ -1,15 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type { ScanResult } from '@/lib/level-scan/data'
 import LevelScanScene from './components/LevelScanScene'
 import LevelScanReport from './components/LevelScanReport'
+import { createAmbient, type AmbientHandle } from '@/lib/ambient'
 
 type AppState = 'scan' | 'report'
 
 export default function LevelScanPage() {
   const [state, setState] = useState<AppState>('scan')
   const [result, setResult] = useState<ScanResult | null>(null)
+  const [muted, setMuted] = useState(false)
+  const ambientRef = useRef<AmbientHandle | null>(null)
+
+  useEffect(() => {
+    ambientRef.current = createAmbient('scan')
+    return () => { ambientRef.current?.destroy() }
+  }, [])
+
+  function toggleMute() {
+    const next = !muted
+    setMuted(next)
+    ambientRef.current?.setMuted(next)
+  }
 
   return (
     <>
@@ -18,12 +32,10 @@ export default function LevelScanPage() {
         @keyframes fadeUp { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
         @keyframes fadeIn { from{opacity:0}to{opacity:1} }
         @keyframes pulse { 0%,100%{opacity:0.5}50%{opacity:1} }
-        @keyframes xpFill { from{width:0} to{width:var(--w)} }
         @keyframes levelReveal { 0%{transform:scale(0.5);opacity:0} 60%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
         @keyframes scanLine { 0%{transform:translateY(-100%)} 100%{transform:translateY(1000%)} }
         @keyframes correctFlash { 0%,100%{background:rgba(0,220,130,0)} 50%{background:rgba(0,220,130,0.15)} }
         @keyframes wrongFlash { 0%,100%{background:rgba(248,113,113,0)} 50%{background:rgba(248,113,113,0.15)} }
-        @keyframes sparkPop { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.5);opacity:0} }
         * { box-sizing:border-box; margin:0; padding:0; }
         html,body { height:100%; }
         ::-webkit-scrollbar { width:3px; }
@@ -34,8 +46,17 @@ export default function LevelScanPage() {
         minHeight: '100dvh',
         background: 'linear-gradient(160deg,#09090b 0%,#0d0b14 50%,#09090b 100%)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'var(--font-geist-sans,Arial,sans-serif)', padding: 0,
+        fontFamily: 'var(--font-geist-sans,Arial,sans-serif)', padding: 0, position: 'relative',
       }}>
+        {/* Mute toggle */}
+        <button onClick={toggleMute} style={{
+          position: 'fixed', top: 12, right: 12, zIndex: 100,
+          background: 'rgba(15,15,20,0.9)', border: '1px solid rgba(129,140,248,0.2)',
+          borderRadius: 8, padding: '5px 9px', fontSize: 14, cursor: 'pointer',
+        }}>
+          {muted ? '🔇' : '🔊'}
+        </button>
+
         <div style={{
           width: '100%', maxWidth: 430, height: '100dvh', maxHeight: 900,
           background: '#0f0f14', borderRadius: 0, overflow: 'hidden',

@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { QUESTIONS, TOTAL_QUESTIONS } from '@/lib/interview/data'
 import type { QuestionResult, ReportData } from '@/lib/interview/data'
 import QuestionScene from './components/QuestionScene'
 import InterviewReport from './components/InterviewReport'
+import { createAmbient, type AmbientHandle } from '@/lib/ambient'
 
 const S = '#7ab0cc'
 const SB = 'rgba(122,176,204,0.22)'
@@ -17,6 +18,17 @@ export default function InterviewPage() {
   const [questionIndex, setQuestionIndex] = useState(0)
   const [results, setResults] = useState<QuestionResult[]>([])
   const [report, setReport] = useState<ReportData | null>(null)
+  const [muted, setMuted] = useState(false)
+  const ambientRef = useRef<AmbientHandle | null>(null)
+
+  useEffect(() => {
+    ambientRef.current = createAmbient('interview')
+    return () => { ambientRef.current?.destroy() }
+  }, [])
+
+  function toggleMute() {
+    const next = !muted; setMuted(next); ambientRef.current?.setMuted(next)
+  }
 
   const handleComplete = useCallback((result: QuestionResult) => {
     const updated = [...results, result]
@@ -49,7 +61,8 @@ export default function InterviewPage() {
         ::-webkit-scrollbar-thumb { background:#1a2a3a; border-radius:4px; }
       `}</style>
 
-      <div style={{ minHeight:'100dvh', background:'linear-gradient(160deg,#04060a 0%,#060c12 50%,#04060a 100%)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-geist-sans,Arial,sans-serif)', padding:0 }}>
+      <div style={{ minHeight:'100dvh', background:'linear-gradient(160deg,#04060a 0%,#060c12 50%,#04060a 100%)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-geist-sans,Arial,sans-serif)', padding:0, position:'relative' }}>
+        <button onClick={toggleMute} style={{ position:'fixed', top:12, right:12, zIndex:100, background:'rgba(6,9,14,0.9)', border:'1px solid rgba(122,176,204,0.2)', borderRadius:8, padding:'5px 9px', fontSize:14, cursor:'pointer' }}>{muted ? '🔇' : '🔊'}</button>
         <div style={{ width:'100%', maxWidth:430, height:'100dvh', maxHeight:900, background:'#06090e', borderRadius:0, overflow:'hidden', display:'flex', flexDirection:'column', border:'1px solid '+SB, boxShadow:`0 0 60px rgba(122,176,204,0.07)` }}>
 
           {state === 'intro' && (
