@@ -190,32 +190,32 @@ export default function Home() {
 
           {/* ── Training Chat ── */}
           <button
-            onClick={e => { triggerBurst(e,'green'); setTimeout(()=>router.push('/training'),230) }}
+            onClick={e => { triggerBurst(e,'gold'); setTimeout(()=>router.push('/training'),230) }}
             style={{
               width:'100%', padding:'24px 22px', borderRadius:20, cursor:'pointer',
               textAlign:'left', position:'relative', overflow:'hidden',
-              background:'linear-gradient(155deg,#060f08 0%,#0b1c0e 50%,#060f08 100%)',
-              border:'1px solid rgba(90,158,110,0.3)',
-              boxShadow:'0 4px 35px rgba(90,158,110,0.06), inset 0 1px 0 rgba(255,255,255,0.03)',
+              background:'linear-gradient(155deg,#080a0f 0%,#0d1118 50%,#080a0f 100%)',
+              border:`1px solid rgba(201,168,76,0.28)`,
+              boxShadow:`0 4px 35px rgba(201,168,76,0.07), inset 0 1px 0 rgba(201,168,76,0.05)`,
               transition:'transform 0.15s, box-shadow 0.15s',
             }}
-            onMouseEnter={e=>{ const b=e.currentTarget; b.style.transform='scale(1.025)'; b.style.boxShadow='0 4px 50px rgba(90,158,110,0.18), inset 0 1px 0 rgba(255,255,255,0.03)' }}
-            onMouseLeave={e=>{ const b=e.currentTarget; b.style.transform='scale(1)'; b.style.boxShadow='0 4px 35px rgba(90,158,110,0.06), inset 0 1px 0 rgba(255,255,255,0.03)' }}
+            onMouseEnter={e=>{ const b=e.currentTarget; b.style.transform='scale(1.025)'; b.style.boxShadow=`0 4px 50px rgba(201,168,76,0.18), inset 0 1px 0 rgba(201,168,76,0.08)` }}
+            onMouseLeave={e=>{ const b=e.currentTarget; b.style.transform='scale(1)'; b.style.boxShadow=`0 4px 35px rgba(201,168,76,0.07), inset 0 1px 0 rgba(201,168,76,0.05)` }}
           >
-            <div style={{ position:'absolute', top:0, left:0, right:0, height:'1px', background:'linear-gradient(90deg,transparent,rgba(90,158,110,0.55),transparent)' }}/>
+            <div style={{ position:'absolute', top:0, left:0, right:0, height:'1px', background:`linear-gradient(90deg,transparent,rgba(201,168,76,0.45),transparent)` }}/>
             <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:10 }}>
-              <span style={{ fontSize:32, filter:'drop-shadow(0 0 8px rgba(90,158,110,0.6))' }}>💬</span>
+              <span style={{ fontSize:32, filter:`drop-shadow(0 0 8px rgba(201,168,76,0.5))` }}>💬</span>
               <div>
                 <div style={{ fontSize:20, fontWeight:800, color:'#f4f0e8', letterSpacing:1 }}>Training Chat</div>
-                <div style={{ fontSize:9, color:'#5a9e6e', fontWeight:700, letterSpacing:3, marginTop:3 }}>LUXURY WAITER AI</div>
+                <div style={{ fontSize:9, color:G, fontWeight:700, letterSpacing:3, marginTop:3 }}>LUXURY WAITER AI</div>
               </div>
             </div>
             <p style={{ fontSize:13, color:'#9a8868', lineHeight:1.68, marginBottom:14 }}>
               Converse com um guest AI em tempo real. Pratique respostas, receba feedback e melhore seu inglês de hospitalidade.
             </p>
-            <div style={{ display:'flex', gap:6 }}>
+            <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
               {['Chat IA','Feedback','Pontuação','Medalhas'].map(t=>(
-                <span key={t} style={{ fontSize:10, fontWeight:700, color:'#5a9e6e', background:'rgba(90,158,110,0.08)', border:'1px solid rgba(90,158,110,0.25)', borderRadius:10, padding:'3px 9px' }}>{t}</span>
+                <span key={t} style={{ fontSize:10, fontWeight:700, color:G, background:`rgba(201,168,76,0.08)`, border:`1px solid rgba(201,168,76,0.22)`, borderRadius:10, padding:'3px 9px' }}>{t}</span>
               ))}
             </div>
           </button>
@@ -233,7 +233,7 @@ export default function Home() {
             <div style={{ position:'relative', flexShrink:0 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/scenes/rick.jpeg" alt="Rick"
-                style={{ width:60, height:60, borderRadius:'50%', objectFit:'cover', objectPosition:'center top', display:'block' }}
+                style={{ width:60, height:60, borderRadius:'50%', objectFit:'cover', objectPosition:'center 15%', display:'block' }}
                 onError={e=>{ const el=e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
               />
               <div style={{ width:60, height:60, borderRadius:'50%', background:`linear-gradient(135deg,#1a1005,#2a1e08)`, display:'none', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:900, color:G }}>R</div>
