@@ -220,6 +220,39 @@ export default function Home() {
             </div>
           </button>
 
+          {/* ── Interview Simulator ── */}
+          <button
+            onClick={e => { triggerBurst(e,'gold'); setTimeout(()=>router.push('/interview'),230) }}
+            style={{
+              width:'100%', padding:'24px 22px', borderRadius:20, cursor:'pointer',
+              textAlign:'left', position:'relative', overflow:'hidden',
+              background:'linear-gradient(155deg,#060a0e 0%,#0a1018 50%,#060a0e 100%)',
+              border:'1px solid rgba(122,176,204,0.28)',
+              boxShadow:'0 4px 35px rgba(122,176,204,0.07), inset 0 1px 0 rgba(122,176,204,0.05)',
+              transition:'transform 0.15s, box-shadow 0.15s',
+            }}
+            onMouseEnter={e=>{ const b=e.currentTarget; b.style.transform='scale(1.025)'; b.style.boxShadow='0 4px 50px rgba(122,176,204,0.18), inset 0 1px 0 rgba(122,176,204,0.08)' }}
+            onMouseLeave={e=>{ const b=e.currentTarget; b.style.transform='scale(1)'; b.style.boxShadow='0 4px 35px rgba(122,176,204,0.07), inset 0 1px 0 rgba(122,176,204,0.05)' }}
+          >
+            <div style={{ position:'absolute', top:0, left:0, right:0, height:'1px', background:'linear-gradient(90deg,transparent,rgba(122,176,204,0.45),transparent)' }}/>
+            <div style={{ position:'absolute', top:13, right:13, background:'linear-gradient(135deg,#7ab0cc,#4a88a8)', borderRadius:7, padding:'4px 10px', fontSize:9, fontWeight:900, color:'#04060a', letterSpacing:2 }}>NEW</div>
+            <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:10 }}>
+              <span style={{ fontSize:32, filter:'drop-shadow(0 0 10px rgba(122,176,204,0.6))' }}>🎤</span>
+              <div>
+                <div style={{ fontSize:20, fontWeight:800, color:'#e4eef4', letterSpacing:1 }}>Interview Simulator</div>
+                <div style={{ fontSize:9, color:'#7ab0cc', fontWeight:700, letterSpacing:3, marginTop:3 }}>PROFESSIONAL INTERVIEW · AI</div>
+              </div>
+            </div>
+            <p style={{ fontSize:13, color:'#9a8868', lineHeight:1.68, marginBottom:14 }}>
+              Simule uma entrevista real para restaurante de luxo. Rick faz as perguntas em áudio, você grava em vídeo e recebe análise completa para HR.
+            </p>
+            <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+              {['Video Answer','AI Coaching','HR Report','10 Questions'].map(t=>(
+                <span key={t} style={{ fontSize:10, fontWeight:700, color:'#7ab0cc', background:'rgba(122,176,204,0.08)', border:'1px solid rgba(122,176,204,0.22)', borderRadius:10, padding:'3px 9px' }}>{t}</span>
+              ))}
+            </div>
+          </button>
+
           {/* ── Rick Mentor Card ── */}
           <div style={{
             display:'flex', alignItems:'center', gap:16,
