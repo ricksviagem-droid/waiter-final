@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     if (speaker === 'rick') {
       params.instructions = 'Speak warmly and naturally as Rick, a seasoned Forbes 5-star hospitality mentor coaching a trainee waiter. Use a conversational, encouraging tone with genuine warmth and natural pacing.'
     }
-    const mp3 = await (client.audio.speech.create as (p: Record<string, unknown>) => Promise<{ arrayBuffer(): Promise<ArrayBuffer> }>)(params)
+    const mp3 = await (client.audio.speech.create as unknown as (p: Record<string, unknown>) => Promise<{ arrayBuffer(): Promise<ArrayBuffer> }>)(params)
     const buffer = Buffer.from(await mp3.arrayBuffer())
     return new Response(buffer, {
       headers: { 'Content-Type': 'audio/mpeg', 'Content-Length': buffer.length.toString() },

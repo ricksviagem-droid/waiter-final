@@ -63,6 +63,7 @@ export default function ShiftReport({ results, totalScore, maxScore, onRestart }
           },
           strengths: ['Completed the shift', 'Maintained composure', 'Professional tone'],
           improvements: ['Refine Forbes sequence', 'Improve language', 'More confidence'],
+          sceneReviews: [],
           rickScript: 'Great effort completing the simulation. Keep working on your Forbes SOPs.',
         })
       } finally {

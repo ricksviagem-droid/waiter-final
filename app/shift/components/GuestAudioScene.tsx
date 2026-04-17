@@ -45,6 +45,11 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
   const [liveTranscript, setLiveTranscript] = useState('')
   const [wordColor, setWordColor] = useState<WordColor>('idle')
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const [showPt, setShowPt] = useState(false)
+  const [ptText, setPtText] = useState<string | null>(null)
+  const [ptLoading, setPtLoading] = useState(false)
+  const [wordTooltip, setWordTooltip] = useState<{ word: string; pt: string; hint: string; x: number; y: number } | null>(null)
+  const [wordLoadingKey, setWordLoadingKey] = useState<string | null>(null)
 
   const guestAudioRef = useRef<HTMLAudioElement | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -52,7 +57,8 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const speechRef = useRef<InstanceType<typeof window.SpeechRecognition> | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const speechRef = useRef<any>(null)
   const showFeedbackRef = useRef(false)
 
   const playClick = useCallback(() => { try { new Audio('/click.mp3').play() } catch {} }, [])
@@ -165,6 +171,11 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
     setLiveTranscript('')
     setWordColor('idle')
     setAudioUrl(null)
+    setShowPt(false)
+    setPtText(null)
+    setPtLoading(false)
+    setWordTooltip(null)
+    setWordLoadingKey(null)
 
     async function loadAudio() {
       try {
@@ -237,6 +248,46 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
     }
   }
 
+  async function togglePt() {
+    setShowPt(v => !v)
+    if (!ptText && !ptLoading) {
+      setPtLoading(true)
+      try {
+        const res = await fetch('/api/shift/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: scene.guestAudio, mode: 'sentence' }),
+        })
+        const data = await res.json()
+        setPtText(data.pt ?? null)
+      } catch {
+        setPtText(null)
+      } finally {
+        setPtLoading(false)
+      }
+    }
+  }
+
+  async function handleWordTap(word: string, rect: DOMRect) {
+    const clean = word.replace(/[^a-zA-Z''-]/g, '')
+    if (!clean) return
+    setWordLoadingKey(clean)
+    setWordTooltip(null)
+    try {
+      const res = await fetch('/api/shift/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: clean, mode: 'word' }),
+      })
+      const data = await res.json()
+      setWordTooltip({ word: clean, pt: data.pt ?? clean, hint: data.hint ?? '', x: rect.left + rect.width / 2, y: rect.top })
+    } catch {
+      setWordTooltip({ word: clean, pt: '—', hint: '', x: rect.left + rect.width / 2, y: rect.top })
+    } finally {
+      setWordLoadingKey(null)
+    }
+  }
+
   const handleSend = () => {
     playSendSound()
     playClick()
@@ -258,7 +309,31 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
   const MIC_COLOR = micStatus === 'ok' ? '#22c55e' : micStatus === 'denied' ? '#ef4444' : '#f59e0b'
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }} onClick={() => setWordTooltip(null)}>
+      {/* Word translation tooltip */}
+      {wordTooltip && (
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            position: 'fixed',
+            left: Math.min(wordTooltip.x - 80, window.innerWidth - 180),
+            top: wordTooltip.y - 90,
+            width: 160,
+            background: 'rgba(8,6,3,0.97)',
+            border: '1px solid rgba(201,168,76,0.4)',
+            borderRadius: 12,
+            padding: '10px 12px',
+            zIndex: 999,
+            boxShadow: '0 4px 24px rgba(0,0,0,0.6)',
+            backdropFilter: 'blur(12px)',
+            animation: 'fadeIn 0.15s ease',
+          }}
+        >
+          <div style={{ fontSize: 11, color: '#9a8868', marginBottom: 3 }}>{wordTooltip.word}</div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: '#c9a84c', marginBottom: wordTooltip.hint ? 4 : 0 }}>{wordTooltip.pt}</div>
+          {wordTooltip.hint && <div style={{ fontSize: 11, color: '#7a6848', lineHeight: 1.4 }}>{wordTooltip.hint}</div>}
+        </div>
+      )}
       {/* Scene image 55% */}
       <div style={{ height: '55%', position: 'relative', background: '#0a1520', flexShrink: 0, overflow: 'hidden' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -331,10 +406,41 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
         )}
 
         {/* Guest speech */}
-        <div style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.18)', borderRadius: 10, padding: '10px 13px' }}>
-          <p style={{ margin: 0, fontSize: 13, color: phase === 'loading-audio' ? '#4a3e2c' : '#e8d5a8', lineHeight: 1.55, fontStyle: 'italic' }}>
-            {phase === 'loading-audio' ? 'Loading guest audio…' : `"${scene.guestAudio}"`}
-          </p>
+        <div style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.18)', borderRadius: 10, padding: '10px 13px', position: 'relative' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+            <p style={{ margin: 0, fontSize: 13, color: phase === 'loading-audio' ? '#4a3e2c' : '#e8d5a8', lineHeight: 1.7, fontStyle: 'italic', flex: 1 }}>
+              {phase === 'loading-audio' ? 'Loading guest audio…' : (
+                <>
+                  "
+                  {scene.guestAudio.split(/(\s+)/).map((token, i) => {
+                    const isWord = /\S/.test(token)
+                    const clean = token.replace(/[^a-zA-Z''-]/g, '')
+                    return isWord ? (
+                      <span
+                        key={i}
+                        onClick={e => { e.stopPropagation(); handleWordTap(token, (e.target as HTMLElement).getBoundingClientRect()) }}
+                        style={{ cursor: 'pointer', borderBottom: wordLoadingKey === clean ? '1px solid #c9a84c' : '1px dashed rgba(201,168,76,0.35)', paddingBottom: 1, transition: 'border-color 0.2s' }}
+                      >{token}</span>
+                    ) : token
+                  })}
+                  "
+                </>
+              )}
+            </p>
+            {phase !== 'loading-audio' && (
+              <button
+                onClick={() => void togglePt()}
+                style={{ flexShrink: 0, background: showPt ? 'rgba(201,168,76,0.18)' : 'transparent', border: '1px solid rgba(201,168,76,0.3)', borderRadius: 8, padding: '3px 8px', fontSize: 11, color: '#c9a84c', cursor: 'pointer', fontWeight: 700, whiteSpace: 'nowrap' }}
+              >
+                {ptLoading ? '…' : '🇧🇷 PT'}
+              </button>
+            )}
+          </div>
+          {showPt && (
+            <p style={{ margin: '7px 0 0', fontSize: 12, color: '#9a8868', lineHeight: 1.55, fontStyle: 'normal', borderTop: '1px solid rgba(201,168,76,0.12)', paddingTop: 7 }}>
+              {ptLoading ? 'Traduzindo…' : (ptText ?? '—')}
+            </p>
+          )}
         </div>
 
         {phase === 'loading-audio' && (
