@@ -21,6 +21,24 @@ export interface QuestionResult {
   betterAnswer?: string
 }
 
+export interface ReportData {
+  grade: string
+  overallScore: number
+  overallVerdict: string
+  categories: Record<string, { score: number; comment: string }>
+  strengths: string[]
+  improvements: string[]
+  hrSummary: string
+  rickScript: string
+  questionScores?: Array<{
+    questionId: number
+    score: number
+    verdict: 'strong' | 'good' | 'weak' | 'skipped'
+    rickFeedback: string
+    betterAnswer: string
+  }>
+}
+
 export const QUESTIONS: InterviewQuestion[] = [
   { id: 1, block: 'personal',    blockLabel: 'Personal',    timeSeconds: 120, question: "Tell me about yourself — who are you and what brought you to hospitality?" },
   { id: 2, block: 'personal',    blockLabel: 'Personal',    timeSeconds: 120, question: "Walk me through your most relevant experience in a restaurant or hotel setting." },
