@@ -271,8 +271,8 @@ export default function Home() {
         ::-webkit-scrollbar-thumb { background: #2a1f0a; border-radius: 4px; }
       `}</style>
 
-      <div style={{ minHeight: '100dvh', background: `linear-gradient(160deg,${DARK} 0%,#100d07 50%,${DARK} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-geist-sans,Arial,sans-serif)' }}>
-        <div style={{ width: '100%', maxWidth: 520, minHeight: '100dvh', background: PANEL, display: 'flex', flexDirection: 'column', border: '1px solid ' + GOLD_BORDER, boxShadow: '0 0 60px rgba(201,168,76,0.06)' }}>
+      <div style={{ height: '100dvh', overflow: 'hidden', background: `linear-gradient(160deg,${DARK} 0%,#100d07 50%,${DARK} 100%)`, display: 'flex', justifyContent: 'center', fontFamily: 'var(--font-geist-sans,Arial,sans-serif)' }}>
+        <div style={{ width: '100%', maxWidth: 520, height: '100dvh', background: PANEL, display: 'flex', flexDirection: 'column', border: '1px solid ' + GOLD_BORDER, boxShadow: '0 0 60px rgba(201,168,76,0.06)', overflow: 'hidden' }}>
 
           {/* Header */}
           <div style={{ background: 'rgba(10,8,5,0.98)', borderBottom: '1px solid ' + GOLD_BORDER, padding: '14px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -309,28 +309,30 @@ export default function Home() {
             ))}
           </div>
 
-          {/* End banner */}
-          {sessionEnded && (
-            <div style={{ margin: '0 12px 10px', padding: '11px 14px', background: endReason.startsWith('Success') ? 'rgba(34,197,94,0.08)' : 'rgba(196,80,80,0.1)', border: `1px solid ${endReason.startsWith('Success') ? '#22c55e' : '#c45050'}`, borderRadius: 12, animation: 'fadeUp 0.3s ease' }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: endReason.startsWith('Success') ? '#4ade80' : '#fca5a5' }}>{endReason}</span>
-            </div>
-          )}
+          {/* Chat area — scrolls everything including feedback & report */}
+          <div ref={chatRef} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto', padding: '10px 12px 12px' }}>
 
-          {/* Turn feedback */}
-          {lastFeedback && (
-            <div style={{ margin: '0 12px 10px', padding: '11px 14px', background: GOLD_BG, borderRadius: 12, border: '1px solid ' + GOLD_BORDER, animation: 'fadeUp 0.3s ease' }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: G, marginBottom: 4, letterSpacing: 0.5 }}>
-                {lastFeedback.strikeAdded ? '✕' : '✓'} {lastFeedback.title}
+            {/* End banner */}
+            {sessionEnded && (
+              <div style={{ padding: '11px 14px', background: endReason.startsWith('Success') ? 'rgba(34,197,94,0.08)' : 'rgba(196,80,80,0.1)', border: `1px solid ${endReason.startsWith('Success') ? '#22c55e' : '#c45050'}`, borderRadius: 12, animation: 'fadeUp 0.3s ease', flexShrink: 0 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: endReason.startsWith('Success') ? '#4ade80' : '#fca5a5' }}>{endReason}</span>
               </div>
-              <div style={{ fontSize: 12, color: '#c8b88a', marginBottom: 5, lineHeight: 1.5 }}>{lastFeedback.message}</div>
-              <div style={{ fontSize: 12, color: G, fontStyle: 'italic', lineHeight: 1.5 }}>
-                Better: "{lastFeedback.betterPhrase}"
-              </div>
-            </div>
-          )}
+            )}
 
-          {/* Chat area */}
-          <div ref={chatRef} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto', padding: '0 12px 12px' }}>
+            {/* Turn feedback */}
+            {lastFeedback && (
+              <div style={{ padding: '11px 14px', background: GOLD_BG, borderRadius: 12, border: '1px solid ' + GOLD_BORDER, animation: 'fadeUp 0.3s ease', flexShrink: 0 }}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: G, marginBottom: 4, letterSpacing: 0.5 }}>
+                  {lastFeedback.strikeAdded ? '✕' : '✓'} {lastFeedback.title}
+                </div>
+                <div style={{ fontSize: 12, color: '#c8b88a', marginBottom: 5, lineHeight: 1.5 }}>{lastFeedback.message}</div>
+                <div style={{ fontSize: 12, color: G, fontStyle: 'italic', lineHeight: 1.5 }}>
+                  Better: "{lastFeedback.betterPhrase}"
+                </div>
+              </div>
+            )}
+
+            {/* Messages */}
             {messages.map((msg, i) => {
               const isUser = msg.role === 'user'
               return (
@@ -341,88 +343,90 @@ export default function Home() {
                   border: isUser ? '1px solid rgba(201,168,76,0.28)' : '1px solid rgba(255,255,255,0.07)',
                   color: isUser ? '#e8d090' : '#c8b88a',
                   animation: 'fadeUp 0.2s ease',
+                  flexShrink: 0,
                 }}>
                   {msg.text}
                 </div>
               )
             })}
+
             {isWaitingForAI && (
-              <div style={{ fontSize: 12, color: MUTED, textAlign: 'center', padding: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
+              <div style={{ fontSize: 12, color: MUTED, textAlign: 'center', padding: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, flexShrink: 0 }}>
                 <div style={{ width: 14, height: 14, border: `2px solid ${G}`, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
                 Guest is responding…
+              </div>
+            )}
+
+            {/* AI Report — inside scroll */}
+            {report && (
+              <div style={{ padding: 16, background: GOLD_BG, borderRadius: 14, border: '1px solid ' + GOLD_BORDER, animation: 'fadeUp 0.3s ease', flexShrink: 0 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: G, marginBottom: 12, letterSpacing: 0.5 }}>AI Performance Report</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 13, marginBottom: 12 }}>
+                  {[
+                    ['Overall', report.overallScore],
+                    ['English', report.english],
+                    ['Professionalism', report.professionalism],
+                    ['Timing', report.timing],
+                    ['Guest Impact', report.guestImpact],
+                    ['Verdict', report.verdict],
+                  ].map(([k, v]) => (
+                    <div key={k as string} style={{ background: 'rgba(0,0,0,0.3)', borderRadius: 8, padding: '7px 10px' }}>
+                      <div style={{ fontSize: 10, color: MUTED, marginBottom: 2 }}>{k}</div>
+                      <div style={{ color: CREAM, fontWeight: 700 }}>{v}</div>
+                    </div>
+                  ))}
+                </div>
+                {[
+                  { label: 'Strengths', items: report.strengths, color: '#4ade80' },
+                  { label: 'Improvements', items: report.improvements, color: '#fbbf24' },
+                ].map(({ label, items, color }) => (
+                  <div key={label} style={{ marginTop: 10 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color, marginBottom: 5 }}>{label}</div>
+                    <ul style={{ paddingLeft: 16, margin: 0 }}>
+                      {items.map((item, i) => <li key={i} style={{ fontSize: 13, color: '#c8b88a', lineHeight: 1.5 }}>{item}</li>)}
+                    </ul>
+                  </div>
+                ))}
+                <div style={{ marginTop: 10 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: G, marginBottom: 4 }}>Better phrase</div>
+                  <div style={{ fontSize: 13, color: '#c8b88a', fontStyle: 'italic', lineHeight: 1.5 }}>"{report.betterPhrase}"</div>
+                </div>
+                <div style={{ marginTop: 10 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: G, marginBottom: 4 }}>Summary</div>
+                  <div style={{ fontSize: 13, color: '#c8b88a', lineHeight: 1.5 }}>{report.summary}</div>
+                </div>
               </div>
             )}
           </div>
 
           {/* Action buttons */}
-          <div style={{ display: 'flex', gap: 8, padding: '0 12px 10px' }}>
-            <button onClick={handleEvaluate} style={{ flex: 1, padding: '11px', borderRadius: 12, border: '1px solid ' + GOLD_BORDER, background: GOLD_BG, color: G, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+          <div style={{ display: 'flex', gap: 8, padding: '8px 12px' }}>
+            <button onClick={handleEvaluate} style={{ flex: 1, padding: '10px', borderRadius: 12, border: '1px solid ' + GOLD_BORDER, background: GOLD_BG, color: G, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
               {isEvaluating ? '…' : '📋 Evaluate'}
             </button>
-            <button onClick={handleReset} style={{ flex: 1, padding: '11px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.03)', color: MUTED, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+            <button onClick={handleReset} style={{ flex: 1, padding: '10px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.03)', color: MUTED, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
               ↺ Restart
             </button>
           </div>
 
-          {/* Input bar */}
-          <div style={{ display: 'flex', gap: 8, padding: '12px', background: 'rgba(10,8,5,0.98)', borderTop: '1px solid ' + GOLD_BORDER, position: 'sticky', bottom: 0 }}>
+          {/* Input bar — always visible above keyboard */}
+          <div style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'rgba(10,8,5,0.98)', borderTop: '1px solid ' + GOLD_BORDER }}>
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void handleSend() } }}
               placeholder={sessionEnded ? 'Session ended' : 'Type as waiter…'}
               disabled={sessionEnded || isWaitingForAI}
-              style={{ flex: 1, padding: '12px 16px', borderRadius: 24, border: '1px solid ' + GOLD_BORDER, outline: 'none', background: 'rgba(20,15,8,0.8)', color: CREAM, fontSize: 14, fontFamily: 'inherit' }}
+              style={{ flex: 1, padding: '11px 16px', borderRadius: 24, border: '1px solid ' + GOLD_BORDER, outline: 'none', background: 'rgba(20,15,8,0.8)', color: CREAM, fontSize: 14, fontFamily: 'inherit' }}
             />
             <button
               onClick={() => void handleSend()}
               disabled={sessionEnded || isWaitingForAI}
-              style={{ width: 50, height: 50, borderRadius: '50%', border: 'none', background: 'linear-gradient(135deg,#c9a84c,#8b6914)', color: '#07050b', fontWeight: 900, fontSize: 18, cursor: 'pointer', flexShrink: 0, boxShadow: '0 0 16px rgba(201,168,76,0.3)' }}
+              style={{ width: 46, height: 46, borderRadius: '50%', border: 'none', background: 'linear-gradient(135deg,#c9a84c,#8b6914)', color: '#07050b', fontWeight: 900, fontSize: 18, cursor: 'pointer', flexShrink: 0, boxShadow: '0 0 16px rgba(201,168,76,0.3)' }}
             >
               ➤
             </button>
           </div>
-
-          {/* AI Report */}
-          {report && (
-            <div style={{ margin: 12, padding: 16, background: GOLD_BG, borderRadius: 14, border: '1px solid ' + GOLD_BORDER, animation: 'fadeUp 0.3s ease' }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: G, marginBottom: 12, letterSpacing: 0.5 }}>AI Performance Report</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 13, marginBottom: 12 }}>
-                {[
-                  ['Overall', report.overallScore],
-                  ['English', report.english],
-                  ['Professionalism', report.professionalism],
-                  ['Timing', report.timing],
-                  ['Guest Impact', report.guestImpact],
-                  ['Verdict', report.verdict],
-                ].map(([k, v]) => (
-                  <div key={k as string} style={{ background: 'rgba(0,0,0,0.3)', borderRadius: 8, padding: '7px 10px' }}>
-                    <div style={{ fontSize: 10, color: MUTED, marginBottom: 2 }}>{k}</div>
-                    <div style={{ color: CREAM, fontWeight: 700 }}>{v}</div>
-                  </div>
-                ))}
-              </div>
-              {[
-                { label: 'Strengths', items: report.strengths, color: '#4ade80' },
-                { label: 'Improvements', items: report.improvements, color: '#fbbf24' },
-              ].map(({ label, items, color }) => (
-                <div key={label} style={{ marginTop: 10 }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color, marginBottom: 5 }}>{label}</div>
-                  <ul style={{ paddingLeft: 16, margin: 0 }}>
-                    {items.map((item, i) => <li key={i} style={{ fontSize: 13, color: '#c8b88a', lineHeight: 1.5 }}>{item}</li>)}
-                  </ul>
-                </div>
-              ))}
-              <div style={{ marginTop: 10 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: G, marginBottom: 4 }}>Better phrase</div>
-                <div style={{ fontSize: 13, color: '#c8b88a', fontStyle: 'italic', lineHeight: 1.5 }}>"{report.betterPhrase}"</div>
-              </div>
-              <div style={{ marginTop: 10 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: G, marginBottom: 4 }}>Summary</div>
-                <div style={{ fontSize: 13, color: '#c8b88a', lineHeight: 1.5 }}>{report.summary}</div>
-              </div>
-            </div>
-          )}
 
         </div>
       </div>
