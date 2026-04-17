@@ -1,292 +1,271 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
-// Premium palette: warm black + antique gold
-const G = '#c9a84c'       // antique gold
-const GL = '#e8d090'      // champagne
-const GB = 'rgba(201,168,76,0.22)'  // gold border
-const BG = '#07050b'      // deep warm black
+const G  = '#00dc82'
+const GB = 'rgba(0,220,130,0.18)'
+const BG = '#09090b'
 
-type Burst = { id: number; x: number; y: number }
-const SPARKS = ['#c9a84c','#e8d090','#f4f0e8','#a07830','#fff8e0']
-const N = 12
+type Spark = { id: number; x: number; y: number; color: string; angle: number }
 
-function playChime(type: 'gold' | 'green') {
+function playClick(freq = 660) {
   try {
     const ctx = new AudioContext()
-    const f1 = type === 'gold' ? 880 : 660
-    const f2 = type === 'gold' ? 1108 : 830
-    ;[f1, f2].forEach((f, i) => {
-      const o = ctx.createOscillator(); const g = ctx.createGain()
-      o.connect(g); g.connect(ctx.destination); o.type = 'sine'; o.frequency.value = f
-      const t = ctx.currentTime + i * 0.1
-      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.14, t + 0.02)
-      g.gain.exponentialRampToValueAtTime(0.001, t + 0.32)
-      o.start(t); o.stop(t + 0.32)
-    })
+    const o = ctx.createOscillator(); const g = ctx.createGain()
+    o.connect(g); g.connect(ctx.destination); o.type = 'sine'; o.frequency.value = freq
+    g.gain.setValueAtTime(0, ctx.currentTime)
+    g.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.01)
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22)
+    o.start(); o.stop(ctx.currentTime + 0.22)
   } catch {}
 }
 
-const Logo = () => (
-  <svg width="76" height="76" viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+const ShieldLogo = () => (
+  <svg width="52" height="58" viewBox="0 0 52 58" fill="none">
     <defs>
-      <linearGradient id="lg" x1="0" y1="0" x2="76" y2="76" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#e8d090"/><stop offset="0.5" stopColor="#c9a84c"/><stop offset="1" stopColor="#8b6914"/>
-      </linearGradient>
-      <radialGradient id="bg" cx="50%" cy="40%">
-        <stop offset="0%" stopColor="#161010"/><stop offset="100%" stopColor="#0a0708"/>
-      </radialGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     </defs>
-    <circle cx="38" cy="38" r="37" fill="url(#bg)"/>
-    <circle cx="38" cy="38" r="36" stroke="url(#lg)" strokeWidth="1.5" fill="none"/>
-    <circle cx="38" cy="38" r="29" stroke="url(#lg)" strokeWidth="0.5" fill="none" opacity="0.35"/>
-    {/* Fork */}
-    <line x1="28" y1="17" x2="28" y2="27" stroke={GL} strokeWidth="1.3" strokeLinecap="round"/>
-    <line x1="32" y1="17" x2="32" y2="27" stroke={GL} strokeWidth="1.3" strokeLinecap="round"/>
-    <path d="M28 27 Q28 33 30 34.5 L30 58" stroke={G} strokeWidth="1.6" strokeLinecap="round" fill="none"/>
-    <path d="M28 17 Q26 22 26 27 Q26 33 30 34.5" stroke={GL} strokeWidth="1.2" strokeLinecap="round" fill="none"/>
-    <path d="M32 27 Q34 33 30 34.5" stroke={GL} strokeWidth="1.2" strokeLinecap="round" fill="none"/>
-    {/* Knife */}
-    <path d="M45 17 Q49 24 49 33 Q49 37 45 38 L45 58" stroke={G} strokeWidth="1.6" strokeLinecap="round" fill="none"/>
-    {/* Center dot */}
-    <circle cx="38" cy="38" r="1.5" fill={G} opacity="0.4"/>
+    <path d="M26 3L49 12V28C49 42 38 52 26 56C14 52 3 42 3 28V12L26 3Z"
+      fill="rgba(0,220,130,0.07)" stroke="#00dc82" strokeWidth="1.5" filter="url(#glow)"/>
+    <line x1="26" y1="12" x2="26" y2="44" stroke="#00dc82" strokeWidth="1" opacity="0.5"/>
+    <line x1="10" y1="28" x2="42" y2="28" stroke="#00dc82" strokeWidth="1" opacity="0.5"/>
+    <circle cx="26" cy="28" r="5" fill="none" stroke="#00dc82" strokeWidth="1.5"/>
+    <circle cx="26" cy="28" r="2" fill="#00dc82"/>
   </svg>
 )
 
-export default function Home() {
-  const router = useRouter()
-  const [bursts, setBursts] = useState<Burst[]>([])
+const MODULES = [
+  {
+    id: 'shift',
+    label: 'FIELD SIM',
+    name: 'Field Scenarios',
+    desc: 'Real workplace simulations with Rick — hospitality, service, guest handling.',
+    icon: '⚔️',
+    color: '#00dc82',
+    border: 'rgba(0,220,130,0.25)',
+    bg: 'rgba(0,220,130,0.05)',
+    href: '/shift',
+    badge: null,
+    freq: 660,
+  },
+  {
+    id: 'level-scan',
+    label: 'SKILL CHECK',
+    name: 'Level Scan',
+    desc: 'Gamified CEFR assessment — Listening, Speaking, Reading & Writing. Find your rank.',
+    icon: '🎯',
+    color: '#818cf8',
+    border: 'rgba(129,140,248,0.25)',
+    bg: 'rgba(129,140,248,0.05)',
+    href: '/level-scan',
+    badge: 'NEW',
+    freq: 880,
+  },
+  {
+    id: 'interview',
+    label: 'INTERVIEW SIM',
+    name: 'Interview Simulator',
+    desc: 'AI-powered job interview practice — 10 questions, video answers, full HR report.',
+    icon: '💼',
+    color: '#38bdf8',
+    border: 'rgba(56,189,248,0.25)',
+    bg: 'rgba(56,189,248,0.05)',
+    href: '/interview',
+    badge: null,
+    freq: 770,
+  },
+  {
+    id: 'training',
+    label: 'TRAINING',
+    name: 'AI Coach',
+    desc: 'One-on-one chat coaching with Rick — vocabulary, grammar, real-life scenarios.',
+    icon: '📚',
+    color: '#fb923c',
+    border: 'rgba(251,146,60,0.25)',
+    bg: 'rgba(251,146,60,0.05)',
+    href: '/training',
+    badge: null,
+    freq: 550,
+  },
+]
 
-  const triggerBurst = useCallback((e: React.MouseEvent, type: 'gold' | 'green') => {
-    playChime(type)
-    const id = Date.now() + Math.random()
-    setBursts(prev => [...prev, { id, x: e.clientX, y: e.clientY }])
-    setTimeout(() => setBursts(prev => prev.filter(b => b.id !== id)), 800)
+export default function LandingPage() {
+  const router = useRouter()
+  const [sparks, setSparks] = useState<Spark[]>([])
+  const [activeCard, setActiveCard] = useState<string | null>(null)
+  const [booted, setBooted] = useState(false)
+  const idRef = useRef(0)
+  const audioCtxRef = useRef<AudioContext | null>(null)
+
+  useEffect(() => {
+    const t = setTimeout(() => setBooted(true), 100)
+    return () => clearTimeout(t)
   }, [])
+
+  function spawnSparks(x: number, y: number, color: string) {
+    const arr: Spark[] = Array.from({ length: 8 }, (_, i) => ({
+      id: ++idRef.current, x, y, color, angle: (i / 8) * 360,
+    }))
+    setSparks(prev => [...prev, ...arr])
+    setTimeout(() => setSparks(prev => prev.filter(s => !arr.find(a => a.id === s.id))), 600)
+  }
+
+  function handleNav(e: React.MouseEvent, mod: typeof MODULES[0]) {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    spawnSparks(e.clientX - rect.left, e.clientY - rect.top, mod.color)
+    playClick(mod.freq)
+    setTimeout(() => router.push(mod.href), 200)
+  }
 
   return (
     <>
       <style>{`
-        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
-        @keyframes glimmer { 0%,100%{opacity:0.08}50%{opacity:0.55} }
-        @keyframes drift { 0%{transform:translateY(0) scale(1);opacity:0.4}100%{transform:translateY(-100vh) scale(0.6);opacity:0} }
-        @keyframes badgeAura { 0%,100%{box-shadow:0 0 8px rgba(201,168,76,0.4)}50%{box-shadow:0 0 22px rgba(201,168,76,0.85),0 0 44px rgba(201,168,76,0.3)} }
-        @keyframes starPulse { 0%,100%{transform:scale(1);opacity:0.65}50%{transform:scale(1.4);opacity:1} }
-        @keyframes sparkOut { 0%{transform:translate(0,0) scale(1.6);opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0} }
-        @keyframes goldRing { 0%,100%{box-shadow:0 0 0 2px rgba(201,168,76,0.35)}50%{box-shadow:0 0 0 4px rgba(201,168,76,0.7),0 0 18px rgba(201,168,76,0.25)} }
-        * { box-sizing:border-box;margin:0;padding:0 }
-        html,body { height:100% }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
+        @keyframes sparkFly { 0%{opacity:1;transform:translate(0,0) scale(1)} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0)} }
+        @keyframes scanLine { 0%{transform:translateY(-100%)} 100%{transform:translateY(500%)} }
+        @keyframes pulse { 0%,100%{opacity:0.6}50%{opacity:1} }
+        @keyframes glow { 0%,100%{box-shadow:0 0 10px rgba(0,220,130,0.2)} 50%{box-shadow:0 0 24px rgba(0,220,130,0.5)} }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        html,body { height:100%; }
+        ::-webkit-scrollbar { width:3px; }
+        ::-webkit-scrollbar-thumb { background:#1a2a1a; border-radius:3px; }
       `}</style>
 
-      {/* Spark bursts */}
-      {bursts.map(b => (
-        <div key={b.id} style={{ position:'fixed', inset:0, pointerEvents:'none', zIndex:9999 }}>
-          {Array.from({ length: N }, (_, i) => {
-            const angle = (i / N) * 360
-            const rad = (angle * Math.PI) / 180
-            const dist = 40 + Math.random() * 28
-            const color = SPARKS[i % SPARKS.length]
-            const size = 3 + Math.random() * 5
-            return (
-              <div key={i} style={{
-                position:'absolute', left:b.x-size/2, top:b.y-size/2,
-                width:size, height:size,
-                borderRadius: i % 4 === 0 ? '1px' : '50%',
-                background:color, boxShadow:`0 0 5px ${color}`,
-                ...({ '--tx':`${Math.cos(rad)*dist}px`,'--ty':`${Math.sin(rad)*dist}px` } as React.CSSProperties),
-                animation:'sparkOut 0.72s ease-out forwards',
-                animationDelay:`${i*0.012}s`,
-              } as React.CSSProperties}/>
-            )
-          })}
-        </div>
-      ))}
-
       <div style={{
-        minHeight:'100dvh',
-        background:`radial-gradient(ellipse at 35% 45%, #120e08 0%, ${BG} 55%, #09060d 100%)`,
-        display:'flex', alignItems:'flex-start', justifyContent:'center',
-        fontFamily:'var(--font-geist-sans, Arial, sans-serif)',
-        padding:'24px 20px', position:'relative', overflowX:'hidden',
+        minHeight: '100dvh', background: BG, display: 'flex', alignItems: 'center',
+        justifyContent: 'center', fontFamily: 'var(--font-geist-sans,Arial,sans-serif)',
+        position: 'relative', overflow: 'hidden',
       }}>
-        {/* Floating dust particles */}
-        {Array.from({ length: 50 }, (_, i) => (
-          <div key={i} style={{
-            position:'absolute',
-            left:`${(i*17.3)%100}%`, top:`${(i*23.7)%100}%`,
-            width:(i%3)+1, height:(i%3)+1, borderRadius:'50%',
-            background: i%5===0 ? G : i%4===0 ? GL : '#fff8e0',
-            opacity: 0.12,
-            pointerEvents:'none',
-            animation:`glimmer ${2.5+i%3.5}s ease-in-out infinite, drift ${20+i%10}s linear infinite`,
-            animationDelay:`${(i*0.4)%20}s`,
-          }}/>
-        ))}
+        {/* Subtle grid background */}
+        <div style={{
+          position: 'absolute', inset: 0, opacity: 0.03,
+          backgroundImage: 'linear-gradient(#00dc82 1px, transparent 1px), linear-gradient(90deg, #00dc82 1px, transparent 1px)',
+          backgroundSize: '40px 40px', pointerEvents: 'none',
+        }} />
 
-        <div style={{ width:'100%', maxWidth:400, display:'flex', flexDirection:'column', gap:20, animation:'fadeUp 0.65s ease', position:'relative', zIndex:1 }}>
+        {/* Scan line animation */}
+        <div style={{
+          position: 'absolute', left: 0, right: 0, height: 2,
+          background: 'linear-gradient(90deg, transparent, rgba(0,220,130,0.15), transparent)',
+          animation: 'scanLine 4s linear infinite', pointerEvents: 'none',
+        }} />
 
-          {/* ── Header ── */}
-          <div style={{ textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:14 }}>
-            <div style={{ filter:`drop-shadow(0 0 28px rgba(201,168,76,0.55))` }}>
-              <Logo/>
-            </div>
-            <div>
-              <h1 style={{ fontSize:25, fontWeight:900, color:'#f4f0e8', letterSpacing:4, lineHeight:1, margin:0 }}>
-                CAREER ANALYTICS
-              </h1>
-              <div style={{ width:'100%', height:'1px', background:`linear-gradient(90deg,transparent,${G},transparent)`, margin:'10px 0' }}/>
-              <p style={{ fontSize:9, color:'#9a8868', fontWeight:600, letterSpacing:5, textTransform:'uppercase', margin:0 }}>
-                Professional Waiter · English · Hospitality AI
-              </p>
-            </div>
-            <p style={{ fontSize:13, color:GL, fontWeight:400, fontStyle:'italic', opacity:0.8, margin:0 }}>
-              "Speak English. Serve 5 Stars."
-            </p>
-            <div style={{ display:'flex', gap:7 }}>
-              {[0,1,2,3,4].map(i => (
-                <span key={i} style={{ fontSize:15, color:G, filter:`drop-shadow(0 0 4px ${G})`, animation:'starPulse 2s ease-in-out infinite', animationDelay:`${i*0.2}s`, display:'inline-block' }}>★</span>
-              ))}
-            </div>
-          </div>
+        <div style={{
+          width: '100%', maxWidth: 430, minHeight: '100dvh',
+          display: 'flex', flexDirection: 'column', padding: '0 0 32px',
+          opacity: booted ? 1 : 0, transition: 'opacity 0.4s ease',
+        }}>
 
-          {/* ── Career Simulator (PRO) ── */}
-          <button
-            onClick={e => { triggerBurst(e,'gold'); setTimeout(()=>router.push('/shift'),230) }}
-            style={{
-              width:'100%', padding:'24px 22px', borderRadius:20, cursor:'pointer',
-              textAlign:'left', position:'relative', overflow:'hidden',
-              background:'linear-gradient(155deg,#0f0a04 0%,#1a1408 50%,#0d0904 100%)',
-              border:`1px solid rgba(201,168,76,0.35)`,
-              boxShadow:`0 4px 40px rgba(201,168,76,0.1), inset 0 1px 0 rgba(201,168,76,0.08)`,
-              transition:'transform 0.15s, box-shadow 0.15s',
-            }}
-            onMouseEnter={e=>{ const b=e.currentTarget; b.style.transform='scale(1.025)'; b.style.boxShadow=`0 4px 55px rgba(201,168,76,0.22), inset 0 1px 0 rgba(201,168,76,0.1)` }}
-            onMouseLeave={e=>{ const b=e.currentTarget; b.style.transform='scale(1)'; b.style.boxShadow=`0 4px 40px rgba(201,168,76,0.1), inset 0 1px 0 rgba(201,168,76,0.08)` }}
-          >
-            <div style={{ position:'absolute', top:0, left:0, right:0, height:'1px', background:`linear-gradient(90deg,transparent,${G},transparent)` }}/>
-            <div style={{ position:'absolute', top:13, right:13, background:`linear-gradient(135deg,${G},#8b6914)`, borderRadius:7, padding:'4px 12px', fontSize:10, fontWeight:900, color:'#07050b', letterSpacing:2, animation:'badgeAura 2.5s ease-in-out infinite' }}>PRO</div>
-            <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:10 }}>
-              <span style={{ fontSize:32, filter:`drop-shadow(0 0 10px ${G})` }}>⚡</span>
-              <div>
-                <div style={{ fontSize:20, fontWeight:800, color:'#f4f0e8', letterSpacing:1 }}>Career Simulator</div>
-                <div style={{ display:'flex', alignItems:'center', gap:7, marginTop:3 }}>
-                  <span style={{ fontSize:9, color:G, fontWeight:700, letterSpacing:2 }}>FORBES 5-STAR</span>
-                  <span style={{ fontSize:8, color:GL, background:`rgba(201,168,76,0.12)`, border:`1px solid rgba(201,168,76,0.3)`, borderRadius:4, padding:'1px 5px', fontWeight:700, letterSpacing:1 }}>★★★★★</span>
-                </div>
-              </div>
-            </div>
-            <p style={{ fontSize:13, color:'#9a8868', lineHeight:1.68, marginBottom:6 }}>
-              Aprenda inglês profissional de hospitalidade num turno real Forbes 5★. Fale com guests, responda ao Inspector, coaching Rick Tutor.
-            </p>
-            <p style={{ fontSize:11, color:G, fontStyle:'italic', opacity:0.75, marginBottom:12 }}>Train like Forbes. Speak like a native.</p>
-            <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-              {['18 Cenas','45s Timer','English AI','PDF Report','Rick Tutor'].map(t=>(
-                <span key={t} style={{ fontSize:10, fontWeight:700, color:G, background:`rgba(201,168,76,0.08)`, border:`1px solid rgba(201,168,76,0.25)`, borderRadius:10, padding:'3px 9px' }}>{t}</span>
-              ))}
-            </div>
-          </button>
-
-          {/* ── Training Chat ── */}
-          <button
-            onClick={e => { triggerBurst(e,'gold'); setTimeout(()=>router.push('/training'),230) }}
-            style={{
-              width:'100%', padding:'24px 22px', borderRadius:20, cursor:'pointer',
-              textAlign:'left', position:'relative', overflow:'hidden',
-              background:'linear-gradient(155deg,#0c0a06 0%,#141008 50%,#0c0a06 100%)',
-              border:`1px solid rgba(201,168,76,0.28)`,
-              boxShadow:`0 4px 35px rgba(201,168,76,0.07), inset 0 1px 0 rgba(201,168,76,0.05)`,
-              transition:'transform 0.15s, box-shadow 0.15s',
-            }}
-            onMouseEnter={e=>{ const b=e.currentTarget; b.style.transform='scale(1.025)'; b.style.boxShadow=`0 4px 50px rgba(201,168,76,0.18), inset 0 1px 0 rgba(201,168,76,0.08)` }}
-            onMouseLeave={e=>{ const b=e.currentTarget; b.style.transform='scale(1)'; b.style.boxShadow=`0 4px 35px rgba(201,168,76,0.07), inset 0 1px 0 rgba(201,168,76,0.05)` }}
-          >
-            <div style={{ position:'absolute', top:0, left:0, right:0, height:'1px', background:`linear-gradient(90deg,transparent,rgba(201,168,76,0.45),transparent)` }}/>
-            <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:10 }}>
-              <span style={{ fontSize:32, filter:`drop-shadow(0 0 8px rgba(201,168,76,0.5))` }}>💬</span>
-              <div>
-                <div style={{ fontSize:20, fontWeight:800, color:'#f4f0e8', letterSpacing:1 }}>Training Chat</div>
-                <div style={{ fontSize:9, color:G, fontWeight:700, letterSpacing:3, marginTop:3 }}>LUXURY WAITER AI</div>
-              </div>
-            </div>
-            <p style={{ fontSize:13, color:'#9a8868', lineHeight:1.68, marginBottom:14 }}>
-              Converse com um guest AI em tempo real. Pratique respostas, receba feedback e melhore seu inglês de hospitalidade.
-            </p>
-            <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-              {['Chat IA','Feedback','Pontuação','Medalhas'].map(t=>(
-                <span key={t} style={{ fontSize:10, fontWeight:700, color:G, background:`rgba(201,168,76,0.08)`, border:`1px solid rgba(201,168,76,0.22)`, borderRadius:10, padding:'3px 9px' }}>{t}</span>
-              ))}
-            </div>
-          </button>
-
-          {/* ── Interview Simulator ── */}
-          <button
-            onClick={e => { triggerBurst(e,'gold'); setTimeout(()=>router.push('/interview'),230) }}
-            style={{
-              width:'100%', padding:'24px 22px', borderRadius:20, cursor:'pointer',
-              textAlign:'left', position:'relative', overflow:'hidden',
-              background:'linear-gradient(155deg,#060a0e 0%,#0a1018 50%,#060a0e 100%)',
-              border:'1px solid rgba(122,176,204,0.28)',
-              boxShadow:'0 4px 35px rgba(122,176,204,0.07), inset 0 1px 0 rgba(122,176,204,0.05)',
-              transition:'transform 0.15s, box-shadow 0.15s',
-            }}
-            onMouseEnter={e=>{ const b=e.currentTarget; b.style.transform='scale(1.025)'; b.style.boxShadow='0 4px 50px rgba(122,176,204,0.18), inset 0 1px 0 rgba(122,176,204,0.08)' }}
-            onMouseLeave={e=>{ const b=e.currentTarget; b.style.transform='scale(1)'; b.style.boxShadow='0 4px 35px rgba(122,176,204,0.07), inset 0 1px 0 rgba(122,176,204,0.05)' }}
-          >
-            <div style={{ position:'absolute', top:0, left:0, right:0, height:'1px', background:'linear-gradient(90deg,transparent,rgba(122,176,204,0.45),transparent)' }}/>
-            <div style={{ position:'absolute', top:13, right:13, background:'linear-gradient(135deg,#7ab0cc,#4a88a8)', borderRadius:7, padding:'4px 10px', fontSize:9, fontWeight:900, color:'#04060a', letterSpacing:2 }}>NEW</div>
-            <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:10 }}>
-              <span style={{ fontSize:32, filter:'drop-shadow(0 0 10px rgba(122,176,204,0.6))' }}>🎤</span>
-              <div>
-                <div style={{ fontSize:20, fontWeight:800, color:'#e4eef4', letterSpacing:1 }}>Interview Simulator</div>
-                <div style={{ fontSize:9, color:'#7ab0cc', fontWeight:700, letterSpacing:3, marginTop:3 }}>PROFESSIONAL INTERVIEW · AI</div>
-              </div>
-            </div>
-            <p style={{ fontSize:13, color:'#9a8868', lineHeight:1.68, marginBottom:14 }}>
-              Simule uma entrevista real para restaurante de luxo. Rick faz as perguntas em áudio, você grava em vídeo e recebe análise completa para HR.
-            </p>
-            <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-              {['Video Answer','AI Coaching','HR Report','10 Questions'].map(t=>(
-                <span key={t} style={{ fontSize:10, fontWeight:700, color:'#7ab0cc', background:'rgba(122,176,204,0.08)', border:'1px solid rgba(122,176,204,0.22)', borderRadius:10, padding:'3px 9px' }}>{t}</span>
-              ))}
-            </div>
-          </button>
-
-          {/* ── Rick Mentor Card ── */}
+          {/* Header */}
           <div style={{
-            display:'flex', alignItems:'center', gap:16,
-            background:'linear-gradient(135deg,#0e0b06,#08060a)',
-            border:`1px solid rgba(201,168,76,0.22)`,
-            borderRadius:18, padding:'16px 18px',
-            boxShadow:'0 0 30px rgba(201,168,76,0.05)',
-            position:'relative', overflow:'hidden',
+            padding: '48px 24px 32px', textAlign: 'center',
+            animation: 'fadeUp 0.5s ease both',
           }}>
-            <div style={{ position:'absolute', top:0, left:0, right:0, height:'1px', background:`linear-gradient(90deg,transparent,${G},transparent)` }}/>
-            <div style={{ position:'relative', flexShrink:0 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/scenes/rick.jpeg" alt="Rick"
-                style={{ width:60, height:60, borderRadius:'50%', objectFit:'cover', objectPosition:'50% 25%', display:'block' }}
-                onError={e=>{ const el=e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
-              />
-              <div style={{ width:60, height:60, borderRadius:'50%', background:`linear-gradient(135deg,#1a1005,#2a1e08)`, display:'none', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:900, color:G }}>R</div>
-              <div style={{ position:'absolute', inset:-2, borderRadius:'50%', border:'2px solid transparent', background:`linear-gradient(#08060a,#08060a) padding-box, linear-gradient(135deg,${GL},${G},#8b6914) border-box`, animation:'goldRing 2.8s ease-in-out infinite' }}/>
-              <div style={{ position:'absolute', bottom:2, right:2, width:11, height:11, borderRadius:'50%', background:'#5a9e6e', border:'2px solid #07050b', boxShadow:'0 0 5px #5a9e6e' }}/>
-            </div>
-            <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:4 }}>
-                <span style={{ fontSize:14, fontWeight:800, color:'#f4f0e8' }}>Rick</span>
-                <span style={{ fontSize:9, fontWeight:700, color:'#07050b', background:`linear-gradient(135deg,${G},#8b6914)`, borderRadius:5, padding:'2px 7px', letterSpacing:1 }}>MENTOR</span>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+              <ShieldLogo />
+              <div>
+                <h1 style={{ fontSize: 36, fontWeight: 900, color: '#e8edf2', letterSpacing: 6, margin: 0 }}>
+                  ON DUTY
+                </h1>
+                <p style={{ fontSize: 11, color: G, letterSpacing: 3, marginTop: 4, fontWeight: 600 }}>
+                  REAL ENGLISH · REAL SIMULATIONS
+                </p>
               </div>
-              <p style={{ fontSize:11, color:'#6b5840', lineHeight:1.55, margin:0 }}>
-                Forbes 5★ hospitality mentor. Avalia cada cena, corrige seu inglês e te dá feedback de voz personalizado.
+              <p style={{ fontSize: 13, color: '#4a6a55', fontStyle: 'italic', margin: 0 }}>
+                "Get fit for duty."
               </p>
             </div>
           </div>
 
-          <p style={{ textAlign:'center', fontSize:9, color:'#2e2418', letterSpacing:3, textTransform:'uppercase' }}>Career Analytics AI · Hospitality Edition</p>
+          {/* Status bar */}
+          <div style={{ padding: '0 24px 24px', animation: 'fadeUp 0.5s 0.1s ease both', opacity: 0 }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              background: 'rgba(0,220,130,0.06)', border: '1px solid rgba(0,220,130,0.18)',
+              borderRadius: 20, padding: '7px 18px',
+            }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: G, animation: 'pulse 1.5s ease-in-out infinite', display: 'inline-block' }} />
+              <span style={{ fontSize: 10, color: G, fontWeight: 700, letterSpacing: 2 }}>SYSTEM ONLINE · 4 MODULES ACTIVE</span>
+            </div>
+          </div>
+
+          {/* Module cards */}
+          <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+            {MODULES.map((mod, i) => (
+              <div
+                key={mod.id}
+                onClick={e => handleNav(e, mod)}
+                onMouseEnter={() => { setActiveCard(mod.id); playClick(mod.freq + 200) }}
+                onMouseLeave={() => setActiveCard(null)}
+                style={{
+                  position: 'relative', overflow: 'hidden',
+                  background: activeCard === mod.id ? mod.bg : 'rgba(15,19,24,0.9)',
+                  border: `1px solid ${activeCard === mod.id ? mod.border : 'rgba(255,255,255,0.06)'}`,
+                  borderRadius: 18, padding: '18px 20px',
+                  cursor: 'pointer', transition: 'all 0.2s ease',
+                  transform: activeCard === mod.id ? 'translateX(4px)' : 'none',
+                  animation: `fadeUp 0.4s ${i * 0.08 + 0.2}s ease both`, opacity: 0,
+                }}
+              >
+                {/* Color accent top line */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: mod.color, opacity: activeCard === mod.id ? 1 : 0.4, transition: 'opacity 0.2s' }} />
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  {/* Icon */}
+                  <div style={{
+                    width: 46, height: 46, borderRadius: 14, flexShrink: 0,
+                    background: `${mod.bg}`, border: `1px solid ${mod.border}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
+                    boxShadow: activeCard === mod.id ? `0 0 16px ${mod.color}40` : 'none',
+                    transition: 'box-shadow 0.2s',
+                  }}>
+                    {mod.icon}
+                  </div>
+
+                  {/* Text */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
+                      <span style={{ fontSize: 9, fontWeight: 800, color: mod.color, letterSpacing: 2 }}>{mod.label}</span>
+                      {mod.badge && (
+                        <span style={{ fontSize: 8, fontWeight: 800, color: mod.color, background: `${mod.bg}`, border: `1px solid ${mod.border}`, borderRadius: 4, padding: '1px 6px', letterSpacing: 1 }}>{mod.badge}</span>
+                      )}
+                    </div>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: '#e8edf2', marginBottom: 3 }}>{mod.name}</div>
+                    <div style={{ fontSize: 11, color: '#4a5a52', lineHeight: 1.5 }}>{mod.desc}</div>
+                  </div>
+
+                  {/* Arrow */}
+                  <div style={{ fontSize: 16, color: mod.color, opacity: activeCard === mod.id ? 1 : 0.3, transition: 'opacity 0.2s', flexShrink: 0 }}>→</div>
+                </div>
+
+                {/* Spark particles */}
+                {sparks.map(s => (
+                  <div key={s.id} style={{
+                    position: 'absolute', left: s.x, top: s.y,
+                    width: 5, height: 5, borderRadius: '50%', background: s.color,
+                    pointerEvents: 'none',
+                    // @ts-expect-error CSS vars
+                    '--dx': `${Math.cos(s.angle * Math.PI / 180) * 40}px`,
+                    '--dy': `${Math.sin(s.angle * Math.PI / 180) * 40}px`,
+                    animation: 'sparkFly 0.5s ease-out forwards',
+                  }} />
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {/* Footer */}
+          <div style={{ padding: '28px 24px 0', textAlign: 'center', animation: 'fadeUp 0.4s 0.6s ease both', opacity: 0 }}>
+            <p style={{ fontSize: 10, color: '#2a3a2a', letterSpacing: 1 }}>
+              Hold any text to translate to Portuguese · AI powered · All simulations in English
+            </p>
+            <p style={{ fontSize: 9, color: '#1a2a1a', marginTop: 6, letterSpacing: 2 }}>ON DUTY v2.0</p>
+          </div>
         </div>
       </div>
+
+      {audioCtxRef.current && null}
     </>
   )
 }
