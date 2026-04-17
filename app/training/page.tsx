@@ -321,7 +321,7 @@ export default function Home() {
     setIsEvaluating(true)
 
     try {
-      const res = await fetch('/api/evaluate', {
+      const res = await fetch('/api/ai/evaluate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
