@@ -39,6 +39,14 @@ const TURN_TIME = 30
 const MAX_STRIKES = 3
 const TARGET_GOOD_TURNS = 5
 
+const G = '#c9a84c'
+const GOLD_BORDER = 'rgba(201,168,76,0.22)'
+const GOLD_BG = 'rgba(201,168,76,0.06)'
+const DARK = '#07050b'
+const PANEL = '#0d0b08'
+const CREAM = '#f4f0e8'
+const MUTED = '#9a8868'
+
 export default function Home() {
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -74,27 +82,19 @@ export default function Home() {
   }, [score, strikes])
 
   useEffect(() => {
-    chatRef.current?.scrollTo({
-      top: chatRef.current.scrollHeight,
-      behavior: 'smooth',
-    })
+    chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, lastFeedback, report])
 
   useEffect(() => {
     if (sessionEnded || isWaitingForAI) return
-
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer)
-          void handleTimeout()
-          return 0
-        }
+        if (prev <= 1) { clearInterval(timer); void handleTimeout(); return 0 }
         return prev - 1
       })
     }, 1000)
-
     return () => clearInterval(timer)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionEnded, isWaitingForAI, conversation])
 
   function getMood(nextStrikes: number, currentScore: number): 'friendly' | 'neutral' | 'annoyed' {
@@ -119,35 +119,24 @@ export default function Home() {
     let pointsDelta = 0
     let title = 'Solid response'
     let message = 'You kept the interaction moving.'
-    let betterPhrase =
-      'Good evening, sir. Welcome to Grand Lux Café. My name is Ned and I will be taking care of you tonight.'
+    let betterPhrase = 'Good evening, sir. Welcome to Grand Lux Café. My name is Ned and I will be taking care of you tonight.'
 
     if (tooCasual) {
-      strikeAdded = true
-      pointsDelta = -2
-      title = 'Too casual'
+      strikeAdded = true; pointsDelta = -2; title = 'Too casual'
       message = 'Your tone was too informal for a luxury dining context.'
       betterPhrase = 'Good evening, sir. Welcome to Grand Lux Café. How may I assist you this evening?'
       return { title, message, betterPhrase, strikeAdded, pointsDelta }
     }
-
     if (tooShort) {
-      strikeAdded = true
-      pointsDelta = -1
-      title = 'Too short'
+      strikeAdded = true; pointsDelta = -1; title = 'Too short'
       message = 'Your response was too limited and did not feel like professional service.'
-      betterPhrase =
-        'Good evening, sir. Welcome to Grand Lux Café. My name is Ned and I will be taking care of you tonight.'
+      betterPhrase = 'Good evening, sir. Welcome to Grand Lux Café. My name is Ned and I will be taking care of you tonight.'
       return { title, message, betterPhrase, strikeAdded, pointsDelta }
     }
-
     if (currentMood === 'annoyed' && !hasApology) {
-      strikeAdded = true
-      pointsDelta = -1
-      title = 'Missed recovery'
+      strikeAdded = true; pointsDelta = -1; title = 'Missed recovery'
       message = 'The guest was already upset. You should have acknowledged the issue and recovered the situation.'
-      betterPhrase =
-        'I sincerely apologize for the delay, sir. Thank you for your patience. How may I assist you now?'
+      betterPhrase = 'I sincerely apologize for the delay, sir. Thank you for your patience. How may I assist you now?'
       return { title, message, betterPhrase, strikeAdded, pointsDelta }
     }
 
@@ -165,8 +154,7 @@ export default function Home() {
     } else if (pointsDelta >= 3) {
       title = 'Good, but can be stronger'
       message = 'Your response worked, but it could sound more polished for fine dining.'
-      betterPhrase =
-        'Good evening, sir. My name is Ned and I will be taking care of you tonight. May I offer you still or sparkling water to begin?'
+      betterPhrase = 'Good evening, sir. My name is Ned and I will be taking care of you tonight. May I offer you still or sparkling water to begin?'
     } else {
       title = 'Weak hospitality language'
       message = 'You responded, but the phrasing did not fully match a luxury service standard.'
@@ -178,76 +166,39 @@ export default function Home() {
 
   async function handleTimeout() {
     if (sessionEnded || isWaitingForAI) return
-
     const nextStrikes = strikes + 1
     const nextScore = Math.max(score - 2, 0)
-
-    setStrikes(nextStrikes)
-    setScore(nextScore)
-    setMood(getMood(nextStrikes, nextScore))
+    setStrikes(nextStrikes); setScore(nextScore); setMood(getMood(nextStrikes, nextScore))
 
     const feedback: TurnFeedback = {
-      title: 'Timeout',
+      title: 'Timeout', strikeAdded: true, pointsDelta: -2,
       message: 'You did not answer in time. In real service, silence damages the guest experience.',
       betterPhrase: 'I sincerely apologize for the wait, sir. Thank you for your patience.',
-      strikeAdded: true,
-      pointsDelta: -2,
     }
-
-    setLastFeedback(feedback)
-    setTurnFeedbacks((prev) => [...prev, feedback])
+    setLastFeedback(feedback); setTurnFeedbacks((prev) => [...prev, feedback])
 
     if (nextStrikes >= MAX_STRIKES) {
-      const finalGuestLine =
-        "This is unacceptable. Please call the manager. We're leaving."
-
-      setMessages((prev) => [...prev, { role: 'assistant', text: finalGuestLine }])
-      setConversation((prev) => [...prev, { role: 'assistant', content: finalGuestLine }])
-      setSessionEnded(true)
-      setEndReason('🚨 Game Over — 3 service failures. The guest asked for the manager and left.')
-      setIsWaitingForAI(false)
-      setTimeLeft(0)
-      return
+      const line = "This is unacceptable. Please call the manager. We're leaving."
+      setMessages((prev) => [...prev, { role: 'assistant', text: line }])
+      setConversation((prev) => [...prev, { role: 'assistant', content: line }])
+      setSessionEnded(true); setEndReason('Game Over — 3 service failures. The guest left.')
+      setIsWaitingForAI(false); setTimeLeft(0); return
     }
 
     setIsWaitingForAI(true)
-
-    const timeoutConversation: AIMessage[] = [
-      ...conversation,
-      {
-        role: 'user',
-        content:
-          'The waiter stayed silent too long and failed to respond in time.',
-      },
-    ]
-
+    const tc: AIMessage[] = [...conversation, { role: 'user', content: 'The waiter stayed silent too long and failed to respond in time.' }]
     try {
-      const res = await fetch('/api/ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: timeoutConversation }),
-      })
-
+      const res = await fetch('/api/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: tc }) })
       const data = await res.json()
-
-      setConversation([
-        ...timeoutConversation,
-        { role: 'assistant', content: data.response },
-      ])
-
+      setConversation([...tc, { role: 'assistant', content: data.response }])
       setMessages((prev) => [...prev, { role: 'assistant', text: data.response }])
-    } finally {
-      setIsWaitingForAI(false)
-      setTimeLeft(TURN_TIME)
-    }
+    } finally { setIsWaitingForAI(false); setTimeLeft(TURN_TIME) }
   }
 
   async function handleSend() {
     if (!input.trim() || sessionEnded || isWaitingForAI) return
-
     const currentInput = input.trim()
-    setInput('')
-    setIsWaitingForAI(true)
+    setInput(''); setIsWaitingForAI(true)
 
     const feedback = evaluateTurn(currentInput, timeLeft, mood)
     const nextStrikes = feedback.strikeAdded ? strikes + 1 : strikes
@@ -255,443 +206,226 @@ export default function Home() {
     const nextGoodTurns = feedback.strikeAdded ? goodTurns : goodTurns + 1
     const nextMood = getMood(nextStrikes, nextScore)
 
-    setLastFeedback(feedback)
-    setTurnFeedbacks((prev) => [...prev, feedback])
-    setStrikes(nextStrikes)
-    setScore(nextScore)
-    setGoodTurns(nextGoodTurns)
-    setMood(nextMood)
-
+    setLastFeedback(feedback); setTurnFeedbacks((prev) => [...prev, feedback])
+    setStrikes(nextStrikes); setScore(nextScore); setGoodTurns(nextGoodTurns); setMood(nextMood)
     setMessages((prev) => [...prev, { role: 'user', text: currentInput }])
 
-    const newConversation: AIMessage[] = [
-      ...conversation,
-      { role: 'user', content: currentInput },
-    ]
+    const newConv: AIMessage[] = [...conversation, { role: 'user', content: currentInput }]
 
     if (nextStrikes >= MAX_STRIKES) {
-      const finalGuestLine =
-        'This is not the standard I expect here. Please call the manager.'
-
-      setMessages((prev) => [...prev, { role: 'assistant', text: finalGuestLine }])
-      setConversation([...newConversation, { role: 'assistant', content: finalGuestLine }])
-      setSessionEnded(true)
-      setEndReason('🚨 Game Over — 3 errors reached. The guest requested the manager.')
-      setIsWaitingForAI(false)
-      setTimeLeft(0)
-      return
+      const line = 'This is not the standard I expect here. Please call the manager.'
+      setMessages((prev) => [...prev, { role: 'assistant', text: line }])
+      setConversation([...newConv, { role: 'assistant', content: line }])
+      setSessionEnded(true); setEndReason('Game Over — 3 errors. The guest requested the manager.')
+      setIsWaitingForAI(false); setTimeLeft(0); return
     }
-
     if (nextGoodTurns >= TARGET_GOOD_TURNS) {
-      const successGuestLine = 'Thank you. That was much better.'
-
-      setMessages((prev) => [...prev, { role: 'assistant', text: successGuestLine }])
-      setConversation([...newConversation, { role: 'assistant', content: successGuestLine }])
-      setSessionEnded(true)
-      setEndReason('🏆 Success — You completed the first service round.')
-      setIsWaitingForAI(false)
-      setTimeLeft(0)
-      return
+      const line = 'Thank you. That was much better.'
+      setMessages((prev) => [...prev, { role: 'assistant', text: line }])
+      setConversation([...newConv, { role: 'assistant', content: line }])
+      setSessionEnded(true); setEndReason('Success — You completed the first service round.')
+      setIsWaitingForAI(false); setTimeLeft(0); return
     }
 
     try {
-      const res = await fetch('/api/ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newConversation }),
-      })
-
+      const res = await fetch('/api/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: newConv }) })
       const data = await res.json()
-
-      setConversation([
-        ...newConversation,
-        { role: 'assistant', content: data.response },
-      ])
-
+      setConversation([...newConv, { role: 'assistant', content: data.response }])
       setMessages((prev) => [...prev, { role: 'assistant', text: data.response }])
-    } finally {
-      setIsWaitingForAI(false)
-      setTimeLeft(TURN_TIME)
-    }
+    } finally { setIsWaitingForAI(false); setTimeLeft(TURN_TIME) }
   }
 
   async function handleEvaluate() {
     if (isEvaluating) return
-
     setIsEvaluating(true)
-
     try {
       const res = await fetch('/api/ai/evaluate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          conversation,
-          stats: {
-            score,
-            strikes,
-            goodTurns,
-            sessionEnded,
-            endReason,
-            medal,
-          },
-          turnFeedbacks,
-        }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conversation, stats: { score, strikes, goodTurns, sessionEnded, endReason, medal }, turnFeedbacks }),
       })
-
       const data = await res.json()
       setReport(data.report)
-    } finally {
-      setIsEvaluating(false)
-    }
+    } finally { setIsEvaluating(false) }
   }
 
   function handleReset() {
-    setInput('')
-    setMessages([{ role: 'assistant', text: 'Good evening.' }])
+    setInput(''); setMessages([{ role: 'assistant', text: 'Good evening.' }])
     setConversation([{ role: 'assistant', content: 'Good evening.' }])
-    setTimeLeft(TURN_TIME)
-    setIsWaitingForAI(false)
-    setSessionEnded(false)
-    setStrikes(0)
-    setGoodTurns(0)
-    setScore(0)
-    setMood('neutral')
-    setEndReason('')
-    setLastFeedback(null)
-    setTurnFeedbacks([])
-    setReport(null)
+    setTimeLeft(TURN_TIME); setIsWaitingForAI(false); setSessionEnded(false)
+    setStrikes(0); setGoodTurns(0); setScore(0); setMood('neutral'); setEndReason('')
+    setLastFeedback(null); setTurnFeedbacks([]); setReport(null)
   }
 
+  const timerColor = timeLeft > 15 ? G : timeLeft > 8 ? '#d4820a' : '#c45050'
+  const moodIcon = mood === 'friendly' ? '😊' : mood === 'annoyed' ? '😠' : '😐'
+
   return (
-    <div style={styles.page}>
-      <div style={styles.phone}>
-        <div style={styles.header}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div>
-              <div style={styles.title}>🍽️ Luxury Training</div>
-              <div style={styles.subTitle}>Waiter — Phase 1</div>
-            </div>
-            <a
-              href="/shift"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 5,
-                padding: '5px 10px', borderRadius: 20,
-                background: 'linear-gradient(135deg,#3b9eff,#1a5fa8)',
-                color: '#fff', fontSize: 11, fontWeight: 700,
-                textDecoration: 'none', letterSpacing: 0.5,
-                boxShadow: '0 0 10px rgba(59,158,255,0.4)',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              ⚡ SHIFT
-            </a>
-          </div>
+    <>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #2a1f0a; border-radius: 4px; }
+      `}</style>
 
-          <div style={styles.headerRight}>
-            <span>⏱ {timeLeft}s</span>
-            <span>🎭 {mood}</span>
-            <span>❌ {strikes}/{MAX_STRIKES}</span>
-          </div>
-        </div>
+      <div style={{ minHeight: '100dvh', background: `linear-gradient(160deg,${DARK} 0%,#100d07 50%,${DARK} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-geist-sans,Arial,sans-serif)' }}>
+        <div style={{ width: '100%', maxWidth: 520, minHeight: '100dvh', background: PANEL, display: 'flex', flexDirection: 'column', border: '1px solid ' + GOLD_BORDER, boxShadow: '0 0 60px rgba(201,168,76,0.06)' }}>
 
-        <div style={styles.topStats}>
-          <div style={styles.statCard}>
-            <div style={styles.statLabel}>Progress</div>
-            <div style={styles.statValue}>{goodTurns}/{TARGET_GOOD_TURNS}</div>
-          </div>
-          <div style={styles.statCard}>
-            <div style={styles.statLabel}>Score</div>
-            <div style={styles.statValue}>{score}</div>
-          </div>
-          <div style={styles.statCard}>
-            <div style={styles.statLabel}>Medal</div>
-            <div style={styles.statValue}>{medal}</div>
-          </div>
-        </div>
-
-        {sessionEnded && (
-          <div style={styles.banner}>
-            <strong>{endReason}</strong>
-          </div>
-        )}
-
-        {lastFeedback && (
-          <div style={styles.feedbackCard}>
-            <div style={styles.feedbackTitle}>Round Feedback — {lastFeedback.title}</div>
-            <div style={styles.feedbackText}>{lastFeedback.message}</div>
-            <div style={styles.feedbackPhrase}>
-              Better phrase: {lastFeedback.betterPhrase}
-            </div>
-          </div>
-        )}
-
-        <div ref={chatRef} style={styles.chatArea}>
-          {messages.map((msg, index) => {
-            const isUser = msg.role === 'user'
-            return (
-              <div
-                key={index}
-                style={{
-                  ...styles.bubble,
-                  alignSelf: isUser ? 'flex-end' : 'flex-start',
-                  background: isUser ? '#005c4b' : '#262626',
-                }}
-              >
-                {msg.text}
+          {/* Header */}
+          <div style={{ background: 'rgba(10,8,5,0.98)', borderBottom: '1px solid ' + GOLD_BORDER, padding: '14px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                  <span style={{ fontSize: 15, fontWeight: 800, color: CREAM, letterSpacing: 1 }}>Luxury Training</span>
+                  <span style={{ fontSize: 9, color: G, background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: 4, padding: '1px 6px', fontWeight: 700, letterSpacing: 1 }}>CHAT</span>
+                </div>
+                <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>Professional Waiter · Phase 1</div>
               </div>
-            )
-          })}
-
-          {isWaitingForAI && <div style={styles.waiting}>Guest is responding...</div>}
-        </div>
-
-        <div style={styles.actionsBar}>
-          <button style={styles.secondaryButton} onClick={handleEvaluate}>
-            {isEvaluating ? 'Evaluating...' : 'Evaluate'}
-          </button>
-          <button style={styles.secondaryButton} onClick={handleReset}>
-            Restart
-          </button>
-        </div>
-
-        <div style={styles.inputBar}>
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={sessionEnded ? 'Session ended' : 'Type as waiter...'}
-            disabled={sessionEnded || isWaitingForAI}
-            style={styles.input}
-          />
-          <button
-            onClick={handleSend}
-            disabled={sessionEnded || isWaitingForAI}
-            style={styles.sendButton}
-          >
-            ➤
-          </button>
-        </div>
-
-        {report && (
-          <div style={styles.reportCard}>
-            <div style={styles.reportTitle}>AI Performance Report</div>
-            <div style={styles.reportGrid}>
-              <div>Overall: {report.overallScore}/10</div>
-              <div>English: {report.english}/10</div>
-              <div>Professionalism: {report.professionalism}/10</div>
-              <div>Timing: {report.timing}/10</div>
-              <div>Guest Impact: {report.guestImpact}/10</div>
-              <div>Verdict: {report.verdict}</div>
+              <a href="/shift" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 11px', borderRadius: 20, background: 'linear-gradient(135deg,#c9a84c,#8b6914)', color: '#07050b', fontSize: 10, fontWeight: 800, textDecoration: 'none', letterSpacing: 1, whiteSpace: 'nowrap' }}>
+                ⚡ SHIFT
+              </a>
             </div>
-
-            <div style={styles.reportSection}>
-              <strong>Strengths</strong>
-              <ul>
-                {report.strengths.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div style={styles.reportSection}>
-              <strong>Improvements</strong>
-              <ul>
-                {report.improvements.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div style={styles.reportSection}>
-              <strong>Better phrase</strong>
-              <div>{report.betterPhrase}</div>
-            </div>
-
-            <div style={styles.reportSection}>
-              <strong>Summary</strong>
-              <div>{report.summary}</div>
+            <div style={{ display: 'flex', gap: 10, fontSize: 12, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              <span style={{ color: timerColor, fontWeight: 700 }}>⏱ {timeLeft}s</span>
+              <span style={{ color: '#c8b88a' }}>{moodIcon} {mood}</span>
+              <span style={{ color: strikes > 0 ? '#c45050' : MUTED }}>✕ {strikes}/{MAX_STRIKES}</span>
             </div>
           </div>
-        )}
+
+          {/* Stats */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, padding: '10px 12px' }}>
+            {[
+              { label: 'Progress', value: `${goodTurns}/${TARGET_GOOD_TURNS}` },
+              { label: 'Score', value: score },
+              { label: 'Medal', value: medal },
+            ].map(({ label, value }) => (
+              <div key={label} style={{ background: GOLD_BG, border: '1px solid ' + GOLD_BORDER, borderRadius: 12, padding: '9px 10px' }}>
+                <div style={{ fontSize: 10, color: MUTED }}>{label}</div>
+                <div style={{ marginTop: 3, fontSize: 16, fontWeight: 800, color: CREAM }}>{value}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* End banner */}
+          {sessionEnded && (
+            <div style={{ margin: '0 12px 10px', padding: '11px 14px', background: endReason.startsWith('Success') ? 'rgba(34,197,94,0.08)' : 'rgba(196,80,80,0.1)', border: `1px solid ${endReason.startsWith('Success') ? '#22c55e' : '#c45050'}`, borderRadius: 12, animation: 'fadeUp 0.3s ease' }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: endReason.startsWith('Success') ? '#4ade80' : '#fca5a5' }}>{endReason}</span>
+            </div>
+          )}
+
+          {/* Turn feedback */}
+          {lastFeedback && (
+            <div style={{ margin: '0 12px 10px', padding: '11px 14px', background: GOLD_BG, borderRadius: 12, border: '1px solid ' + GOLD_BORDER, animation: 'fadeUp 0.3s ease' }}>
+              <div style={{ fontSize: 12, fontWeight: 800, color: G, marginBottom: 4, letterSpacing: 0.5 }}>
+                {lastFeedback.strikeAdded ? '✕' : '✓'} {lastFeedback.title}
+              </div>
+              <div style={{ fontSize: 12, color: '#c8b88a', marginBottom: 5, lineHeight: 1.5 }}>{lastFeedback.message}</div>
+              <div style={{ fontSize: 12, color: G, fontStyle: 'italic', lineHeight: 1.5 }}>
+                Better: "{lastFeedback.betterPhrase}"
+              </div>
+            </div>
+          )}
+
+          {/* Chat area */}
+          <div ref={chatRef} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto', padding: '0 12px 12px' }}>
+            {messages.map((msg, i) => {
+              const isUser = msg.role === 'user'
+              return (
+                <div key={i} style={{
+                  padding: '11px 14px', borderRadius: 14, maxWidth: '82%', fontSize: 14, lineHeight: 1.45, whiteSpace: 'pre-wrap',
+                  alignSelf: isUser ? 'flex-end' : 'flex-start',
+                  background: isUser ? 'rgba(201,168,76,0.1)' : 'rgba(255,255,255,0.04)',
+                  border: isUser ? '1px solid rgba(201,168,76,0.28)' : '1px solid rgba(255,255,255,0.07)',
+                  color: isUser ? '#e8d090' : '#c8b88a',
+                  animation: 'fadeUp 0.2s ease',
+                }}>
+                  {msg.text}
+                </div>
+              )
+            })}
+            {isWaitingForAI && (
+              <div style={{ fontSize: 12, color: MUTED, textAlign: 'center', padding: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
+                <div style={{ width: 14, height: 14, border: `2px solid ${G}`, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                Guest is responding…
+              </div>
+            )}
+          </div>
+
+          {/* Action buttons */}
+          <div style={{ display: 'flex', gap: 8, padding: '0 12px 10px' }}>
+            <button onClick={handleEvaluate} style={{ flex: 1, padding: '11px', borderRadius: 12, border: '1px solid ' + GOLD_BORDER, background: GOLD_BG, color: G, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+              {isEvaluating ? '…' : '📋 Evaluate'}
+            </button>
+            <button onClick={handleReset} style={{ flex: 1, padding: '11px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.03)', color: MUTED, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+              ↺ Restart
+            </button>
+          </div>
+
+          {/* Input bar */}
+          <div style={{ display: 'flex', gap: 8, padding: '12px', background: 'rgba(10,8,5,0.98)', borderTop: '1px solid ' + GOLD_BORDER, position: 'sticky', bottom: 0 }}>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void handleSend() } }}
+              placeholder={sessionEnded ? 'Session ended' : 'Type as waiter…'}
+              disabled={sessionEnded || isWaitingForAI}
+              style={{ flex: 1, padding: '12px 16px', borderRadius: 24, border: '1px solid ' + GOLD_BORDER, outline: 'none', background: 'rgba(20,15,8,0.8)', color: CREAM, fontSize: 14, fontFamily: 'inherit' }}
+            />
+            <button
+              onClick={() => void handleSend()}
+              disabled={sessionEnded || isWaitingForAI}
+              style={{ width: 50, height: 50, borderRadius: '50%', border: 'none', background: 'linear-gradient(135deg,#c9a84c,#8b6914)', color: '#07050b', fontWeight: 900, fontSize: 18, cursor: 'pointer', flexShrink: 0, boxShadow: '0 0 16px rgba(201,168,76,0.3)' }}
+            >
+              ➤
+            </button>
+          </div>
+
+          {/* AI Report */}
+          {report && (
+            <div style={{ margin: 12, padding: 16, background: GOLD_BG, borderRadius: 14, border: '1px solid ' + GOLD_BORDER, animation: 'fadeUp 0.3s ease' }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: G, marginBottom: 12, letterSpacing: 0.5 }}>AI Performance Report</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 13, marginBottom: 12 }}>
+                {[
+                  ['Overall', report.overallScore],
+                  ['English', report.english],
+                  ['Professionalism', report.professionalism],
+                  ['Timing', report.timing],
+                  ['Guest Impact', report.guestImpact],
+                  ['Verdict', report.verdict],
+                ].map(([k, v]) => (
+                  <div key={k as string} style={{ background: 'rgba(0,0,0,0.3)', borderRadius: 8, padding: '7px 10px' }}>
+                    <div style={{ fontSize: 10, color: MUTED, marginBottom: 2 }}>{k}</div>
+                    <div style={{ color: CREAM, fontWeight: 700 }}>{v}</div>
+                  </div>
+                ))}
+              </div>
+              {[
+                { label: 'Strengths', items: report.strengths, color: '#4ade80' },
+                { label: 'Improvements', items: report.improvements, color: '#fbbf24' },
+              ].map(({ label, items, color }) => (
+                <div key={label} style={{ marginTop: 10 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color, marginBottom: 5 }}>{label}</div>
+                  <ul style={{ paddingLeft: 16, margin: 0 }}>
+                    {items.map((item, i) => <li key={i} style={{ fontSize: 13, color: '#c8b88a', lineHeight: 1.5 }}>{item}</li>)}
+                  </ul>
+                </div>
+              ))}
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: G, marginBottom: 4 }}>Better phrase</div>
+                <div style={{ fontSize: 13, color: '#c8b88a', fontStyle: 'italic', lineHeight: 1.5 }}>"{report.betterPhrase}"</div>
+              </div>
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: G, marginBottom: 4 }}>Summary</div>
+                <div style={{ fontSize: 13, color: '#c8b88a', lineHeight: 1.5 }}>{report.summary}</div>
+              </div>
+            </div>
+          )}
+
+        </div>
       </div>
-    </div>
+    </>
   )
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  page: {
-    minHeight: '100vh',
-    background: '#0b141a',
-    color: 'white',
-    display: 'flex',
-    justifyContent: 'center',
-    padding: 12,
-    boxSizing: 'border-box',
-    fontFamily: 'Inter, Arial, sans-serif',
-  },
-  phone: {
-    width: '100%',
-    maxWidth: 520,
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    background: '#111b21',
-  },
-  header: {
-    background: '#202c33',
-    padding: '14px 16px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 8,
-  },
-  title: {
-    fontWeight: 700,
-    fontSize: 16,
-  },
-  subTitle: {
-    fontSize: 12,
-    opacity: 0.8,
-  },
-  headerRight: {
-    display: 'flex',
-    gap: 10,
-    fontSize: 12,
-    opacity: 0.9,
-    flexWrap: 'wrap',
-    justifyContent: 'flex-end',
-  },
-  topStats: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: 8,
-    padding: 12,
-  },
-  statCard: {
-    background: '#1f2c34',
-    borderRadius: 12,
-    padding: 10,
-  },
-  statLabel: {
-    fontSize: 11,
-    opacity: 0.75,
-  },
-  statValue: {
-    marginTop: 4,
-    fontSize: 16,
-    fontWeight: 700,
-  },
-  banner: {
-    margin: '0 12px 12px',
-    padding: 12,
-    background: '#4b1d1d',
-    borderRadius: 12,
-    color: '#ffd8d8',
-  },
-  feedbackCard: {
-    margin: '0 12px 12px',
-    padding: 12,
-    background: '#14212a',
-    borderRadius: 12,
-    border: '1px solid #223240',
-  },
-  feedbackTitle: {
-    fontWeight: 700,
-    marginBottom: 6,
-  },
-  feedbackText: {
-    fontSize: 14,
-    marginBottom: 6,
-  },
-  feedbackPhrase: {
-    fontSize: 13,
-    color: '#9fd3ff',
-  },
-  chatArea: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-    overflowY: 'auto',
-    padding: '0 12px 12px',
-  },
-  bubble: {
-    padding: '12px 14px',
-    borderRadius: 14,
-    maxWidth: '80%',
-    fontSize: 14,
-    lineHeight: 1.4,
-    whiteSpace: 'pre-wrap',
-  },
-  waiting: {
-    fontSize: 12,
-    opacity: 0.75,
-    textAlign: 'center',
-    padding: 8,
-  },
-  actionsBar: {
-    display: 'flex',
-    gap: 8,
-    padding: '0 12px 12px',
-  },
-  secondaryButton: {
-    flex: 1,
-    padding: '12px 14px',
-    borderRadius: 12,
-    border: 'none',
-    background: '#2a3942',
-    color: 'white',
-    fontWeight: 600,
-    cursor: 'pointer',
-  },
-  inputBar: {
-    display: 'flex',
-    gap: 8,
-    padding: 12,
-    background: '#202c33',
-    position: 'sticky',
-    bottom: 0,
-  },
-  input: {
-    flex: 1,
-    padding: '12px 14px',
-    borderRadius: 24,
-    border: 'none',
-    outline: 'none',
-    background: '#2a3942',
-    color: 'white',
-    fontSize: 14,
-  },
-  sendButton: {
-    width: 50,
-    borderRadius: 999,
-    border: 'none',
-    background: '#00a884',
-    color: 'white',
-    fontWeight: 700,
-    cursor: 'pointer',
-  },
-  reportCard: {
-    margin: 12,
-    padding: 16,
-    background: '#182229',
-    borderRadius: 14,
-    border: '1px solid #2b3d48',
-  },
-  reportTitle: {
-    fontSize: 18,
-    fontWeight: 700,
-    marginBottom: 12,
-  },
-  reportGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: 8,
-    fontSize: 14,
-    marginBottom: 14,
-  },
-  reportSection: {
-    marginTop: 10,
-    fontSize: 14,
-  },
-}
-
