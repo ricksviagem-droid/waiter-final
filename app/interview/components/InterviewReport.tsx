@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import type { QuestionResult, ReportData } from '@/lib/interview/data'
+import RickPhoto from '@/components/RickPhoto'
 
 const S = '#7ab0cc'
 const SB = 'rgba(122,176,204,0.22)'
@@ -98,11 +99,7 @@ export default function InterviewReport({ results, report, onRestart }: Props) {
           <div style={{ background: SBG, border: '1px solid ' + SB, borderRadius: 14, padding: '14px', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${S},transparent)` }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/scenes/rick.jpeg" alt="Rick" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover', objectPosition: '50% 25%', border: `2px solid ${S}` }}
-                onError={e => { const el = e.currentTarget; el.style.display = 'none'; (el.nextSibling as HTMLElement).style.display = 'flex' }}
-              />
-              <div style={{ width: 38, height: 38, borderRadius: '50%', background: 'rgba(122,176,204,0.15)', display: 'none', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: S }}>R</div>
+              <RickPhoto size={38} imgStyle={{ border: `2px solid ${S}` }} fallbackStyle={{ background: 'rgba(122,176,204,0.15)', color: S }} />
               <div>
                 <div style={{ fontSize: 12, fontWeight: 800, color: '#e4eef4' }}>Rick — Personal Coaching</div>
                 <div style={{ fontSize: 10, color: '#4a6a7a' }}>Audio feedback just for you</div>

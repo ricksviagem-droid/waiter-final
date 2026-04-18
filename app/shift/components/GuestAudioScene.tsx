@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import type { GuestAudioScene as GuestAudioSceneType, GuestAudioResult } from '@/lib/shift/types'
 import Timer from './Timer'
+import RickPhoto from '@/components/RickPhoto'
 import { TIMER_SECONDS } from '@/lib/shift/scenes'
 
 interface Props {
@@ -371,11 +372,7 @@ export default function GuestAudioScene({ scene, sceneNumber, totalScenes, onCom
             <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,rgba(245,158,11,0.5),transparent)', borderRadius:'14px 14px 0 0' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
               <div style={{ position:'relative', flexShrink:0 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/scenes/rick.jpeg" alt="Rick" style={{ width:30, height:30, borderRadius:'50%', objectFit:'cover', objectPosition:'50% 25%', display:'block' }}
-                  onError={e => { const el = e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
-                />
-                <div style={{ width:30, height:30, borderRadius:'50%', background:'linear-gradient(135deg,#0a2a4a,#1a5fa8)', display:'none', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:800, color:'#fff' }}>R</div>
+                <RickPhoto size={30} fallbackStyle={{ background: 'linear-gradient(135deg,#0a2a4a,#1a5fa8)', color: '#fff', fontSize: 13, fontWeight: 800 }} />
                 <div style={{ position:'absolute', inset:-1.5, borderRadius:'50%', border:'1.5px solid transparent', background:'linear-gradient(#020810,#020810) padding-box, linear-gradient(135deg,#f59e0b,#b45309) border-box' }} />
               </div>
               <div>

@@ -5,6 +5,7 @@ import { QUESTIONS, TOTAL_QUESTIONS } from '@/lib/interview/data'
 import type { QuestionResult, ReportData } from '@/lib/interview/data'
 import QuestionScene from './components/QuestionScene'
 import InterviewReport from './components/InterviewReport'
+import RickPhoto from '@/components/RickPhoto'
 
 const S = '#7ab0cc'
 const SB = 'rgba(122,176,204,0.22)'
@@ -118,12 +119,7 @@ function ThankYouScreen({ results, onReady }: { results: QuestionResult[]; onRea
 
       {/* Rick avatar */}
       <div style={{ position:'relative' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/scenes/rick.jpeg" alt="Rick"
-          style={{ width:72, height:72, borderRadius:'50%', objectFit:'cover', objectPosition:'50% 25%', border:`2px solid ${S}`, display:'block' }}
-          onError={e => { const el=e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
-        />
-        <div style={{ width:72, height:72, borderRadius:'50%', background:SBG, display:'none', alignItems:'center', justifyContent:'center', fontSize:24, color:S, border:`2px solid ${S}` }}>R</div>
+        <RickPhoto size={72} imgStyle={{ border:`2px solid ${S}` }} fallbackStyle={{ background:SBG, color:S, border:`2px solid ${S}`, fontSize:24 }} />
         <div style={{ position:'absolute', bottom:2, right:2, width:16, height:16, borderRadius:'50%', background:'#22c55e', border:'2px solid #04060a' }} />
       </div>
 
@@ -228,11 +224,7 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
       <div style={{ display:'flex', alignItems:'center', gap:14, background:'linear-gradient(135deg,rgba(6,9,14,0.95),rgba(4,6,10,0.95))', border:'1px solid rgba(122,176,204,0.2)', borderRadius:14, padding:'12px 14px', width:'100%', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:`linear-gradient(90deg,transparent,${S},transparent)` }} />
         <div style={{ position:'relative', flexShrink:0 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/scenes/rick.jpeg" alt="Rick" style={{ width:48, height:48, borderRadius:'50%', objectFit:'cover', objectPosition:'50% 25%', display:'block' }}
-            onError={e => { const el=e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
-          />
-          <div style={{ width:48, height:48, borderRadius:'50%', background:'rgba(122,176,204,0.15)', display:'none', alignItems:'center', justifyContent:'center', fontSize:18, fontWeight:900, color:S }}>R</div>
+          <RickPhoto size={48} fallbackStyle={{ background:'rgba(122,176,204,0.15)', color:S, fontSize:18, fontWeight:900 }} />
           <div style={{ position:'absolute', inset:-2, borderRadius:'50%', border:'2px solid transparent', background:`linear-gradient(#04060a,#04060a) padding-box, linear-gradient(135deg,${S},#3a78a8) border-box` }} />
           <div style={{ position:'absolute', bottom:1, right:1, width:10, height:10, borderRadius:'50%', background:'#22c55e', border:'2px solid #04060a' }} />
         </div>

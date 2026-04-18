@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { SceneResult } from '@/lib/shift/types'
 import { jsPDF } from 'jspdf'
+import RickPhoto from '@/components/RickPhoto'
 
 interface SceneReview {
   sceneId: number
@@ -281,11 +282,7 @@ export default function ShiftReport({ results, totalScore, maxScore, onRestart }
             <div style={{ background: 'rgba(59,158,255,0.06)', border: '1px solid #1e3a5f', borderRadius: 12, padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
                 <div style={{ position:'relative', flexShrink:0 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/scenes/rick.jpeg" alt="Rick" style={{ width:44, height:44, borderRadius:'50%', objectFit:'cover', objectPosition:'50% 25%', display:'block' }}
-                    onError={e => { const el = e.currentTarget; el.style.display='none'; (el.nextSibling as HTMLElement).style.display='flex' }}
-                  />
-                  <div style={{ width:44, height:44, borderRadius:'50%', background:'linear-gradient(135deg,#0a2a4a,#1a5fa8)', display:'none', alignItems:'center', justifyContent:'center', fontSize:18, fontWeight:900, color:'#fff' }}>R</div>
+                  <RickPhoto size={44} fallbackStyle={{ background: 'linear-gradient(135deg,#0a2a4a,#1a5fa8)', color: '#fff', fontSize: 18, fontWeight: 900 }} />
                   <div style={{ position:'absolute', inset:-2, borderRadius:'50%', border:'2px solid transparent', background:'linear-gradient(#020810,#020810) padding-box, linear-gradient(135deg,#f59e0b,#fcd34d,#b45309) border-box' }} />
                   <div style={{ position:'absolute', bottom:1, right:1, width:10, height:10, borderRadius:'50%', background:'#22c55e', border:'2px solid #020810' }} />
                 </div>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { InterviewQuestion, QuestionResult } from '@/lib/interview/data'
 import { TOTAL_QUESTIONS } from '@/lib/interview/data'
+import RickPhoto from '@/components/RickPhoto'
 
 const S = '#7ab0cc'
 const SB = 'rgba(122,176,204,0.22)'
@@ -249,12 +250,7 @@ export default function QuestionScene({ question, questionIndex, onComplete }: P
       <div style={{ background: 'rgba(6,9,14,0.98)', borderTop: '1px solid ' + SB, padding: '12px 16px', flexShrink: 0 }}>
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 10 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/scenes/rick.jpeg" alt="Rick"
-            style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover', objectPosition: '50% 25%', flexShrink: 0, border: `1.5px solid ${S}` }}
-            onError={e => { const el = e.currentTarget; el.style.display = 'none'; (el.nextSibling as HTMLElement).style.display = 'flex' }}
-          />
-          <div style={{ width: 28, height: 28, borderRadius: '50%', background: SBG, display: 'none', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: S, flexShrink: 0 }}>R</div>
+          <RickPhoto size={28} imgStyle={{ border: `1.5px solid ${S}` }} fallbackStyle={{ background: SBG, color: S }} />
           <div style={{ flex: 1 }}>
             <p style={{ margin: 0, fontSize: 13, color: '#c8dce8', lineHeight: 1.65 }}>
               {question.question.split(/(\s+)/).map((token, i) => {
