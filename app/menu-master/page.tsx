@@ -66,6 +66,7 @@ export default function MenuMasterPage() {
   const [score, setScore] = useState(0)
   const [correct, setCorrect] = useState(0)
   const [errorMsg, setErrorMsg] = useState('')
+  const [extracting, setExtracting] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const q = questions[qIdx]
@@ -91,14 +92,35 @@ export default function MenuMasterPage() {
     }
   }
 
-  function loadFile(file: File) {
-    const reader = new FileReader()
-    reader.onload = e => {
-      const text = (e.target?.result as string) || ''
-      setMenuText(text)
-      if (!menuName) setMenuName(file.name.replace(/\.[^.]+$/, ''))
+  const TEXT_EXTS = /\.(txt|md|csv|tsv|json|xml|rtf|html?)$/i
+
+  async function loadFile(file: File) {
+    const name = file.name.replace(/\.[^.]+$/, '')
+    if (!menuName) setMenuName(name)
+
+    // Plain text: read client-side
+    if (TEXT_EXTS.test(file.name) || file.type.startsWith('text/')) {
+      const reader = new FileReader()
+      reader.onload = e => setMenuText((e.target?.result as string) || '')
+      reader.readAsText(file)
+      return
     }
-    reader.readAsText(file)
+
+    // PDF, images, DOCX: server-side extraction via OpenAI
+    setExtracting(true)
+    setErrorMsg('')
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await fetch('/api/menu-master/extract', { method: 'POST', body: fd })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      setMenuText(data.text || '')
+    } catch (e: unknown) {
+      setErrorMsg(e instanceof Error ? e.message : 'Failed to read file')
+    } finally {
+      setExtracting(false)
+    }
   }
 
   function confirm() {
@@ -197,19 +219,24 @@ export default function MenuMasterPage() {
 
               {/* File upload */}
               <div>
-                <input ref={fileRef} type="file" accept=".txt,.csv" style={{ display:'none' }}
-                  onChange={e => { const f = e.target.files?.[0]; if (f) loadFile(f) }} />
-                <button onClick={() => fileRef.current?.click()}
-                  style={{ width:'100%', padding:'11px', borderRadius:10, border:`1px dashed ${TB}`, background:'transparent', color:'#2a5a55', fontSize:12, cursor:'pointer', fontWeight:600 }}>
-                  📁 Upload .txt file instead
+                <input ref={fileRef} type="file"
+                  accept=".txt,.md,.csv,.tsv,.json,.xml,.rtf,.pdf,.doc,.docx,.odt,.png,.jpg,.jpeg,.webp,.gif"
+                  style={{ display:'none' }}
+                  onChange={e => { const f = e.target.files?.[0]; if (f) loadFile(f); e.target.value = '' }} />
+                <button onClick={() => fileRef.current?.click()} disabled={extracting}
+                  style={{ width:'100%', padding:'11px', borderRadius:10, border:`1px dashed ${extracting ? T : TB}`, background: extracting ? `${T}08` : 'transparent', color: extracting ? T : '#4a8a84', fontSize:12, cursor: extracting ? 'default' : 'pointer', fontWeight:600, transition:'all 0.2s' }}>
+                  {extracting ? '⏳ Reading file...' : '📁 Upload PDF, image, DOCX, TXT, CSV…'}
                 </button>
+                <div style={{ fontSize:9, color:'#1a3a38', textAlign:'center', marginTop:5 }}>
+                  Supported: PDF · DOCX · PNG/JPG · TXT · CSV · MD and more
+                </div>
               </div>
 
               {errorMsg && (
                 <div style={{ background:'rgba(248,113,113,0.08)', border:'1px solid rgba(248,113,113,0.25)', borderRadius:10, padding:'10px 12px', fontSize:12, color:'#f87171' }}>{errorMsg}</div>
               )}
 
-              <button onClick={generate} disabled={menuText.trim().length < 30}
+              <button onClick={generate} disabled={menuText.trim().length < 30 || extracting}
                 style={{ width:'100%', padding:'15px', borderRadius:14, border:'none', background: menuText.trim().length >= 30 ? `linear-gradient(135deg,${T},#06b6d4)` : TBG, color: menuText.trim().length >= 30 ? '#04100f' : '#1a4a4a', fontSize:14, fontWeight:900, cursor: menuText.trim().length >= 30 ? 'pointer' : 'default', letterSpacing:2, boxShadow: menuText.trim().length >= 30 ? `0 0 24px rgba(45,212,191,0.3)` : 'none', transition:'all 0.2s' }}>
                 GENERATE QUIZ →
               </button>
