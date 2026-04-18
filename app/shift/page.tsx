@@ -2,8 +2,8 @@
 
 import { useState, useCallback } from 'react'
 import type { SceneResult, GuestAudioResult, InspectorResult } from '@/lib/shift/types'
-import { SCENES, TOTAL_SCENES } from '@/lib/shift/scenes'
 import RickPhoto from '@/components/RickPhoto'
+import { SCENES, TOTAL_SCENES } from '@/lib/shift/scenes'
 import GuestAudioScene from './components/GuestAudioScene'
 import InspectorScene from './components/InspectorScene'
 import ShiftReport from './components/ShiftReport'
@@ -183,7 +183,7 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
       <div style={{ display:'flex', alignItems:'center', gap:14, background:'linear-gradient(135deg,rgba(10,20,35,0.95),rgba(6,12,24,0.95))', border:'1px solid rgba(245,158,11,0.25)', borderRadius:16, padding:'14px 16px', width:'100%', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,rgba(245,158,11,0.4),transparent)' }} />
         <div style={{ position:'relative', flexShrink:0 }}>
-          <RickPhoto size={54} fallbackStyle={{ background:'linear-gradient(135deg,#0a2a4a,#1a5fa8)', color:'#fff', fontSize:20, fontWeight:900 }} />
+          <RickPhoto size={54} />
           <div style={{ position:'absolute', inset:-2, borderRadius:'50%', border:'2px solid transparent', background:'linear-gradient(#020810,#020810) padding-box, linear-gradient(135deg,#f59e0b,#fcd34d,#b45309) border-box' }} />
           <div style={{ position:'absolute', bottom:1, right:1, width:11, height:11, borderRadius:'50%', background:'#22c55e', border:'2px solid #020810' }} />
         </div>
