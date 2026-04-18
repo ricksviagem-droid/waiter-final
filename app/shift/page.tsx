@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import type { SceneResult, GuestAudioResult, InspectorResult } from '@/lib/shift/types'
 import { SCENES, TOTAL_SCENES } from '@/lib/shift/scenes'
 import GuestAudioScene from './components/GuestAudioScene'
 import InspectorScene from './components/InspectorScene'
 import ShiftReport from './components/ShiftReport'
-import { createAmbient, type AmbientHandle } from '@/lib/ambient'
 
 type AppState = 'intro' | 'scene' | 'report'
 
@@ -23,17 +22,6 @@ export default function ShiftPage() {
   const [state, setState] = useState<AppState>('intro')
   const [sceneIndex, setSceneIndex] = useState(0)
   const [results, setResults] = useState<SceneResult[]>([])
-  const [muted, setMuted] = useState(false)
-  const ambientRef = useRef<AmbientHandle | null>(null)
-
-  useEffect(() => {
-    ambientRef.current = createAmbient('field')
-    return () => { ambientRef.current?.destroy() }
-  }, [])
-
-  function toggleMute() {
-    const next = !muted; setMuted(next); ambientRef.current?.setMuted(next)
-  }
 
   const currentScene = SCENES[sceneIndex]
 
@@ -78,7 +66,6 @@ export default function ShiftPage() {
         ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
       `}</style>
 
-      <button onClick={toggleMute} style={{ position:'fixed', top:12, right:12, zIndex:100, background:'rgba(6,13,23,0.9)', border:'1px solid rgba(0,220,130,0.2)', borderRadius:8, padding:'5px 9px', fontSize:14, cursor:'pointer' }}>{muted ? '🔇' : '🔊'}</button>
       <div style={{
         minHeight: '100dvh',
         background: 'linear-gradient(160deg, #060d17 0%, #0a1520 50%, #06111e 100%)',

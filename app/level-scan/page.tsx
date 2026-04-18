@@ -1,29 +1,15 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import type { ScanResult } from '@/lib/level-scan/data'
 import LevelScanScene from './components/LevelScanScene'
 import LevelScanReport from './components/LevelScanReport'
-import { createAmbient, type AmbientHandle } from '@/lib/ambient'
 
 type AppState = 'scan' | 'report'
 
 export default function LevelScanPage() {
   const [state, setState] = useState<AppState>('scan')
   const [result, setResult] = useState<ScanResult | null>(null)
-  const [muted, setMuted] = useState(false)
-  const ambientRef = useRef<AmbientHandle | null>(null)
-
-  useEffect(() => {
-    ambientRef.current = createAmbient('scan')
-    return () => { ambientRef.current?.destroy() }
-  }, [])
-
-  function toggleMute() {
-    const next = !muted
-    setMuted(next)
-    ambientRef.current?.setMuted(next)
-  }
 
   return (
     <>
@@ -46,17 +32,8 @@ export default function LevelScanPage() {
         minHeight: '100dvh',
         background: 'linear-gradient(160deg,#09090b 0%,#0d0b14 50%,#09090b 100%)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'var(--font-geist-sans,Arial,sans-serif)', padding: 0, position: 'relative',
+        fontFamily: 'var(--font-geist-sans,Arial,sans-serif)', padding: 0,
       }}>
-        {/* Mute toggle */}
-        <button onClick={toggleMute} style={{
-          position: 'fixed', top: 12, right: 12, zIndex: 100,
-          background: 'rgba(15,15,20,0.9)', border: '1px solid rgba(129,140,248,0.2)',
-          borderRadius: 8, padding: '5px 9px', fontSize: 14, cursor: 'pointer',
-        }}>
-          {muted ? '🔇' : '🔊'}
-        </button>
-
         <div style={{
           width: '100%', maxWidth: 430, height: '100dvh', maxHeight: 900,
           background: '#0f0f14', borderRadius: 0, overflow: 'hidden',
