@@ -36,7 +36,7 @@ Rules:
       },
       {
         role: 'user',
-        content: `Menu:\n\n${menuText.slice(0, 5000)}`,
+        content: `Menu:\n\n${menuText.slice(0, 3000)}`,
       },
     ],
   })

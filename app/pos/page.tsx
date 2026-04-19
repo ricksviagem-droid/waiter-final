@@ -397,39 +397,59 @@ function MenuSetupScreen({ onDemo, onCustomMenu, onBack }: {
   onCustomMenu: (menu: Record<string, PosMenuItem[]>) => void
   onBack: () => void
 }) {
-  const [step, setStep]         = useState<'choose'|'upload'|'parsing'>('choose')
-  const [menuText, setMenuText] = useState('')
-  const [error, setError]       = useState('')
-  const fileRef                 = useRef<HTMLInputElement>(null)
-  const TEXT_EXTS               = /\.(txt|md|csv|tsv|json|xml|rtf|html?)$/i
+  const [step, setStep]           = useState<'choose'|'upload'|'parsing'>('choose')
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{ name: string; text: string }>>([])
+  const [manualText, setManualText] = useState('')
+  const [extracting, setExtracting] = useState(false)
+  const [error, setError]           = useState('')
+  const fileRef                     = useRef<HTMLInputElement>(null)
+  const TEXT_EXTS = /\.(txt|md|csv|tsv|json|html?)$/i
 
   async function loadFile(file: File) {
+    setError('')
+    // Plain text: read directly
     if (TEXT_EXTS.test(file.name) || file.type.startsWith('text/')) {
       const reader = new FileReader()
-      reader.onload = e => setMenuText((e.target?.result as string) || '')
-      reader.readAsText(file); return
+      reader.onload = e => {
+        const text = ((e.target?.result as string) || '').slice(0, 4000)
+        setUploadedFiles(prev => [...prev, { name: file.name, text }])
+      }
+      reader.readAsText(file)
+      return
     }
-    setStep('parsing')
+    // Binary: use the lightweight POS extract endpoint
+    setExtracting(true)
     try {
       const fd = new FormData(); fd.append('file', file)
-      const res = await fetch('/api/menu-master/extract', { method:'POST', body:fd })
+      const res = await fetch('/api/pos/extract-menu', { method: 'POST', body: fd })
       const data = await res.json()
       if (data.error) throw new Error(data.error)
-      setMenuText(data.text || '')
-      setStep('upload')
+      setUploadedFiles(prev => [...prev, { name: file.name, text: (data.text || '').slice(0, 4000) }])
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Failed to read file')
-      setStep('upload')
+    } finally {
+      setExtracting(false)
     }
   }
 
+  function removeFile(i: number) {
+    setUploadedFiles(prev => prev.filter((_, idx) => idx !== i))
+  }
+
+  function combinedText(): string {
+    const parts = uploadedFiles.map(f => f.text)
+    if (manualText.trim()) parts.push(manualText)
+    return parts.join('\n\n').slice(0, 3000)
+  }
+
   async function parseMenu() {
-    if (menuText.trim().length < 20) { setError('Menu text too short'); return }
+    const text = combinedText()
+    if (text.trim().length < 20) { setError('Add a menu file or paste menu text first'); return }
     setError(''); setStep('parsing')
     try {
       const res = await fetch('/api/pos/parse-menu', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ menuText }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ menuText: text }),
       })
       const data = await res.json()
       if (data.error || !data.menu) throw new Error(data.error || 'Parse failed')
@@ -440,42 +460,44 @@ function MenuSetupScreen({ onDemo, onCustomMenu, onBack }: {
     }
   }
 
+  const canBuild = combinedText().trim().length >= 20
+
   if (step === 'parsing') return (
-    <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:16,padding:24}}>
-      <div style={{width:48,height:48,border:`2px solid rgba(245,158,11,0.2)`,borderTop:`2px solid #f59e0b`,borderRadius:'50%',animation:'spin 0.8s linear infinite'}} />
-      <div style={{fontSize:13,color:'rgba(245,158,11,0.7)'}}>Building your POS menu…</div>
+    <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:16, padding:24 }}>
+      <div style={{ width:48, height:48, border:`2px solid rgba(245,158,11,0.2)`, borderTop:`2px solid #f59e0b`, borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />
+      <div style={{ fontSize:13, color:'rgba(245,158,11,0.7)', textAlign:'center' }}>Building your POS menu…</div>
     </div>
   )
 
   return (
-    <div style={{flex:1,display:'flex',flexDirection:'column',padding:'18px',gap:14,overflowY:'auto'}}>
-      <div style={{display:'flex',alignItems:'center',gap:10}}>
-        <button onClick={step==='upload'?()=>setStep('choose'):onBack} style={{background:'none',border:'none',color:'rgba(245,158,11,0.5)',fontSize:18,cursor:'pointer'}}>←</button>
+    <div style={{ flex:1, display:'flex', flexDirection:'column', padding:'18px', gap:14, overflowY:'auto' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+        <button onClick={step==='upload' ? ()=>setStep('choose') : onBack} style={{ background:'none', border:'none', color:'rgba(245,158,11,0.5)', fontSize:18, cursor:'pointer' }}>←</button>
         <div>
-          <div style={{fontSize:7,color:'rgba(245,158,11,0.5)',letterSpacing:3,fontFamily:'monospace'}}>MODULE 09</div>
-          <div style={{fontSize:15,fontWeight:900,color:'#ffe8a0',letterSpacing:2}}>MICROS POS SIMULATOR</div>
+          <div style={{ fontSize:7, color:'rgba(245,158,11,0.5)', letterSpacing:3, fontFamily:'monospace' }}>MODULE 09</div>
+          <div style={{ fontSize:15, fontWeight:900, color:'#ffe8a0', letterSpacing:2 }}>MICROS POS SIMULATOR</div>
         </div>
       </div>
 
       {step === 'choose' && (
         <>
-          <div style={{textAlign:'center',padding:'12px 0 4px'}}>
-            <div style={{fontSize:36,marginBottom:8}}>🖥️</div>
-            <p style={{fontSize:12,color:'#6a5a30',lineHeight:1.7}}>Choose a menu to load into the POS terminal</p>
+          <div style={{ textAlign:'center', padding:'12px 0 4px' }}>
+            <div style={{ fontSize:36, marginBottom:8 }}>🖥️</div>
+            <p style={{ fontSize:12, color:'#6a5a30', lineHeight:1.7 }}>Choose a menu to load into the POS terminal</p>
           </div>
-          <div style={{display:'flex',flexDirection:'column',gap:10}}>
-            <div onClick={onDemo} style={{background:'rgba(245,158,11,0.06)',border:'1px solid rgba(245,158,11,0.2)',borderRadius:14,padding:'18px 16px',cursor:'pointer',display:'flex',gap:14,alignItems:'center'}}>
-              <div style={{fontSize:28}}>⚡</div>
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+            <div onClick={onDemo} style={{ background:'rgba(245,158,11,0.06)', border:'1px solid rgba(245,158,11,0.2)', borderRadius:14, padding:'18px 16px', cursor:'pointer', display:'flex', gap:14, alignItems:'center' }}>
+              <div style={{ fontSize:28 }}>⚡</div>
               <div>
-                <div style={{fontSize:13,fontWeight:800,color:'#ffe8a0',marginBottom:4}}>Use Demo Menu</div>
-                <div style={{fontSize:11,color:'#6a5a30',lineHeight:1.5}}>16 items — Sea Bass, Wagyu, Chablis…<br/>8 pre-built scenarios. Start instantly.</div>
+                <div style={{ fontSize:13, fontWeight:800, color:'#ffe8a0', marginBottom:4 }}>Use Demo Menu</div>
+                <div style={{ fontSize:11, color:'#6a5a30', lineHeight:1.5 }}>16 items · Sea Bass, Wagyu, Chablis…<br/>12 pre-built scenarios. Start instantly.</div>
               </div>
             </div>
-            <div onClick={()=>setStep('upload')} style={{background:'rgba(245,158,11,0.03)',border:'1px solid rgba(245,158,11,0.12)',borderRadius:14,padding:'18px 16px',cursor:'pointer',display:'flex',gap:14,alignItems:'center'}}>
-              <div style={{fontSize:28}}>📄</div>
+            <div onClick={()=>setStep('upload')} style={{ background:'rgba(245,158,11,0.03)', border:'1px solid rgba(245,158,11,0.12)', borderRadius:14, padding:'18px 16px', cursor:'pointer', display:'flex', gap:14, alignItems:'center' }}>
+              <div style={{ fontSize:28 }}>📄</div>
               <div>
-                <div style={{fontSize:13,fontWeight:800,color:'#ffe8a0',marginBottom:4}}>Upload My Menu</div>
-                <div style={{fontSize:11,color:'#6a5a30',lineHeight:1.5}}>PDF, DOCX, TXT, image…<br/>AI extracts items → custom POS + scenarios.</div>
+                <div style={{ fontSize:13, fontWeight:800, color:'#ffe8a0', marginBottom:4 }}>Upload My Menu</div>
+                <div style={{ fontSize:11, color:'#6a5a30', lineHeight:1.5 }}>Upload food menu + drinks menu separately.<br/>AI extracts item names → custom POS.</div>
               </div>
             </div>
           </div>
@@ -484,23 +506,72 @@ function MenuSetupScreen({ onDemo, onCustomMenu, onBack }: {
 
       {step === 'upload' && (
         <>
-          <div style={{fontSize:13,fontWeight:800,color:'#ffe8a0'}}>Upload or paste your menu</div>
-          <input ref={fileRef} type="file" accept=".txt,.md,.pdf,.doc,.docx,.png,.jpg,.jpeg,.webp,.csv" style={{display:'none'}}
-            onChange={e => { const f=e.target.files?.[0]; if(f) loadFile(f); e.target.value='' }} />
-          <div onClick={()=>fileRef.current?.click()} style={{border:'1.5px dashed rgba(245,158,11,0.25)',borderRadius:12,padding:'20px',textAlign:'center',cursor:'pointer',background:'rgba(245,158,11,0.02)'}}>
-            <div style={{fontSize:24,marginBottom:6}}>📂</div>
-            <div style={{fontSize:12,color:'#c8a060'}}>PDF · DOCX · PNG/JPG · TXT · CSV</div>
+          <div style={{ fontSize:13, fontWeight:800, color:'#ffe8a0' }}>Upload your menu files</div>
+          <div style={{ fontSize:10, color:'rgba(245,158,11,0.45)', lineHeight:1.6 }}>
+            Add as many files as you need — food menu, drinks menu, wine list. Only item names are extracted.
           </div>
-          <div style={{display:'flex',alignItems:'center',gap:8}}>
-            <div style={{flex:1,height:1,background:'rgba(245,158,11,0.1)'}} />
-            <span style={{fontSize:10,color:'rgba(245,158,11,0.3)'}}>or paste below</span>
-            <div style={{flex:1,height:1,background:'rgba(245,158,11,0.1)'}} />
+
+          {/* Uploaded file chips */}
+          {uploadedFiles.length > 0 && (
+            <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+              {uploadedFiles.map((f, i) => (
+                <div key={i} style={{ display:'flex', alignItems:'center', gap:6, background:'rgba(34,197,94,0.08)', border:'1px solid rgba(34,197,94,0.25)', borderRadius:20, padding:'5px 10px' }}>
+                  <span style={{ fontSize:9, color:'#86efac', fontWeight:700 }}>✓ {f.name.length > 20 ? f.name.slice(0,18)+'…' : f.name}</span>
+                  <button onClick={()=>removeFile(i)} style={{ background:'none', border:'none', color:'rgba(239,68,68,0.6)', cursor:'pointer', fontSize:12, lineHeight:1 }}>✕</button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Upload area */}
+          <input ref={fileRef} type="file" multiple
+            accept=".txt,.md,.pdf,.doc,.docx,.png,.jpg,.jpeg,.webp,.csv"
+            style={{ display:'none' }}
+            onChange={async e => {
+              const files = Array.from(e.target.files || [])
+              for (const f of files) await loadFile(f)
+              e.target.value = ''
+            }}
+          />
+
+          <div
+            onClick={() => !extracting && fileRef.current?.click()}
+            style={{ border:`1.5px dashed ${extracting ? '#f59e0b' : 'rgba(245,158,11,0.25)'}`, borderRadius:12, padding:'18px', textAlign:'center', cursor: extracting ? 'default' : 'pointer', background:'rgba(245,158,11,0.02)', transition:'all 0.2s' }}
+          >
+            {extracting ? (
+              <>
+                <div style={{ width:24, height:24, border:`2px solid rgba(245,158,11,0.2)`, borderTop:`2px solid #f59e0b`, borderRadius:'50%', margin:'0 auto 8px', animation:'spin 0.8s linear infinite' }} />
+                <div style={{ fontSize:11, color:'rgba(245,158,11,0.7)' }}>Reading file…</div>
+              </>
+            ) : (
+              <>
+                <div style={{ fontSize:24, marginBottom:6 }}>📂</div>
+                <div style={{ fontSize:12, color:'#c8a060', fontWeight:700, marginBottom:3 }}>
+                  {uploadedFiles.length > 0 ? '+ Add another menu file' : 'Upload menu file(s)'}
+                </div>
+                <div style={{ fontSize:10, color:'rgba(245,158,11,0.35)' }}>PDF · DOCX · PNG/JPG · TXT · CSV · max 4 MB each</div>
+              </>
+            )}
           </div>
-          <textarea value={menuText} onChange={e=>setMenuText(e.target.value)} placeholder="Paste your menu text here…" rows={7}
-            style={{width:'100%',padding:'10px 12px',borderRadius:10,border:'1px solid rgba(245,158,11,0.2)',background:'rgba(245,158,11,0.03)',color:'#ffe8a0',fontSize:12,outline:'none',fontFamily:'inherit',resize:'vertical'}} />
-          {error && <div style={{fontSize:11,color:'#f87171'}}>{error}</div>}
-          <button onClick={parseMenu} disabled={menuText.trim().length<20}
-            style={{width:'100%',padding:'14px',borderRadius:12,border:'none',background:menuText.trim().length>=20?'linear-gradient(135deg,#f59e0b,#b45309)':'rgba(245,158,11,0.08)',color:menuText.trim().length>=20?'#07050b':'rgba(245,158,11,0.3)',fontSize:14,fontWeight:900,cursor:menuText.trim().length>=20?'pointer':'default',letterSpacing:2}}>
+
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <div style={{ flex:1, height:1, background:'rgba(245,158,11,0.1)' }} />
+            <span style={{ fontSize:10, color:'rgba(245,158,11,0.3)' }}>or paste text below</span>
+            <div style={{ flex:1, height:1, background:'rgba(245,158,11,0.1)' }} />
+          </div>
+
+          <textarea value={manualText} onChange={e=>setManualText(e.target.value)}
+            placeholder="Paste menu items here… (starters, mains, desserts, drinks)"
+            rows={5}
+            style={{ width:'100%', padding:'10px 12px', borderRadius:10, border:'1px solid rgba(245,158,11,0.2)', background:'rgba(245,158,11,0.03)', color:'#ffe8a0', fontSize:12, outline:'none', fontFamily:'inherit', resize:'vertical' }}
+          />
+
+          {error && (
+            <div style={{ background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.25)', borderRadius:8, padding:'10px 12px', fontSize:11, color:'#f87171', lineHeight:1.5 }}>{error}</div>
+          )}
+
+          <button onClick={parseMenu} disabled={!canBuild || extracting}
+            style={{ width:'100%', padding:'14px', borderRadius:12, border:'none', background: canBuild && !extracting ? 'linear-gradient(135deg,#f59e0b,#b45309)' : 'rgba(245,158,11,0.08)', color: canBuild && !extracting ? '#07050b' : 'rgba(245,158,11,0.3)', fontSize:14, fontWeight:900, cursor: canBuild && !extracting ? 'pointer' : 'default', letterSpacing:2 }}>
             BUILD MY POS →
           </button>
         </>
