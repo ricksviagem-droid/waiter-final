@@ -1,9 +1,5 @@
 import OpenAI from 'openai'
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
 type Body = {
   conversation: Array<{ role: string; content: string }>
   stats: {
@@ -24,6 +20,7 @@ type Body = {
 }
 
 export async function POST(req: Request) {
+  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const { conversation, stats, turnFeedbacks }: Body = await req.json()
 
   const transcript = conversation
