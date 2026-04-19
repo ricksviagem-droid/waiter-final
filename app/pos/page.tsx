@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { SCENARIOS, DEMO_MENU, ALL_ITEMS, type PosScenario } from '@/lib/pos/data'
+import { SCENARIOS, DEMO_MENU, ALL_ITEMS, generateScenarios, type PosScenario, type PosMenuItem } from '@/lib/pos/data'
 
 // ── Colors ──────────────────────────────────────────────────────────────────
 const A  = '#f59e0b'   // amber accent
@@ -12,7 +12,7 @@ const CAT_COLORS: Record<string,string> = {
 }
 
 // ── Types ────────────────────────────────────────────────────────────────────
-type GamePhase = 'intro' | 'table' | 'ordering' | 'comment' | 'validate' | 'final'
+type GamePhase = 'menu-setup' | 'intro' | 'table' | 'ordering' | 'comment' | 'validate' | 'final'
 type Category  = 'starter'|'main'|'dessert'|'drink'
 
 interface EnteredItem {
@@ -30,13 +30,13 @@ const KB_ROWS = ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM']
 const PRESETS = ['NO DAIRY','NO GLUTEN','NUT ALLERGY','NO TRUFFLE','NO SAUCE','MEDIUM RARE','WELL DONE','BIRTHDAY','ANNIVERSARY','SPLIT BILL']
 
 // ── Validation ───────────────────────────────────────────────────────────────
-function validate(scenario: PosScenario, entered: EnteredItem[], holdUsed: boolean): ScenarioResult {
+function validate(scenario: PosScenario, entered: EnteredItem[], holdUsed: boolean, itemPool: PosMenuItem[] = ALL_ITEMS): ScenarioResult {
   const results: Array<{ label:string; ok:boolean }> = []
   let earned = 0
-  const perItem = Math.floor(scenario.basePoints / scenario.requiredItems.length)
+  const perItem = Math.floor(scenario.basePoints / Math.max(scenario.requiredItems.length, 1))
 
   for (const req of scenario.requiredItems) {
-    const item = ALL_ITEMS.find(i => i.id === req.itemId)!
+    const item = itemPool.find(i => i.id === req.itemId) || { name: req.itemId, id: req.itemId, short: req.itemId, category: 'main' as const }
     const found = entered.find(e => e.itemId === req.itemId && e.seat === req.seat)
 
     if (!found) {
@@ -76,8 +76,13 @@ function validate(scenario: PosScenario, entered: EnteredItem[], holdUsed: boole
 export default function POSPage() {
   const router = useRouter()
 
+  // Menu state
+  const [activeMenu, setActiveMenu]           = useState<Record<string, PosMenuItem[]>>(DEMO_MENU)
+  const [activeScenarios, setActiveScenarios] = useState<PosScenario[]>(SCENARIOS)
+  const [allItems, setAllItems]               = useState<PosMenuItem[]>(ALL_ITEMS)
+
   // Game state
-  const [phase, setPhase]   = useState<GamePhase>('intro')
+  const [phase, setPhase]   = useState<GamePhase>('menu-setup')
   const [scenIdx, setScenIdx] = useState(0)
   const [totalScore, setTotalScore] = useState(0)
   const [results, setResults] = useState<ScenarioResult[]>([])
@@ -105,7 +110,7 @@ export default function POSPage() {
   // Validate overlay
   const [lastResult, setLastResult] = useState<ScenarioResult|null>(null)
 
-  const scenario = SCENARIOS[scenIdx]
+  const scenario = activeScenarios[scenIdx] || SCENARIOS[0]
 
   // ── Timer ──────────────────────────────────────────────────────────────────
   const stopTimer = useCallback(() => {
@@ -168,7 +173,7 @@ export default function POSPage() {
 
   function sendOrder() {
     stopTimer()
-    const result = validate(scenario, items, holdUsed)
+    const result = validate(scenario, items, holdUsed, allItems)
     result.timeLeft = timeLeft
     const bonus = Math.floor(timeLeft * 2)
     result.earned = Math.min(result.earned + bonus, result.max)
@@ -179,7 +184,7 @@ export default function POSPage() {
   }
 
   function nextScenario() {
-    if (scenIdx + 1 >= SCENARIOS.length) {
+    if (scenIdx + 1 >= activeScenarios.length) {
       setPhase('final')
     } else {
       setScenIdx(i => i + 1)
@@ -189,7 +194,7 @@ export default function POSPage() {
 
   function restart() {
     setScenIdx(0); setTotalScore(0); setResults([])
-    setTableInput(''); setPhase('intro')
+    setTableInput(''); setPhase('menu-setup')
   }
 
   // ── Keyboard helpers ───────────────────────────────────────────────────────
@@ -214,8 +219,25 @@ export default function POSPage() {
 
       <div style={{minHeight:'100dvh',background:BG,fontFamily:'var(--font-geist-sans,Arial,sans-serif)',display:'flex',flexDirection:'column',maxWidth:430,margin:'0 auto'}}>
 
+        {/* MENU SETUP */}
+        {phase==='menu-setup' && (
+          <MenuSetupScreen
+            onDemo={() => {
+              setActiveMenu(DEMO_MENU); setActiveScenarios(SCENARIOS); setAllItems(ALL_ITEMS)
+              setScenIdx(0); setTotalScore(0); setResults([]); setPhase('intro')
+            }}
+            onCustomMenu={(menu) => {
+              const flatItems = Object.values(menu).flat()
+              setActiveMenu(menu); setAllItems(flatItems)
+              setActiveScenarios(generateScenarios(menu))
+              setScenIdx(0); setTotalScore(0); setResults([]); setPhase('intro')
+            }}
+            onBack={() => router.push('/')}
+          />
+        )}
+
         {/* INTRO */}
-        {phase==='intro' && <IntroScreen scenario={scenario} onStart={()=>{setTableInput('');setPhase('table')}} onBack={()=>router.push('/')} />}
+        {phase==='intro' && <IntroScreen scenario={scenario} onStart={()=>{setTableInput('');setPhase('table')}} onBack={()=>setPhase('menu-setup')} />}
 
         {/* TABLE SELECT */}
         {phase==='table' && (
@@ -229,7 +251,7 @@ export default function POSPage() {
         {/* ORDERING */}
         {phase==='ordering' && (
           <OrderingScreen
-            scenario={scenario} scenIdx={scenIdx}
+            scenario={scenario} scenIdx={scenIdx} menuData={activeMenu}
             timeLeft={timeLeft} timerPct={timerPct} timerColor={timerColor}
             cat={cat} seat={seat} items={items} holdActive={holdActive}
             onCat={setCat} onSeat={setSeat} onAddItem={addItem}
@@ -267,6 +289,124 @@ export default function POSPage() {
 
       </div>
     </>
+  )
+}
+
+// ── MenuSetupScreen ──────────────────────────────────────────────────────────
+function MenuSetupScreen({ onDemo, onCustomMenu, onBack }: {
+  onDemo: () => void
+  onCustomMenu: (menu: Record<string, PosMenuItem[]>) => void
+  onBack: () => void
+}) {
+  const [step, setStep]         = useState<'choose'|'upload'|'parsing'>('choose')
+  const [menuText, setMenuText] = useState('')
+  const [error, setError]       = useState('')
+  const fileRef                 = useRef<HTMLInputElement>(null)
+  const TEXT_EXTS               = /\.(txt|md|csv|tsv|json|xml|rtf|html?)$/i
+
+  async function loadFile(file: File) {
+    if (TEXT_EXTS.test(file.name) || file.type.startsWith('text/')) {
+      const reader = new FileReader()
+      reader.onload = e => setMenuText((e.target?.result as string) || '')
+      reader.readAsText(file); return
+    }
+    setStep('parsing')
+    try {
+      const fd = new FormData(); fd.append('file', file)
+      const res = await fetch('/api/menu-master/extract', { method:'POST', body:fd })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      setMenuText(data.text || '')
+      setStep('upload')
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Failed to read file')
+      setStep('upload')
+    }
+  }
+
+  async function parseMenu() {
+    if (menuText.trim().length < 20) { setError('Menu text too short'); return }
+    setError(''); setStep('parsing')
+    try {
+      const res = await fetch('/api/pos/parse-menu', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ menuText }),
+      })
+      const data = await res.json()
+      if (data.error || !data.menu) throw new Error(data.error || 'Parse failed')
+      onCustomMenu(data.menu)
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Failed to parse menu')
+      setStep('upload')
+    }
+  }
+
+  if (step === 'parsing') return (
+    <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:16,padding:24}}>
+      <div style={{width:48,height:48,border:`2px solid rgba(245,158,11,0.2)`,borderTop:`2px solid #f59e0b`,borderRadius:'50%',animation:'spin 0.8s linear infinite'}} />
+      <div style={{fontSize:13,color:'rgba(245,158,11,0.7)'}}>Building your POS menu…</div>
+    </div>
+  )
+
+  return (
+    <div style={{flex:1,display:'flex',flexDirection:'column',padding:'18px',gap:14,overflowY:'auto'}}>
+      <div style={{display:'flex',alignItems:'center',gap:10}}>
+        <button onClick={step==='upload'?()=>setStep('choose'):onBack} style={{background:'none',border:'none',color:'rgba(245,158,11,0.5)',fontSize:18,cursor:'pointer'}}>←</button>
+        <div>
+          <div style={{fontSize:7,color:'rgba(245,158,11,0.5)',letterSpacing:3,fontFamily:'monospace'}}>MODULE 09</div>
+          <div style={{fontSize:15,fontWeight:900,color:'#ffe8a0',letterSpacing:2}}>MICROS POS SIMULATOR</div>
+        </div>
+      </div>
+
+      {step === 'choose' && (
+        <>
+          <div style={{textAlign:'center',padding:'12px 0 4px'}}>
+            <div style={{fontSize:36,marginBottom:8}}>🖥️</div>
+            <p style={{fontSize:12,color:'#6a5a30',lineHeight:1.7}}>Choose a menu to load into the POS terminal</p>
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            <div onClick={onDemo} style={{background:'rgba(245,158,11,0.06)',border:'1px solid rgba(245,158,11,0.2)',borderRadius:14,padding:'18px 16px',cursor:'pointer',display:'flex',gap:14,alignItems:'center'}}>
+              <div style={{fontSize:28}}>⚡</div>
+              <div>
+                <div style={{fontSize:13,fontWeight:800,color:'#ffe8a0',marginBottom:4}}>Use Demo Menu</div>
+                <div style={{fontSize:11,color:'#6a5a30',lineHeight:1.5}}>16 items — Sea Bass, Wagyu, Chablis…<br/>8 pre-built scenarios. Start instantly.</div>
+              </div>
+            </div>
+            <div onClick={()=>setStep('upload')} style={{background:'rgba(245,158,11,0.03)',border:'1px solid rgba(245,158,11,0.12)',borderRadius:14,padding:'18px 16px',cursor:'pointer',display:'flex',gap:14,alignItems:'center'}}>
+              <div style={{fontSize:28}}>📄</div>
+              <div>
+                <div style={{fontSize:13,fontWeight:800,color:'#ffe8a0',marginBottom:4}}>Upload My Menu</div>
+                <div style={{fontSize:11,color:'#6a5a30',lineHeight:1.5}}>PDF, DOCX, TXT, image…<br/>AI extracts items → custom POS + scenarios.</div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {step === 'upload' && (
+        <>
+          <div style={{fontSize:13,fontWeight:800,color:'#ffe8a0'}}>Upload or paste your menu</div>
+          <input ref={fileRef} type="file" accept=".txt,.md,.pdf,.doc,.docx,.png,.jpg,.jpeg,.webp,.csv" style={{display:'none'}}
+            onChange={e => { const f=e.target.files?.[0]; if(f) loadFile(f); e.target.value='' }} />
+          <div onClick={()=>fileRef.current?.click()} style={{border:'1.5px dashed rgba(245,158,11,0.25)',borderRadius:12,padding:'20px',textAlign:'center',cursor:'pointer',background:'rgba(245,158,11,0.02)'}}>
+            <div style={{fontSize:24,marginBottom:6}}>📂</div>
+            <div style={{fontSize:12,color:'#c8a060'}}>PDF · DOCX · PNG/JPG · TXT · CSV</div>
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:8}}>
+            <div style={{flex:1,height:1,background:'rgba(245,158,11,0.1)'}} />
+            <span style={{fontSize:10,color:'rgba(245,158,11,0.3)'}}>or paste below</span>
+            <div style={{flex:1,height:1,background:'rgba(245,158,11,0.1)'}} />
+          </div>
+          <textarea value={menuText} onChange={e=>setMenuText(e.target.value)} placeholder="Paste your menu text here…" rows={7}
+            style={{width:'100%',padding:'10px 12px',borderRadius:10,border:'1px solid rgba(245,158,11,0.2)',background:'rgba(245,158,11,0.03)',color:'#ffe8a0',fontSize:12,outline:'none',fontFamily:'inherit',resize:'vertical'}} />
+          {error && <div style={{fontSize:11,color:'#f87171'}}>{error}</div>}
+          <button onClick={parseMenu} disabled={menuText.trim().length<20}
+            style={{width:'100%',padding:'14px',borderRadius:12,border:'none',background:menuText.trim().length>=20?'linear-gradient(135deg,#f59e0b,#b45309)':'rgba(245,158,11,0.08)',color:menuText.trim().length>=20?'#07050b':'rgba(245,158,11,0.3)',fontSize:14,fontWeight:900,cursor:menuText.trim().length>=20?'pointer':'default',letterSpacing:2}}>
+            BUILD MY POS →
+          </button>
+        </>
+      )}
+    </div>
   )
 }
 
@@ -378,8 +518,8 @@ function TableScreen({ scenario, scenIdx, total, tableInput, tableError, onInput
 }
 
 // ── OrderingScreen ───────────────────────────────────────────────────────────
-function OrderingScreen({ scenario, scenIdx, timeLeft, timerPct, timerColor, cat, seat, items, holdActive, onCat, onSeat, onAddItem, onFoodComment, onDrinkComment, onHold, onSend }:{
-  scenario:PosScenario; scenIdx:number
+function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timerColor, cat, seat, items, holdActive, onCat, onSeat, onAddItem, onFoodComment, onDrinkComment, onHold, onSend }:{
+  scenario:PosScenario; scenIdx:number; menuData:Record<string,PosMenuItem[]>
   timeLeft:number; timerPct:number; timerColor:string
   cat:Category; seat:number; items:EnteredItem[]; holdActive:boolean
   onCat:(c:Category)=>void; onSeat:(n:number)=>void
@@ -389,7 +529,7 @@ function OrderingScreen({ scenario, scenIdx, timeLeft, timerPct, timerColor, cat
 }) {
   const cats: Category[] = ['starter','main','dessert','drink']
   const catLabels: Record<Category,string> = { starter:'STARTERS', main:'MAINS', dessert:'DESSERTS', drink:'DRINKS' }
-  const menuItems = DEMO_MENU[cat] || []
+  const menuItems = menuData[cat] || []
 
   return (
     <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
