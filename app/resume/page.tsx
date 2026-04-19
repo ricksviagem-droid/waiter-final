@@ -179,7 +179,7 @@ export default function ResumePage() {
         @keyframes spin { to{transform:rotate(360deg)} }
         @keyframes pop { 0%{transform:scale(0.85);opacity:0} 60%{transform:scale(1.06)} 100%{transform:scale(1);opacity:1} }
         * { box-sizing:border-box; margin:0; padding:0; }
-        html,body { height:100%; background:#000; }
+        html,body { height:100%; background:#000; background:#000; }
         ::placeholder { color:rgba(167,139,250,0.3); }
         ::-webkit-scrollbar { width:3px; }
         ::-webkit-scrollbar-thumb { background:rgba(167,139,250,0.2); border-radius:3px; }

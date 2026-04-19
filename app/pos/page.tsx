@@ -5,8 +5,37 @@ import { useRouter } from 'next/navigation'
 import { SCENARIOS, DEMO_MENU, ALL_ITEMS, generateScenarios, type PosScenario, type PosMenuItem } from '@/lib/pos/data'
 
 // ── Colors ──────────────────────────────────────────────────────────────────
-const A  = '#f59e0b'   // amber accent
+const A  = '#f59e0b'
 const BG = '#0a0c09'
+
+// ── Sounds ───────────────────────────────────────────────────────────────────
+function playPOS(type: 'open'|'add'|'error'|'comment'|'hold'|'fire'|'send') {
+  try {
+    const ctx = new AudioContext()
+    const g = ctx.createGain()
+    g.connect(ctx.destination)
+    const notes: Record<string,[number,number,number][]> = {
+      open:    [[880,0,0.06],[1100,0.1,0.06]],
+      add:     [[660,0,0.05]],
+      error:   [[220,0,0.1],[160,0.15,0.1]],
+      comment: [[750,0,0.04],[950,0.1,0.04]],
+      hold:    [[400,0,0.06],[300,0.12,0.06]],
+      fire:    [[440,0,0.05],[660,0.09,0.05],[880,0.18,0.07]],
+      send:    [[523,0,0.06],[659,0.12,0.06],[784,0.24,0.07]],
+    }
+    notes[type].forEach(([freq,delay,vol])=>{
+      const o=ctx.createOscillator(); const gn=ctx.createGain()
+      o.connect(gn); gn.connect(ctx.destination)
+      o.type='sine'; o.frequency.value=freq
+      const t=ctx.currentTime+delay
+      gn.gain.setValueAtTime(0,t)
+      gn.gain.linearRampToValueAtTime(vol,t+0.02)
+      gn.gain.exponentialRampToValueAtTime(0.001,t+0.25)
+      o.start(t); o.stop(t+0.25)
+    })
+    void g
+  } catch {}
+}
 const CAT_COLORS: Record<string,string> = {
   starter:'#22c55e', main:'#3b82f6', dessert:'#f97316', drink:'#a855f7'
 }
@@ -101,6 +130,7 @@ export default function POSPage() {
   const [items, setItems] = useState<EnteredItem[]>([])
   const [holdActive, setHoldActive] = useState(false)
   const [holdUsed, setHoldUsed]     = useState(false)
+  const [fireUsed, setFireUsed]     = useState(false)
 
   // Comment overlay
   const [commentType, setCommentType] = useState<'food'|'drink'|null>(null)
@@ -134,17 +164,27 @@ export default function POSPage() {
   function openTable() {
     if (parseInt(tableInput) === scenario.tableNumber) {
       setTableError(false)
-      setItems([]); setHoldActive(false); setHoldUsed(false); setSeat(1); setCat('main')
+      setItems([]); setHoldActive(false); setHoldUsed(false); setFireUsed(false); setSeat(1); setCat('main')
       startTimer(scenario.timeSeconds)
+      playPOS('open')
       setPhase('ordering')
     } else {
       setTableError(true)
+      playPOS('error')
       setTimeout(() => setTableError(false), 800)
     }
   }
 
   function addItem(itemId: string, name: string) {
     setItems(prev => [...prev, { itemId, name, seat, category:cat, comment:'', commentType:null, held:holdActive }])
+    playPOS('add')
+  }
+
+  function fireCourse() {
+    setHoldActive(false)
+    setFireUsed(true)
+    setItems(prev => prev.map(it => ({ ...it, held: false })))
+    playPOS('fire')
   }
 
   function openComment(type: 'food'|'drink') {
@@ -169,10 +209,12 @@ export default function POSPage() {
     const next = !holdActive
     setHoldActive(next)
     if (next) setHoldUsed(true)
+    playPOS(next ? 'hold' : 'add')
   }
 
   function sendOrder() {
     stopTimer()
+    playPOS('send')
     const result = validate(scenario, items, holdUsed, allItems)
     result.timeLeft = timeLeft
     const bonus = Math.floor(timeLeft * 2)
@@ -211,6 +253,8 @@ export default function POSPage() {
         @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
         @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
         @keyframes pop{0%{transform:scale(0.85);opacity:0}60%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+        @keyframes spin{to{transform:rotate(360deg)}}
         *{box-sizing:border-box;margin:0;padding:0}
         html,body{height:100%;background:#000}
         ::-webkit-scrollbar{width:2px}
@@ -257,7 +301,7 @@ export default function POSPage() {
             onCat={setCat} onSeat={setSeat} onAddItem={addItem}
             onFoodComment={()=>openComment('food')}
             onDrinkComment={()=>openComment('drink')}
-            onHold={toggleHold} onSend={sendOrder}
+            onHold={toggleHold} onFire={fireCourse} onSend={sendOrder}
           />
         )}
 
@@ -518,14 +562,14 @@ function TableScreen({ scenario, scenIdx, total, tableInput, tableError, onInput
 }
 
 // ── OrderingScreen ───────────────────────────────────────────────────────────
-function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timerColor, cat, seat, items, holdActive, onCat, onSeat, onAddItem, onFoodComment, onDrinkComment, onHold, onSend }:{
+function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timerColor, cat, seat, items, holdActive, onCat, onSeat, onAddItem, onFoodComment, onDrinkComment, onHold, onFire, onSend }:{
   scenario:PosScenario; scenIdx:number; menuData:Record<string,PosMenuItem[]>
   timeLeft:number; timerPct:number; timerColor:string
   cat:Category; seat:number; items:EnteredItem[]; holdActive:boolean
   onCat:(c:Category)=>void; onSeat:(n:number)=>void
   onAddItem:(id:string,name:string)=>void
   onFoodComment:()=>void; onDrinkComment:()=>void
-  onHold:()=>void; onSend:()=>void
+  onHold:()=>void; onFire:()=>void; onSend:()=>void
 }) {
   const cats: Category[] = ['starter','main','dessert','drink']
   const catLabels: Record<Category,string> = { starter:'STARTERS', main:'MAINS', dessert:'DESSERTS', drink:'DRINKS' }
@@ -624,13 +668,22 @@ function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timer
           background:'rgba(168,85,247,0.08)',color: items.length ? '#a855f7' : 'rgba(168,85,247,0.25)',
           fontSize:8,fontWeight:700,cursor:items.length?'pointer':'default',letterSpacing:0.3,
         }}>DRINK{'\n'}CMT</button>
-        <button onClick={onHold} style={{
-          padding:'9px 4px',borderRadius:8,
-          border:`1px solid ${holdActive?'rgba(239,68,68,0.5)':'rgba(239,68,68,0.2)'}`,
-          background: holdActive ? 'rgba(239,68,68,0.15)' : 'rgba(239,68,68,0.06)',
-          color: holdActive ? '#ef4444' : 'rgba(239,68,68,0.5)',
-          fontSize:8,fontWeight:700,cursor:'pointer',letterSpacing:0.3,
-        }}>{holdActive?'🔒 HELD':'HOLD'}{'\n'}COURSE</button>
+        {holdActive ? (
+          <button onClick={onFire} style={{
+            padding:'9px 4px',borderRadius:8,
+            border:'1px solid rgba(239,68,68,0.6)',
+            background:'rgba(239,68,68,0.2)',
+            color:'#ef4444',fontSize:8,fontWeight:900,cursor:'pointer',
+            letterSpacing:0.3,animation:'pulse 1s ease-in-out infinite',
+          }}>🔥 FIRE{'\n'}COURSE</button>
+        ) : (
+          <button onClick={onHold} style={{
+            padding:'9px 4px',borderRadius:8,
+            border:'1px solid rgba(239,68,68,0.2)',
+            background:'rgba(239,68,68,0.06)',
+            color:'rgba(239,68,68,0.5)',fontSize:8,fontWeight:700,cursor:'pointer',letterSpacing:0.3,
+          }}>HOLD{'\n'}COURSE</button>
+        )}
         <button onClick={onSend} disabled={items.length===0} style={{
           padding:'9px 4px',borderRadius:8,border:'none',
           background: items.length ? 'linear-gradient(135deg,#f59e0b,#b45309)' : 'rgba(245,158,11,0.08)',

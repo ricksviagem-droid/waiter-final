@@ -61,7 +61,7 @@ export default function ShiftPage() {
           to { opacity: 1; transform: translateY(0); }
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { height: 100%; }
+        html, body { height: 100%; background: #000; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }

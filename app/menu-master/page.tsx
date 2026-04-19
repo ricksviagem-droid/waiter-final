@@ -153,7 +153,7 @@ export default function MenuMasterPage() {
         @keyframes spin { to{transform:rotate(360deg)} }
         @keyframes pop { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
         * { box-sizing:border-box; margin:0; padding:0; }
-        html,body { height:100%; }
+        html,body { height:100%; background:#000; }
         ::-webkit-scrollbar { width:3px; }
         ::-webkit-scrollbar-thumb { background:#0a2a2a; border-radius:3px; }
       `}</style>
