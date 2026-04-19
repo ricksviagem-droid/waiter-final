@@ -20,7 +20,7 @@ export default function VereditorQuiz() {
   const [profile, setProfile] = useState<ProfileData | null>(null)
   const [idea, setIdea] = useState<IdeaData | null>(null)
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
-  const [isUnlocked, setIsUnlocked] = useState(false)
+  const [isUnlocked, setIsUnlocked] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isVerifying, setIsVerifying] = useState(false)
 
