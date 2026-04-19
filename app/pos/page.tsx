@@ -41,7 +41,7 @@ const CAT_COLORS: Record<string,string> = {
 }
 
 // ── Types ────────────────────────────────────────────────────────────────────
-type GamePhase = 'menu-setup' | 'intro' | 'table' | 'ordering' | 'comment' | 'validate' | 'final'
+type GamePhase = 'menu-setup' | 'intro' | 'table' | 'ordering' | 'comment' | 'fire-timer' | 'validate' | 'final'
 type Category  = 'starter'|'main'|'dessert'|'drink'
 
 interface EnteredItem {
@@ -56,7 +56,12 @@ interface ScenarioResult {
 
 // ── Keyboard layout ──────────────────────────────────────────────────────────
 const KB_ROWS = ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM']
-const PRESETS = ['NO DAIRY','NO GLUTEN','NUT ALLERGY','NO TRUFFLE','NO SAUCE','MEDIUM RARE','WELL DONE','BIRTHDAY','ANNIVERSARY','SPLIT BILL']
+const PRESETS = [
+  'RARE','MED RARE','MEDIUM','MED WELL','WELL DONE',
+  'NO DAIRY','NO GLUTEN','NUT ALLERGY','NO TRUFFLE','NO SAUCE',
+  'BÉARNAISE','PEPPERCORN','WITH FRIES','WITH SALAD',
+  'BIRTHDAY','ANNIVERSARY',
+]
 
 // ── Validation ───────────────────────────────────────────────────────────────
 function validate(scenario: PosScenario, entered: EnteredItem[], holdUsed: boolean, itemPool: PosMenuItem[] = ALL_ITEMS): ScenarioResult {
@@ -120,6 +125,10 @@ export default function POSPage() {
   const [timeLeft, setTimeLeft] = useState(120)
   const timerRef = useRef<ReturnType<typeof setInterval>|null>(null)
 
+  // Fire-course timer
+  const [fireTimerCount, setFireTimerCount] = useState(0)
+  const fireTimerRef = useRef<ReturnType<typeof setInterval>|null>(null)
+
   // Table select
   const [tableInput, setTableInput] = useState('')
   const [tableError, setTableError] = useState(false)
@@ -158,7 +167,10 @@ export default function POSPage() {
     }, 1000)
   }, [stopTimer])
 
-  useEffect(() => () => stopTimer(), [stopTimer])
+  useEffect(() => () => {
+    stopTimer()
+    if (fireTimerRef.current) clearInterval(fireTimerRef.current)
+  }, [stopTimer])
 
   // ── Actions ────────────────────────────────────────────────────────────────
   function openTable() {
@@ -173,6 +185,12 @@ export default function POSPage() {
       playPOS('error')
       setTimeout(() => setTableError(false), 800)
     }
+  }
+
+  function voidItem() {
+    if (items.length === 0) return
+    setItems(prev => prev.slice(0, -1))
+    playPOS('error')
   }
 
   function addItem(itemId: string, name: string) {
@@ -222,7 +240,32 @@ export default function POSPage() {
     setLastResult(result)
     setResults(prev => [...prev, result])
     setTotalScore(s => s + result.earned)
+
+    if (holdUsed && !fireUsed) {
+      setFireTimerCount(0)
+      let c = 0
+      fireTimerRef.current = setInterval(() => {
+        c++
+        setFireTimerCount(c)
+        if (c >= 75) {
+          if (fireTimerRef.current) clearInterval(fireTimerRef.current)
+          fireTimerRef.current = null
+          setFireUsed(true)
+          setPhase('validate')
+          playPOS('fire')
+        }
+      }, 1000)
+      setPhase('fire-timer')
+    } else {
+      setPhase('validate')
+    }
+  }
+
+  function confirmFireCourse() {
+    if (fireTimerRef.current) { clearInterval(fireTimerRef.current); fireTimerRef.current = null }
+    setFireUsed(true)
     setPhase('validate')
+    playPOS('fire')
   }
 
   function nextScenario() {
@@ -302,6 +345,16 @@ export default function POSPage() {
             onFoodComment={()=>openComment('food')}
             onDrinkComment={()=>openComment('drink')}
             onHold={toggleHold} onFire={fireCourse} onSend={sendOrder}
+            onVoid={voidItem}
+          />
+        )}
+
+        {/* FIRE TIMER */}
+        {phase==='fire-timer' && (
+          <FireTimerScreen
+            count={fireTimerCount}
+            tableNumber={scenario.tableNumber}
+            onFire={confirmFireCourse}
           />
         )}
 
@@ -562,14 +615,14 @@ function TableScreen({ scenario, scenIdx, total, tableInput, tableError, onInput
 }
 
 // ── OrderingScreen ───────────────────────────────────────────────────────────
-function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timerColor, cat, seat, items, holdActive, onCat, onSeat, onAddItem, onFoodComment, onDrinkComment, onHold, onFire, onSend }:{
+function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timerColor, cat, seat, items, holdActive, onCat, onSeat, onAddItem, onFoodComment, onDrinkComment, onHold, onFire, onSend, onVoid }:{
   scenario:PosScenario; scenIdx:number; menuData:Record<string,PosMenuItem[]>
   timeLeft:number; timerPct:number; timerColor:string
   cat:Category; seat:number; items:EnteredItem[]; holdActive:boolean
   onCat:(c:Category)=>void; onSeat:(n:number)=>void
   onAddItem:(id:string,name:string)=>void
   onFoodComment:()=>void; onDrinkComment:()=>void
-  onHold:()=>void; onFire:()=>void; onSend:()=>void
+  onHold:()=>void; onFire:()=>void; onSend:()=>void; onVoid:()=>void
 }) {
   const cats: Category[] = ['starter','main','dessert','drink']
   const catLabels: Record<Category,string> = { starter:'STARTERS', main:'MAINS', dessert:'DESSERTS', drink:'DRINKS' }
@@ -656,8 +709,8 @@ function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timer
         ))}
       </div>
 
-      {/* Action bar */}
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:5,padding:'6px 10px 14px',borderTop:'1px solid rgba(255,255,255,0.04)'}}>
+      {/* Action bar — row 1 */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:5,padding:'6px 10px 3px',borderTop:'1px solid rgba(255,255,255,0.04)'}}>
         <button onClick={onFoodComment} disabled={items.length===0} style={{
           padding:'9px 4px',borderRadius:8,border:'1px solid rgba(251,146,60,0.25)',
           background:'rgba(251,146,60,0.08)',color: items.length ? '#fb923c' : 'rgba(251,146,60,0.25)',
@@ -668,6 +721,14 @@ function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timer
           background:'rgba(168,85,247,0.08)',color: items.length ? '#a855f7' : 'rgba(168,85,247,0.25)',
           fontSize:8,fontWeight:700,cursor:items.length?'pointer':'default',letterSpacing:0.3,
         }}>DRINK{'\n'}CMT</button>
+        <button onClick={onVoid} disabled={items.length===0} style={{
+          padding:'9px 4px',borderRadius:8,border:'1px solid rgba(239,68,68,0.25)',
+          background:'rgba(239,68,68,0.06)',color: items.length ? '#ef4444' : 'rgba(239,68,68,0.2)',
+          fontSize:8,fontWeight:700,cursor:items.length?'pointer':'default',letterSpacing:0.3,
+        }}>✕ VOID{'\n'}LAST</button>
+      </div>
+      {/* Action bar — row 2 */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1.4fr',gap:5,padding:'3px 10px 14px'}}>
         {holdActive ? (
           <button onClick={onFire} style={{
             padding:'9px 4px',borderRadius:8,
@@ -689,7 +750,7 @@ function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timer
           background: items.length ? 'linear-gradient(135deg,#f59e0b,#b45309)' : 'rgba(245,158,11,0.08)',
           color: items.length ? '#07050b' : 'rgba(245,158,11,0.3)',
           fontSize:9,fontWeight:900,cursor:items.length?'pointer':'default',letterSpacing:0.5,
-        }}>SEND{'\n'}ORDER</button>
+        }}>SEND ORDER →</button>
       </div>
     </div>
   )
@@ -788,6 +849,89 @@ function ValidateScreen({ scenario, result, isLast, onNext }:{
       }}>
         {isLast ? 'SEE FINAL SCORE →' : 'NEXT ORDER →'}
       </button>
+    </div>
+  )
+}
+
+// ── FireTimerScreen ───────────────────────────────────────────────────────────
+function FireTimerScreen({ count, tableNumber, onFire }: { count: number; tableNumber: number; onFire: () => void }) {
+  const ideal = count >= 30 && count <= 50
+  const tooEarly = count < 25
+  const late = count > 60
+
+  const statusText = tooEarly
+    ? 'Guests are eating starters...'
+    : ideal
+    ? '✓ Good time to fire!'
+    : 'Fire now — do not wait!'
+
+  const statusColor = tooEarly ? '#f59e0b' : ideal ? '#22c55e' : '#ef4444'
+  const circumference = 2 * Math.PI * 60
+  const progress = Math.min(count / 65, 1)
+
+  return (
+    <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'24px 20px', gap:20, background:'#0a0c09', animation:'fadeIn 0.3s ease both' }}>
+      <div style={{ textAlign:'center' }}>
+        <div style={{ fontSize:9, color:'rgba(245,158,11,0.5)', letterSpacing:3, fontFamily:'monospace', marginBottom:6 }}>TABLE {tableNumber} · STARTERS AWAY</div>
+        <div style={{ fontSize:15, fontWeight:900, color:'#ffe8a0' }}>Fire Main Course</div>
+        <div style={{ fontSize:11, color:'#6a5a30', marginTop:4 }}>Return to the table and fire when guests are ready</div>
+      </div>
+
+      <div style={{ position:'relative', width:160, height:160, display:'flex', alignItems:'center', justifyContent:'center' }}>
+        <svg width="160" height="160" style={{ position:'absolute', top:0, left:0 }}>
+          <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(245,158,11,0.08)" strokeWidth="10"/>
+          {/* Green optimal zone arc: 30-50s = 46%–77% of circle */}
+          <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(34,197,94,0.25)" strokeWidth="10"
+            strokeDasharray={`${(20/65)*circumference} ${circumference}`}
+            strokeDashoffset={`${circumference - (30/65)*circumference}`}
+            strokeLinecap="round"
+            style={{ transform:'rotate(-90deg)', transformOrigin:'80px 80px' }}
+          />
+          <circle cx="80" cy="80" r="60" fill="none"
+            stroke={ideal ? '#22c55e' : tooEarly ? '#f59e0b' : '#ef4444'}
+            strokeWidth="10"
+            strokeDasharray={`${progress * circumference} ${circumference}`}
+            strokeLinecap="round"
+            style={{ transform:'rotate(-90deg)', transformOrigin:'80px 80px', transition:'stroke-dasharray 1s linear, stroke 0.5s' }}
+          />
+        </svg>
+        <div style={{ textAlign:'center' }}>
+          <div style={{ fontSize:44, fontWeight:900, fontFamily:'monospace', color:'#ffe8a0', lineHeight:1 }}>{count}s</div>
+          <div style={{ fontSize:9, color:statusColor, marginTop:4, fontWeight:700 }}>{statusText}</div>
+        </div>
+      </div>
+
+      <div style={{ width:'100%', background:'rgba(0,0,0,0.4)', borderRadius:10, padding:'10px 14px' }}>
+        <div style={{ fontSize:8, color:'rgba(245,158,11,0.4)', letterSpacing:2, marginBottom:6 }}>OPTIMAL FIRE WINDOW</div>
+        <div style={{ position:'relative', height:6, background:'rgba(255,255,255,0.05)', borderRadius:3 }}>
+          <div style={{ position:'absolute', left:`${(30/65)*100}%`, width:`${(20/65)*100}%`, height:'100%', background:'rgba(34,197,94,0.35)', borderRadius:3 }} />
+          <div style={{ position:'absolute', top:'50%', left:`${Math.min(progress*100,100)}%`, transform:'translate(-50%,-50%)', width:12, height:12, borderRadius:'50%', background:statusColor, boxShadow:`0 0 8px ${statusColor}`, transition:'left 1s linear' }} />
+        </div>
+        <div style={{ display:'flex', justifyContent:'space-between', marginTop:4, fontSize:8, color:'rgba(255,255,255,0.2)' }}>
+          <span>0s</span><span style={{ color:'#22c55e' }}>30–50s ✓</span><span>65s</span>
+        </div>
+      </div>
+
+      <button onClick={onFire} style={{
+        width:'100%', padding:'18px', borderRadius:14, border:'none',
+        background: tooEarly
+          ? 'rgba(245,158,11,0.12)'
+          : ideal
+          ? 'linear-gradient(135deg,#22c55e,#15803d)'
+          : 'linear-gradient(135deg,#ef4444,#b91c1c)',
+        color: tooEarly ? 'rgba(245,158,11,0.4)' : '#fff',
+        fontSize:14, fontWeight:900, cursor:'pointer', letterSpacing:2,
+        boxShadow: ideal ? '0 0 30px rgba(34,197,94,0.4)' : 'none',
+        animation: ideal ? 'pulse 1s ease-in-out infinite' : 'none',
+        transition:'all 0.5s',
+      }}>
+        🔥 FIRE MAIN COURSE
+      </button>
+      {tooEarly && (
+        <div style={{ fontSize:10, color:'rgba(245,158,11,0.3)', textAlign:'center' }}>
+          Wait until guests have nearly finished starters (30–50s)
+        </div>
+      )}
     </div>
   )
 }

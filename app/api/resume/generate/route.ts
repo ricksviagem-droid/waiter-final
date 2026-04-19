@@ -80,7 +80,14 @@ Languages: ${formData.languages}
 Target establishments: ${formData.target}
 Notable highlights: ${formData.highlights || 'None specified'}`
   } else if (mode === 'improve' && cvText) {
-    userContent = `Rewrite and significantly improve this CV into a world-class hospitality resume in professional British English. Fix grammar, enhance descriptions, add strong action verbs, and restructure for maximum impact. Keep all factual information accurate.
+    userContent = `Rewrite this CV into a world-class hospitality resume in professional British English.
+
+STRICT RULES — you MUST follow these:
+- Use ONLY the information present in the original CV below. Do NOT add, invent, or assume any experience, company names, dates, qualifications, or achievements that are not explicitly stated.
+- If a field (e.g. education, certifications) is not mentioned in the CV, return an empty array for that field.
+- Preserve all real dates, job titles, and employer names exactly as given.
+- You may improve the language, grammar, and structure — but never fabricate content.
+- Enhance descriptions with strong action verbs and professional phrasing based ONLY on what is already there.
 
 ORIGINAL CV:
 ${cvText.slice(0, 8000)}`
