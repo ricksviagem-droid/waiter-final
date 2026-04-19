@@ -329,7 +329,7 @@ export default function POSPage() {
         {/* TABLE SELECT */}
         {phase==='table' && (
           <TableScreen
-            scenario={scenario} scenIdx={scenIdx} total={SCENARIOS.length}
+            scenario={scenario} scenIdx={scenIdx} total={activeScenarios.length}
             tableInput={tableInput} tableError={tableError}
             onInput={setTableInput} onOpen={openTable} onBack={()=>router.push('/')}
           />
@@ -338,7 +338,7 @@ export default function POSPage() {
         {/* ORDERING */}
         {phase==='ordering' && (
           <OrderingScreen
-            scenario={scenario} scenIdx={scenIdx} menuData={activeMenu}
+            scenario={scenario} scenIdx={scenIdx} total={activeScenarios.length} menuData={activeMenu}
             timeLeft={timeLeft} timerPct={timerPct} timerColor={timerColor}
             cat={cat} seat={seat} items={items} holdActive={holdActive}
             onCat={setCat} onSeat={setSeat} onAddItem={addItem}
@@ -354,6 +354,8 @@ export default function POSPage() {
           <FireTimerScreen
             count={fireTimerCount}
             tableNumber={scenario.tableNumber}
+            guestName={scenario.guestName}
+            pax={scenario.pax}
             onFire={confirmFireCourse}
           />
         )}
@@ -374,7 +376,7 @@ export default function POSPage() {
         {phase==='validate' && lastResult && (
           <ValidateScreen
             scenario={scenario} result={lastResult}
-            isLast={scenIdx+1>=SCENARIOS.length}
+            isLast={scenIdx+1>=activeScenarios.length}
             onNext={nextScenario}
           />
         )}
@@ -571,7 +573,21 @@ function TableScreen({ scenario, scenIdx, total, tableInput, tableError, onInput
     <div style={{flex:1,display:'flex',flexDirection:'column',padding:'18px',gap:14,animation:'fadeIn 0.3s ease both'}}>
       <div style={{display:'flex',alignItems:'center',gap:10}}>
         <button onClick={onBack} style={{background:'none',border:'none',color:'rgba(245,158,11,0.5)',fontSize:18,cursor:'pointer'}}>←</button>
-        <div style={{fontSize:10,color:'rgba(245,158,11,0.5)',fontFamily:'monospace'}}>ORDER {scenIdx+1}/{total} · Difficulty {'★'.repeat(scenario.difficulty)}</div>
+        <div style={{fontSize:10,color:'rgba(245,158,11,0.5)',fontFamily:'monospace'}}>ORDER {scenIdx+1}/{total} · {'★'.repeat(scenario.difficulty)}</div>
+      </div>
+
+      {/* Guest info strip */}
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:6}}>
+        {[
+          { label:'GUEST', value: scenario.guestName },
+          { label:'PAX',   value: `${scenario.pax} cover${scenario.pax>1?'s':''}` },
+          { label:'TABLE', value: `#${scenario.tableNumber}` },
+        ].map(c => (
+          <div key={c.label} style={{background:'rgba(245,158,11,0.05)',border:'1px solid rgba(245,158,11,0.12)',borderRadius:8,padding:'8px 6px',textAlign:'center'}}>
+            <div style={{fontSize:7,color:'rgba(245,158,11,0.45)',letterSpacing:2,marginBottom:3}}>{c.label}</div>
+            <div style={{fontSize:10,fontWeight:800,color:'#ffe8a0',lineHeight:1.2}}>{c.value}</div>
+          </div>
+        ))}
       </div>
 
       <div style={{background:'rgba(245,158,11,0.05)',border:'1px solid rgba(245,158,11,0.15)',borderRadius:12,padding:'14px',borderLeft:'3px solid #f59e0b'}}>
@@ -615,8 +631,8 @@ function TableScreen({ scenario, scenIdx, total, tableInput, tableError, onInput
 }
 
 // ── OrderingScreen ───────────────────────────────────────────────────────────
-function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timerColor, cat, seat, items, holdActive, onCat, onSeat, onAddItem, onFoodComment, onDrinkComment, onHold, onFire, onSend, onVoid }:{
-  scenario:PosScenario; scenIdx:number; menuData:Record<string,PosMenuItem[]>
+function OrderingScreen({ scenario, scenIdx, total, menuData, timeLeft, timerPct, timerColor, cat, seat, items, holdActive, onCat, onSeat, onAddItem, onFoodComment, onDrinkComment, onHold, onFire, onSend, onVoid }:{
+  scenario:PosScenario; scenIdx:number; total:number; menuData:Record<string,PosMenuItem[]>
   timeLeft:number; timerPct:number; timerColor:string
   cat:Category; seat:number; items:EnteredItem[]; holdActive:boolean
   onCat:(c:Category)=>void; onSeat:(n:number)=>void
@@ -636,17 +652,19 @@ function OrderingScreen({ scenario, scenIdx, menuData, timeLeft, timerPct, timer
       </div>
 
       {/* Header */}
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px',background:'rgba(0,0,0,0.4)',borderBottom:'1px solid rgba(245,158,11,0.1)'}}>
-        <div style={{fontFamily:'monospace',fontSize:11,color:'rgba(245,158,11,0.7)'}}>
-          ORDER {scenIdx+1}/8 · TABLE {scenario.tableNumber}
+      <div style={{background:'rgba(0,0,0,0.5)',borderBottom:'1px solid rgba(245,158,11,0.1)'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 14px 4px'}}>
+          <div style={{fontFamily:'monospace',fontSize:10,color:'rgba(245,158,11,0.7)',fontWeight:700}}>
+            TABLE {scenario.tableNumber} · {scenario.pax} PAX
+          </div>
+          <div style={{fontFamily:'monospace',fontSize:16,fontWeight:900,color:timerColor,textShadow:`0 0 10px ${timerColor}66`}}>
+            {String(Math.floor(timeLeft/60)).padStart(2,'0')}:{String(timeLeft%60).padStart(2,'0')}
+          </div>
+          <div style={{fontSize:9,color:'rgba(245,158,11,0.4)'}}>{'★'.repeat(scenario.difficulty)}</div>
         </div>
-        <div style={{
-          fontFamily:'monospace',fontSize:16,fontWeight:900,
-          color:timerColor,textShadow:`0 0 10px ${timerColor}66`,
-        }}>
-          {String(Math.floor(timeLeft/60)).padStart(2,'0')}:{String(timeLeft%60).padStart(2,'0')}
+        <div style={{padding:'0 14px 7px',fontSize:9,color:'rgba(245,158,11,0.5)',fontFamily:'monospace'}}>
+          {scenario.guestName.toUpperCase()} · ORDER {scenIdx+1}/{total}
         </div>
-        <div style={{fontSize:9,color:'rgba(245,158,11,0.5)'}}>{'★'.repeat(scenario.difficulty)}</div>
       </div>
 
       {/* Order ticket */}
@@ -818,7 +836,20 @@ function ValidateScreen({ scenario, result, isLast, onNext }:{
   const passed = pct >= 50
   return (
     <div style={{flex:1,display:'flex',flexDirection:'column',padding:'18px',gap:12,animation:'pop 0.4s ease both',overflowY:'auto'}}>
-      <div style={{textAlign:'center',padding:'8px 0'}}>
+      {/* Guest badge */}
+      <div style={{display:'flex',gap:6,justifyContent:'center'}}>
+        {[
+          { label:'TABLE', value:`#${scenario.tableNumber}` },
+          { label:'GUEST', value:scenario.guestName },
+          { label:'PAX',   value:`${scenario.pax}` },
+        ].map(c=>(
+          <div key={c.label} style={{background:'rgba(245,158,11,0.05)',border:'1px solid rgba(245,158,11,0.12)',borderRadius:7,padding:'5px 8px',textAlign:'center',flex:1}}>
+            <div style={{fontSize:7,color:'rgba(245,158,11,0.4)',letterSpacing:1}}>{c.label}</div>
+            <div style={{fontSize:9,fontWeight:800,color:'#ffe8a0'}}>{c.value}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{textAlign:'center',padding:'4px 0'}}>
         <div style={{fontSize:38,marginBottom:8}}>{pct===100?'🏆':passed?'✅':'❌'}</div>
         <div style={{fontSize:18,fontWeight:900,color: passed?'#f59e0b':'#ef4444',marginBottom:4}}>
           {pct===100?'PERFECT ORDER!':passed?'ORDER SENT':'NEEDS WORK'}
@@ -854,7 +885,7 @@ function ValidateScreen({ scenario, result, isLast, onNext }:{
 }
 
 // ── FireTimerScreen ───────────────────────────────────────────────────────────
-function FireTimerScreen({ count, tableNumber, onFire }: { count: number; tableNumber: number; onFire: () => void }) {
+function FireTimerScreen({ count, tableNumber, guestName, pax, onFire }: { count: number; tableNumber: number; guestName: string; pax: number; onFire: () => void }) {
   const ideal = count >= 30 && count <= 50
   const tooEarly = count < 25
   const late = count > 60
@@ -872,7 +903,8 @@ function FireTimerScreen({ count, tableNumber, onFire }: { count: number; tableN
   return (
     <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'24px 20px', gap:20, background:'#0a0c09', animation:'fadeIn 0.3s ease both' }}>
       <div style={{ textAlign:'center' }}>
-        <div style={{ fontSize:9, color:'rgba(245,158,11,0.5)', letterSpacing:3, fontFamily:'monospace', marginBottom:6 }}>TABLE {tableNumber} · STARTERS AWAY</div>
+        <div style={{ fontSize:9, color:'rgba(245,158,11,0.5)', letterSpacing:3, fontFamily:'monospace', marginBottom:4 }}>TABLE {tableNumber} · {pax} PAX · STARTERS AWAY</div>
+        <div style={{ fontSize:13, color:'rgba(245,158,11,0.7)', marginBottom:6 }}>{guestName}</div>
         <div style={{ fontSize:15, fontWeight:900, color:'#ffe8a0' }}>Fire Main Course</div>
         <div style={{ fontSize:11, color:'#6a5a30', marginTop:4 }}>Return to the table and fire when guests are ready</div>
       </div>
