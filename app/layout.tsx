@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ON DUTY — Real English. Real Simulations.",
-  description: "Get fit for duty. Learn English through real workplace simulations powered by AI.",
+  title: "waiter ai — Train smarter. Serve better.",
+  description: "AI-powered training tools for hospitality professionals. Menu mastery, POS simulator, interview prep and more.",
 };
 
 export default function RootLayout({
