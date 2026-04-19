@@ -37,12 +37,12 @@ function playPOS(type: 'open'|'add'|'error'|'comment'|'hold'|'fire'|'send') {
   } catch {}
 }
 const CAT_COLORS: Record<string,string> = {
-  starter:'#22c55e', main:'#3b82f6', dessert:'#f97316', drink:'#a855f7'
+  starter:'#22c55e', main:'#3b82f6', dessert:'#f97316', drink:'#a855f7', side:'#f59e0b'
 }
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type GamePhase = 'menu-setup' | 'intro' | 'table' | 'ordering' | 'comment' | 'fire-timer' | 'validate' | 'final'
-type Category  = 'starter'|'main'|'dessert'|'drink'
+type Category  = 'starter'|'main'|'dessert'|'drink'|'side'
 
 interface EnteredItem {
   itemId: string; name: string; seat: number
@@ -490,7 +490,7 @@ function MenuSetupScreen({ onDemo, onCustomMenu, onBack }: {
               <div style={{ fontSize:28 }}>⚡</div>
               <div>
                 <div style={{ fontSize:13, fontWeight:800, color:'#ffe8a0', marginBottom:4 }}>Use Demo Menu</div>
-                <div style={{ fontSize:11, color:'#6a5a30', lineHeight:1.5 }}>16 items · Sea Bass, Wagyu, Chablis…<br/>12 pre-built scenarios. Start instantly.</div>
+                <div style={{ fontSize:11, color:'#6a5a30', lineHeight:1.5 }}>Casa Blanca menu · 60+ items<br/>12 realistic scenarios. Start instantly.</div>
               </div>
             </div>
             <div onClick={()=>setStep('upload')} style={{ background:'rgba(245,158,11,0.03)', border:'1px solid rgba(245,158,11,0.12)', borderRadius:14, padding:'18px 16px', cursor:'pointer', display:'flex', gap:14, alignItems:'center' }}>
@@ -711,9 +711,11 @@ function OrderingScreen({ scenario, scenIdx, total, menuData, timeLeft, timerPct
   onFoodComment:()=>void; onDrinkComment:()=>void
   onHold:()=>void; onFire:()=>void; onSend:()=>void; onVoid:()=>void
 }) {
-  const cats: Category[] = ['starter','main','dessert','drink']
-  const catLabels: Record<Category,string> = { starter:'STARTERS', main:'MAINS', dessert:'DESSERTS', drink:'DRINKS' }
+  const allCats: Category[] = ['starter','main','dessert','drink','side']
+  const cats = allCats.filter(c => (menuData[c] || []).length > 0)
+  const catLabels: Record<Category,string> = { starter:'STARTERS', main:'MAINS', dessert:'DESSERTS', drink:'DRINKS', side:'SIDES' }
   const menuItems = menuData[cat] || []
+  const activeCat = cats.includes(cat) ? cat : (cats[0] || 'main')
 
   return (
     <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
@@ -759,13 +761,13 @@ function OrderingScreen({ scenario, scenIdx, total, menuData, timeLeft, timerPct
       )}
 
       {/* Category tabs */}
-      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:0,borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
+      <div style={{display:'grid',gridTemplateColumns:`repeat(${cats.length},1fr)`,gap:0,borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
         {cats.map(c => (
           <button key={c} onClick={()=>onCat(c)} style={{
-            padding:'9px 4px',border:'none',borderBottom: cat===c ? `2px solid ${CAT_COLORS[c]}` : '2px solid transparent',
-            background: cat===c ? `${CAT_COLORS[c]}15` : 'rgba(0,0,0,0.2)',
-            color: cat===c ? CAT_COLORS[c] : 'rgba(255,255,255,0.3)',
-            fontSize:8,fontWeight:700,cursor:'pointer',letterSpacing:0.5,transition:'all 0.15s',
+            padding:'8px 2px',border:'none',borderBottom: activeCat===c ? `2px solid ${CAT_COLORS[c]}` : '2px solid transparent',
+            background: activeCat===c ? `${CAT_COLORS[c]}15` : 'rgba(0,0,0,0.2)',
+            color: activeCat===c ? CAT_COLORS[c] : 'rgba(255,255,255,0.3)',
+            fontSize:7,fontWeight:700,cursor:'pointer',letterSpacing:0.3,transition:'all 0.15s',
           }}>{catLabels[c]}</button>
         ))}
       </div>
@@ -788,7 +790,7 @@ function OrderingScreen({ scenario, scenIdx, total, menuData, timeLeft, timerPct
       {/* Seat selector */}
       <div style={{display:'flex',gap:5,padding:'6px 10px',borderTop:'1px solid rgba(255,255,255,0.04)'}}>
         <span style={{fontSize:9,color:'rgba(245,158,11,0.5)',alignSelf:'center',marginRight:2,fontFamily:'monospace'}}>SEAT</span>
-        {[1,2,3,4].map(n => (
+        {Array.from({length:Math.min(scenario.pax,6)},(_,i)=>i+1).map(n => (
           <button key={n} onClick={()=>onSeat(n)} style={{
             width:32,height:28,borderRadius:6,border:`1px solid ${seat===n?'rgba(245,158,11,0.5)':'rgba(255,255,255,0.08)'}`,
             background: seat===n ? 'rgba(245,158,11,0.15)' : 'rgba(0,0,0,0.3)',
