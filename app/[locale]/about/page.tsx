@@ -115,6 +115,51 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/* Ricardo intro video */}
+        <section className="py-16 px-5">
+          <div className="max-w-3xl mx-auto">
+            <p className="text-[#C9963A] text-[11px] font-semibold tracking-[0.18em] uppercase mb-4 text-center font-[family-name:var(--font-dm-sans)]">
+              Quem sou eu
+            </p>
+            <h2 className="font-[family-name:var(--font-fraunces)] text-2xl font-semibold text-[#1a1a1a] text-center mb-8">
+              Conheça o Ricardo em 2 minutos.
+            </h2>
+            <div className="relative w-full aspect-video rounded-[16px] overflow-hidden shadow-[0_8px_40px_rgba(26,74,107,0.18)]">
+              <iframe
+                src="https://www.youtube.com/embed/mFSoaqE4Io4"
+                title="Ricardo Rogerio — Quem sou eu"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Work footage video */}
+        <section className="bg-[#F5EDD8] py-16 px-5">
+          <div className="max-w-3xl mx-auto">
+            <p className="text-[#C9963A] text-[11px] font-semibold tracking-[0.18em] uppercase mb-4 text-center font-[family-name:var(--font-dm-sans)]">
+              A realidade
+            </p>
+            <h2 className="font-[family-name:var(--font-fraunces)] text-2xl font-semibold text-[#1a1a1a] text-center mb-2">
+              Como é o trabalho no exterior — sem cortes.
+            </h2>
+            <p className="text-[#777] text-sm text-center mb-8 font-[family-name:var(--font-dm-sans)]">
+              Não é perfeito. Mas é real. E vale cada segundo.
+            </p>
+            <div className="relative w-full aspect-video rounded-[16px] overflow-hidden shadow-[0_8px_40px_rgba(26,74,107,0.18)]">
+              <iframe
+                src="https://www.youtube.com/embed/JCvfBTAhhho"
+                title="Como é o trabalho no exterior — sem cortes"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+          </div>
+        </section>
+
         {/* Mission */}
         <section className="py-20 px-5">
           <div className="max-w-2xl mx-auto text-center">
