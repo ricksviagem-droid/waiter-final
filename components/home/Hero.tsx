@@ -2,21 +2,18 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 
-const venueImages = [
+const photos = [
   {
-    src: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80',
-    alt: 'Luxury Dubai hotel',
-    style: 'absolute top-0 left-0 w-[75%] h-[58%] rounded-[12px] shadow-xl z-10 overflow-hidden',
+    src: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=900&q=80',
+    alt: 'Dubai skyline',
   },
   {
-    src: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
-    alt: 'Fine dining restaurant',
-    style: 'absolute bottom-0 right-0 w-[68%] h-[52%] rounded-[12px] shadow-xl z-20 overflow-hidden',
+    src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80',
+    alt: 'Fine dining service',
   },
   {
-    src: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800&q=80',
-    alt: 'Luxury cocktail bar',
-    style: 'absolute top-[28%] left-[18%] w-[56%] h-[44%] rounded-[12px] shadow-2xl z-30 overflow-hidden',
+    src: 'https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80',
+    alt: 'Cruise ship',
   },
 ];
 
@@ -24,12 +21,12 @@ export default function Hero() {
   const t = useTranslations('hero');
 
   return (
-    <section className="bg-[#FDFAF4] min-h-screen flex items-center pt-16">
+    <section className="bg-[#FDFAF4] min-h-screen flex items-center pt-16 overflow-hidden">
       <div className="max-w-6xl mx-auto px-5 py-14 md:py-20 w-full">
-        <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
 
           {/* ── Left column ── */}
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-5 relative z-10">
             <p className="text-[#C9963A] text-[11px] font-semibold tracking-[0.18em] uppercase font-[family-name:var(--font-dm-sans)]">
               {t('eyebrow')}
             </p>
@@ -63,56 +60,86 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* ── Right column — image collage + card ── */}
-          <div className="relative flex justify-center md:justify-end">
+          {/* ── Right column — washed photo panel ── */}
+          <div className="relative h-[460px] md:h-[540px]">
 
-            {/* Collage container */}
-            <div className="relative w-full max-w-[380px] h-[420px] md:h-[460px]">
+            {/* Photo grid — 3 cells with brand-color wash */}
+            <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-1.5 rounded-2xl overflow-hidden">
 
-              {/* Venue images stacked */}
-              {venueImages.map(({ src, alt, style }) => (
-                <div key={alt} className={style}>
-                  <Image
-                    src={src}
-                    alt={alt}
-                    fill
-                    className="object-cover rounded-[12px]"
-                    sizes="300px"
-                    unoptimized
-                  />
-                  {/* subtle dark overlay */}
-                  <div className="absolute inset-0 bg-[#1A4A6B]/10 rounded-[12px]" />
-                </div>
-              ))}
-
-              {/* Badge */}
-              <div className="absolute -top-3 right-0 z-40 bg-[#C9963A] text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg font-[family-name:var(--font-dm-sans)] whitespace-nowrap">
-                {t('card_badge')}
+              {/* Top — full width */}
+              <div className="col-span-2 relative overflow-hidden">
+                <Image
+                  src={photos[0].src}
+                  alt={photos[0].alt}
+                  fill
+                  className="object-cover scale-105"
+                  sizes="600px"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-[#1A4A6B]/55" />
               </div>
 
-              {/* Ricardo card pinned bottom-left */}
-              <div className="absolute bottom-0 left-0 z-40 bg-white rounded-[12px] shadow-xl px-4 py-3 flex items-center gap-3 max-w-[240px]">
-                <div className="w-10 h-10 rounded-full bg-[#1A4A6B] overflow-hidden shrink-0 relative">
-                  <Image
-                    src="/scenes/rick.jpeg"
-                    alt="Ricardo Rogerio"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="font-[family-name:var(--font-fraunces)] text-sm font-semibold text-[#1a1a1a] leading-tight">
-                    {t('card_name')}
-                  </p>
-                  <p className="text-[#777777] text-[11px] font-[family-name:var(--font-dm-sans)] leading-tight mt-0.5">
-                    {t('card_sub')}
-                  </p>
-                </div>
+              {/* Bottom-left */}
+              <div className="relative overflow-hidden">
+                <Image
+                  src={photos[1].src}
+                  alt={photos[1].alt}
+                  fill
+                  className="object-cover scale-105"
+                  sizes="300px"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-[#C9963A]/50" />
               </div>
 
+              {/* Bottom-right */}
+              <div className="relative overflow-hidden">
+                <Image
+                  src={photos[2].src}
+                  alt={photos[2].alt}
+                  fill
+                  className="object-cover scale-105"
+                  sizes="300px"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-[#1A4A6B]/55" />
+              </div>
             </div>
-          </div>
 
+            {/* ── Vignette — dissolves the panel into the page ── */}
+            {/* Left edge: fades fully into page bg */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FDFAF4] via-[#FDFAF4]/10 to-transparent pointer-events-none z-10" />
+            {/* Top edge */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#FDFAF4] via-transparent to-transparent pointer-events-none z-10" />
+            {/* Bottom edge */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#FDFAF4] via-transparent to-transparent pointer-events-none z-10" />
+
+            {/* ── Badge ── */}
+            <div className="absolute top-6 right-4 z-20 bg-[#C9963A] text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg font-[family-name:var(--font-dm-sans)] whitespace-nowrap">
+              {t('card_badge')}
+            </div>
+
+            {/* ── Ricardo card ── */}
+            <div className="absolute bottom-8 left-8 z-20 bg-white/90 backdrop-blur-sm rounded-[12px] shadow-xl px-4 py-3 flex items-center gap-3 max-w-[230px]">
+              <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 relative border-2 border-[#C9963A]">
+                <Image
+                  src="/scenes/rick.jpeg"
+                  alt="Ricardo Rogerio"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div>
+                <p className="font-[family-name:var(--font-fraunces)] text-sm font-semibold text-[#1a1a1a] leading-tight">
+                  {t('card_name')}
+                </p>
+                <p className="text-[#777777] text-[11px] font-[family-name:var(--font-dm-sans)] leading-tight mt-0.5">
+                  {t('card_sub')}
+                </p>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </section>
