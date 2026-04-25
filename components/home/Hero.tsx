@@ -4,8 +4,8 @@ import { Link } from '@/i18n/navigation';
 
 const photos = [
   {
-    src: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900&q=85',
-    alt: 'Luxury resort aerial view',
+    src: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&q=85',
+    alt: 'Luxury cruise ship',
   },
   {
     src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85',

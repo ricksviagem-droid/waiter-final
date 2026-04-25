@@ -20,9 +20,9 @@ const strips = [
     overlay: 'bg-[#1A4A6B]/50',
   },
   {
-    src: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700&q=85',
-    alt: 'Luxury resort pool',
-    label: 'Resort 5 Estrelas',
+    src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&q=85',
+    alt: 'Fine dining waiter',
+    label: 'Restaurante 5 Estrelas',
     overlay: 'bg-[#C9963A]/45',
   },
   {

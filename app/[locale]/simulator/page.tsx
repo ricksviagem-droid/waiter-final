@@ -147,7 +147,7 @@ export default function SimulatorPage() {
                 <a
                   key={href}
                   href={href}
-                  className="group bg-white rounded-[14px] p-6 shadow-[0_2px_16px_rgba(26,74,107,0.07)] hover:shadow-[0_6px_32px_rgba(26,74,107,0.14)] transition-all flex gap-4 items-start"
+                  className="group bg-white rounded-[14px] p-6 border border-[#e8e0d0] shadow-[0_4px_0_rgba(0,0,0,0.08),0_1px_8px_rgba(26,74,107,0.05)] hover:shadow-[0_1px_0_rgba(0,0,0,0.06),0_1px_4px_rgba(26,74,107,0.05)] hover:translate-y-[3px] transition-all duration-150 flex gap-4 items-start"
                 >
                   <span className="text-3xl shrink-0">{emoji}</span>
                   <div className="flex-1">
