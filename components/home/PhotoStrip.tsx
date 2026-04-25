@@ -2,16 +2,16 @@ import Image from 'next/image';
 
 const strips = [
   {
-    src: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=700&q=85',
-    alt: 'Luxury hotel lobby',
-    label: 'Hotel de Luxo',
-    overlay: 'bg-[#1A4A6B]/50',
+    src: '/scenes/atlantis-palm.jpg',
+    alt: 'Atlantis The Palm Dubai aerial view',
+    label: 'Atlantis The Royal',
+    overlay: 'bg-[#1A4A6B]/45',
   },
   {
-    src: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=700&q=85',
-    alt: 'Bartender at upscale bar',
-    label: 'Bar Internacional',
-    overlay: 'bg-[#C9963A]/45',
+    src: '/scenes/waiter-sommelier.jpg',
+    alt: 'Sommelier in tuxedo presenting wine',
+    label: 'Garçom 5 Estrelas',
+    overlay: 'bg-[#C9963A]/40',
   },
   {
     src: '/scenes/cruise-star.jpg',
@@ -20,10 +20,10 @@ const strips = [
     overlay: 'bg-[#1A4A6B]/50',
   },
   {
-    src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&q=85',
-    alt: 'Fine dining waiter',
-    label: 'Restaurante 5 Estrelas',
-    overlay: 'bg-[#C9963A]/45',
+    src: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=700&q=85',
+    alt: 'Luxury hotel exterior',
+    label: 'Hotel Internacional',
+    overlay: 'bg-[#C9963A]/40',
   },
   {
     src: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=700&q=85',
