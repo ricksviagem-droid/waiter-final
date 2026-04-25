@@ -11,23 +11,41 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="bg-[#F5EDD8] py-20 px-5">
+    <section className="bg-[#F5EDD8] py-24 px-5">
       <div className="max-w-5xl mx-auto">
 
-        <h2 className="font-[family-name:var(--font-fraunces)] text-3xl md:text-4xl font-semibold text-[#1a1a1a] text-center mb-14">
+        <p className="text-[#C9963A] text-[11px] font-semibold tracking-[0.18em] uppercase text-center mb-4 font-[family-name:var(--font-dm-sans)]">
+          Como funciona
+        </p>
+        <h2 className="font-[family-name:var(--font-fraunces)] text-3xl md:text-4xl font-semibold text-[#1a1a1a] text-center mb-20">
           {t('title')}
         </h2>
 
-        <div className="grid md:grid-cols-3 gap-10 md:gap-12 mb-14">
-          {steps.map(({ number, title, desc }) => (
-            <div key={number} className="flex flex-col gap-3">
-              <span className="font-[family-name:var(--font-fraunces)] text-6xl font-semibold text-[#C9963A] leading-none">
-                {number}
-              </span>
-              <h3 className="font-[family-name:var(--font-fraunces)] text-xl font-semibold text-[#1a1a1a] mt-1">
+        <div className="grid md:grid-cols-3 gap-12 md:gap-8 mb-16 relative">
+          {/* Horizontal connector line — desktop only */}
+          <div className="hidden md:block absolute top-[2.4rem] left-[20%] right-[20%] h-px bg-gradient-to-r from-[#C9963A]/20 via-[#C9963A]/40 to-[#C9963A]/20 pointer-events-none" />
+
+          {steps.map(({ number, title, desc }, i) => (
+            <div key={number} className="relative flex flex-col">
+
+              {/* Watermark number */}
+              <div className="relative mb-5 h-20 flex items-center">
+                <span className="font-[family-name:var(--font-fraunces)] text-[6rem] font-semibold leading-none select-none text-[#C9963A]/15 absolute -top-4 -left-2">
+                  {number}
+                </span>
+                {/* Gold dot on the connector line */}
+                <div className={`relative z-10 w-5 h-5 rounded-full border-2 border-[#C9963A] bg-[#F5EDD8] flex items-center justify-center mt-1`}>
+                  <div className="w-2 h-2 rounded-full bg-[#C9963A]" />
+                </div>
+                {i < 2 && (
+                  <div className="md:hidden absolute left-9 top-2 bottom-0 w-px bg-[#C9963A]/20" style={{ height: 'calc(100% + 3rem)' }} />
+                )}
+              </div>
+
+              <h3 className="font-[family-name:var(--font-fraunces)] text-xl font-semibold text-[#1a1a1a] mb-2">
                 {title}
               </h3>
-              <p className="text-[#777777] text-sm font-[family-name:var(--font-dm-sans)] leading-relaxed">
+              <p className="text-[#777] text-sm font-[family-name:var(--font-dm-sans)] leading-relaxed">
                 {desc}
               </p>
             </div>
@@ -37,9 +55,12 @@ export default function HowItWorks() {
         <div className="flex justify-center">
           <Link
             href="/assessment"
-            className="bg-[#1A4A6B] text-white font-medium px-8 py-4 rounded-full hover:bg-[#153d5a] transition-colors font-[family-name:var(--font-dm-sans)] text-sm"
+            className="bg-[#1A4A6B] text-white font-medium px-8 py-4 rounded-full hover:bg-[#153d5a] transition-colors font-[family-name:var(--font-dm-sans)] text-sm inline-flex items-center gap-2"
           >
             {t('cta')}
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+            </svg>
           </Link>
         </div>
 

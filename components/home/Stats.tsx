@@ -11,30 +11,33 @@ export default function Stats() {
   ];
 
   return (
-    <section className="bg-white py-20 px-5">
+    <section className="bg-[#FDFAF4] py-20 px-5">
       <div className="max-w-5xl mx-auto">
 
-        <h2 className="font-[family-name:var(--font-fraunces)] text-3xl md:text-4xl font-semibold text-[#1a1a1a] text-center mb-12">
+        <p className="text-[#777] text-[11px] font-semibold tracking-[0.18em] uppercase text-center mb-16 font-[family-name:var(--font-dm-sans)]">
           {t('title')}
-        </h2>
+        </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-          {items.map(({ number, label }) => (
+        {/* Editorial number strip */}
+        <div className="grid grid-cols-2 md:grid-cols-4 md:divide-x md:divide-[#e8e0d0]">
+          {items.map(({ number, label }, i) => (
             <div
               key={label}
-              className="bg-[#FDFAF4] rounded-[12px] p-6 text-center shadow-[0_2px_16px_rgba(26,74,107,0.07)]"
+              className={`flex flex-col items-center text-center py-8 px-4 md:px-8 ${
+                i < 2 ? 'border-b md:border-b-0 border-[#e8e0d0]' : ''
+              } ${i % 2 === 0 && i < 2 ? 'border-r md:border-r-0 border-[#e8e0d0]' : ''}`}
             >
-              <p className="font-[family-name:var(--font-fraunces)] text-4xl md:text-5xl font-semibold text-[#1A4A6B] mb-2 leading-none">
+              <span className="font-[family-name:var(--font-fraunces)] text-[3.8rem] md:text-[5rem] lg:text-[5.5rem] font-semibold text-[#1A4A6B] leading-none mb-4">
                 {number}
-              </p>
-              <p className="text-[#777777] text-xs md:text-sm leading-snug font-[family-name:var(--font-dm-sans)] mt-2">
+              </span>
+              <span className="text-[#888] text-xs md:text-sm leading-snug font-[family-name:var(--font-dm-sans)] max-w-[120px]">
                 {label}
-              </p>
+              </span>
             </div>
           ))}
         </div>
 
-        <p className="text-center text-[#777777] text-sm mt-10 italic font-[family-name:var(--font-fraunces)]">
+        <p className="text-center text-[#999] text-sm mt-14 italic font-[family-name:var(--font-fraunces)]">
           {t('subtitle')}
         </p>
 

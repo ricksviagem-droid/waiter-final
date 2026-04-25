@@ -4,6 +4,7 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import Hero from '@/components/home/Hero';
 import Stats from '@/components/home/Stats';
 import HowItWorks from '@/components/home/HowItWorks';
+import Ticker from '@/components/home/Ticker';
 import Manifesto from '@/components/home/Manifesto';
 import FreeOffering from '@/components/home/FreeOffering';
 import About from '@/components/home/About';
@@ -18,6 +19,7 @@ export default function HomePage() {
       <Header />
       <main>
         <Hero />
+        <Ticker />
         <Stats />
         <HowItWorks />
         <Manifesto />

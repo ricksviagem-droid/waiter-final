@@ -31,7 +31,7 @@ export default function Hero() {
               {t('eyebrow')}
             </p>
 
-            <h1 className="font-[family-name:var(--font-fraunces)] text-[2.6rem] md:text-5xl lg:text-[3.5rem] font-semibold leading-[1.08] text-[#1a1a1a]">
+            <h1 className="font-[family-name:var(--font-fraunces)] text-[2.8rem] md:text-[3.8rem] lg:text-[4.8rem] font-semibold leading-[1.05] text-[#1a1a1a]">
               {t('h1')}{' '}
               <em className="text-[#C9963A] italic">{t('h1_highlight')}</em>
             </h1>
