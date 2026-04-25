@@ -15,7 +15,7 @@ export default function About() {
           {/* Photo */}
           <div className="relative w-full aspect-[4/5] rounded-[12px] overflow-hidden bg-[#1A4A6B] max-w-sm mx-auto md:mx-0">
             <Image
-              src="/scenes/rick.jpeg"
+              src="/scenes/rick-black-suit.jpeg"
               alt="Ricardo Rogerio"
               fill
               className="object-cover"
