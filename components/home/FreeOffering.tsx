@@ -114,6 +114,73 @@ export default function FreeOffering() {
           </div>
         </a>
 
+        {/* Shift Simulator — Bonus card */}
+        <a
+          href="/shift"
+          className="group block bg-[#0d1f33] border border-[#C9963A]/30 rounded-[16px] p-6 mb-4 hover:border-[#C9963A]/60 transition-all relative overflow-hidden"
+        >
+          {/* Glow */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[#C9963A]/10 blur-3xl rounded-full pointer-events-none" />
+
+          <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8">
+            {/* Mini audio art */}
+            <div className="shrink-0">
+              <svg viewBox="0 0 140 100" className="w-40 h-auto" fill="none">
+                <rect x="4" y="4" width="132" height="92" rx="12" fill="#132d42" />
+                {/* Header */}
+                <rect x="4" y="4" width="132" height="22" rx="12" fill="#1A4A6B" />
+                <rect x="4" y="16" width="132" height="10" fill="#1A4A6B" />
+                <circle cx="20" cy="15" r="7" fill="#C9963A" opacity="0.85" />
+                <text x="32" y="19" fontSize="7" fill="white" fontFamily="sans-serif" fontWeight="700">SHIFT SIMULATOR</text>
+                <circle cx="124" cy="15" r="4" fill="#ef4444" />
+                {/* Guest audio label */}
+                <text x="12" y="38" fontSize="6" fill="#C9963A" fontFamily="sans-serif" fontWeight="600">GUEST SPEAKING</text>
+                {/* Audio wave */}
+                {[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18].map((i) => {
+                  const hs = [5,9,14,7,18,12,16,9,20,11,16,7,18,13,9,14,7,11,5];
+                  const h = hs[i] || 7;
+                  return <rect key={i} x={12 + i * 6} y={48 - h/2} width="4" height={h} rx="2" fill="#C9963A" opacity={0.35 + (i%3)*0.2} />;
+                })}
+                {/* XP badge */}
+                <rect x="12" y="62" width="52" height="22" rx="6" fill="#1e3a52" />
+                <text x="18" y="72" fontSize="5" fill="#999" fontFamily="sans-serif">XP</text>
+                <text x="18" y="80" fontSize="9" fill="#C9963A" fontFamily="sans-serif" fontWeight="800">+340</text>
+                {/* Accuracy badge */}
+                <rect x="76" y="62" width="52" height="22" rx="6" fill="#1e3a52" />
+                <text x="82" y="72" fontSize="5" fill="#999" fontFamily="sans-serif">Precisão</text>
+                <text x="82" y="80" fontSize="9" fill="#4ade80" fontFamily="sans-serif" fontWeight="800">92%</text>
+                {/* Stars */}
+                {[0,1,2,3,4].map(i => (
+                  <text key={i} x={44 + i*10} y="96" fontSize="8" fill={i < 4 ? "#C9963A" : "#2a3a4a"} fontFamily="sans-serif">★</text>
+                ))}
+              </svg>
+            </div>
+
+            {/* Text */}
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex items-center gap-2 justify-center md:justify-start mb-3">
+                <span className="inline-flex items-center gap-1.5 bg-[#C9963A]/15 border border-[#C9963A]/40 text-[#C9963A] text-[9px] font-bold tracking-[0.15em] uppercase px-3 py-1 rounded-full font-[family-name:var(--font-dm-sans)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C9963A] animate-pulse" />
+                  Bônus Limitado
+                </span>
+                <span className="text-white/30 text-[9px] font-[family-name:var(--font-dm-sans)]">Fase de testes</span>
+              </div>
+              <h3 className="font-[family-name:var(--font-fraunces)] text-lg font-semibold text-white mb-2">
+                Shift Simulator — Treino de turno real
+              </h3>
+              <p className="text-white/60 text-xs leading-relaxed font-[family-name:var(--font-dm-sans)] mb-3 max-w-md">
+                Gamificado, com áudio real de hóspedes, avaliação por IA e pontuação por turno. Você treina conversações do dia a dia de hospitalidade — antes de encarar um turno de verdade.
+              </p>
+              <span className="inline-flex items-center gap-1.5 text-[#C9963A] text-xs font-semibold font-[family-name:var(--font-dm-sans)] group-hover:gap-2.5 transition-all">
+                Experimentar agora
+                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+              </span>
+            </div>
+          </div>
+        </a>
+
         {/* Other items */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {items.map(({ href, icon, key }) => {

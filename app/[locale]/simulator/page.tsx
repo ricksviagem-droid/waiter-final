@@ -175,6 +175,135 @@ export default function SimulatorPage() {
           </div>
         </section>
 
+        {/* SHIFT SIMULATOR — Bonus limitado */}
+        <section className="py-20 px-5 bg-[#0d1f33]">
+          <div className="max-w-5xl mx-auto">
+
+            {/* Badge */}
+            <div className="flex justify-center mb-10">
+              <span className="inline-flex items-center gap-2 bg-[#C9963A]/15 border border-[#C9963A]/50 text-[#C9963A] text-xs font-bold tracking-[0.15em] uppercase px-5 py-2 rounded-full font-[family-name:var(--font-dm-sans)]">
+                <span className="w-2 h-2 rounded-full bg-[#C9963A] animate-pulse" />
+                Bônus Limitado · Fase de Testes
+              </span>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+
+              {/* Art side */}
+              <div className="flex justify-center">
+                <div className="relative">
+                  {/* Outer glow */}
+                  <div className="absolute inset-0 bg-[#C9963A]/15 blur-3xl rounded-full scale-150 pointer-events-none" />
+                  <div className="absolute inset-0 bg-[#1A4A6B]/30 blur-2xl rounded-full scale-125 pointer-events-none" />
+
+                  {/* Shift Simulator Art */}
+                  <svg viewBox="0 0 260 220" className="w-72 h-auto relative z-10" fill="none">
+                    {/* Background panel */}
+                    <rect x="20" y="20" width="220" height="180" rx="20" fill="#132d42" stroke="#1A4A6B" strokeWidth="1.5" />
+
+                    {/* Header bar */}
+                    <rect x="20" y="20" width="220" height="36" rx="20" fill="#1A4A6B" />
+                    <rect x="20" y="38" width="220" height="18" fill="#1A4A6B" />
+                    <circle cx="42" cy="38" r="10" fill="#C9963A" opacity="0.9" />
+                    <text x="57" y="43" fontSize="9" fill="white" fontFamily="sans-serif" fontWeight="700">SHIFT SIMULATOR</text>
+                    {/* Live dot */}
+                    <circle cx="218" cy="38" r="5" fill="#ef4444" />
+                    <text x="205" y="35" fontSize="6" fill="#ef4444" fontFamily="sans-serif">LIVE</text>
+
+                    {/* Guest audio wave */}
+                    <rect x="30" y="68" width="200" height="40" rx="10" fill="#1e3a52" />
+                    <text x="38" y="80" fontSize="7" fill="#C9963A" fontFamily="sans-serif" fontWeight="600">GUEST SPEAKING</text>
+                    {/* Wave bars */}
+                    {[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18].map((i) => {
+                      const heights = [6,10,16,8,20,14,18,10,22,12,18,8,20,14,10,16,8,12,6];
+                      const h = heights[i] || 8;
+                      return (
+                        <rect
+                          key={i}
+                          x={38 + i * 10}
+                          y={96 - h / 2}
+                          width="5"
+                          height={h}
+                          rx="2.5"
+                          fill="#C9963A"
+                          opacity={0.4 + (i % 3) * 0.2}
+                        />
+                      );
+                    })}
+
+                    {/* You respond area */}
+                    <rect x="30" y="118" width="200" height="32" rx="10" fill="#1e3a52" />
+                    <text x="38" y="130" fontSize="7" fill="#4ade80" fontFamily="sans-serif" fontWeight="600">YOUR RESPONSE</text>
+                    <rect x="38" y="134" width="100" height="8" rx="4" fill="#4ade80" opacity="0.5" />
+                    <rect x="144" y="134" width="6" height="8" rx="1" fill="#4ade80" opacity="0.9" />
+
+                    {/* Score / XP row */}
+                    <rect x="30" y="160" width="94" height="30" rx="8" fill="#1e3a52" />
+                    <text x="38" y="172" fontSize="7" fill="#777" fontFamily="sans-serif">Pontuação</text>
+                    <text x="38" y="183" fontSize="12" fill="#C9963A" fontFamily="sans-serif" fontWeight="800">+340 XP</text>
+
+                    <rect x="136" y="160" width="94" height="30" rx="8" fill="#1e3a52" />
+                    <text x="144" y="172" fontSize="7" fill="#777" fontFamily="sans-serif">Precisão</text>
+                    <text x="144" y="183" fontSize="12" fill="#4ade80" fontFamily="sans-serif" fontWeight="800">92%</text>
+
+                    {/* Stars */}
+                    {[0,1,2,3,4].map(i => (
+                      <text key={i} x={77 + i * 14} y="208" fontSize="11" fill={i < 4 ? "#C9963A" : "#333"} fontFamily="sans-serif">★</text>
+                    ))}
+                  </svg>
+                </div>
+              </div>
+
+              {/* Text side */}
+              <div>
+                <h2 className="font-[family-name:var(--font-fraunces)] text-2xl md:text-3xl font-semibold text-white mb-4 leading-tight">
+                  O simulador que coloca você<br />
+                  <em className="text-[#C9963A] italic">dentro de um turno real.</em>
+                </h2>
+                <p className="text-white/70 text-sm leading-relaxed font-[family-name:var(--font-dm-sans)] mb-5">
+                  Você ouve um hóspede falando em inglês — sotaque real, ritmo real, pedido real. Tem que responder como um profissional faria no trabalho. Sem pausa, sem dicionário.
+                </p>
+
+                <div className="flex flex-col gap-3 mb-7">
+                  {[
+                    { icon: '🎮', title: '100% gamificado', desc: 'XP, precisão, estrelas — cada turno vira um desafio com pontuação real.' },
+                    { icon: '🎧', title: 'Áudio autêntico', desc: 'Sotaques variados, pedidos complexos, situações do dia a dia de hotel e restaurante.' },
+                    { icon: '🧠', title: 'IA avalia cada resposta', desc: 'Feedback imediato sobre vocabulário, fluência e adequação ao contexto.' },
+                    { icon: '📈', title: 'Evolução visível', desc: 'Cada sessão mede seu progresso. Você vê a melhora acontecer.' },
+                  ].map(({ icon, title, desc }) => (
+                    <div key={title} className="flex gap-3 items-start">
+                      <span className="text-xl shrink-0">{icon}</span>
+                      <div>
+                        <p className="text-white text-sm font-semibold font-[family-name:var(--font-dm-sans)]">{title}</p>
+                        <p className="text-white/55 text-xs font-[family-name:var(--font-dm-sans)] leading-relaxed">{desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-[#C9963A]/10 border border-[#C9963A]/30 rounded-[12px] p-4 mb-6">
+                  <p className="text-[#C9963A] text-xs font-semibold font-[family-name:var(--font-dm-sans)]">
+                    Bônus exclusivo da fase de testes
+                  </p>
+                  <p className="text-white/60 text-xs font-[family-name:var(--font-dm-sans)] mt-1">
+                    Esse módulo é especial — foi construído com muito mais cuidado e detalhe que o usual. Está disponível gratuitamente agora porque queremos o seu feedback. Quando lançarmos a versão final, esse módulo será pago.
+                  </p>
+                </div>
+
+                <a
+                  href="/shift"
+                  className="inline-flex items-center gap-2 bg-[#C9963A] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#b8872f] transition-colors font-[family-name:var(--font-dm-sans)] text-sm"
+                >
+                  Experimentar o Shift Simulator
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Free while in beta + feedback */}
         <section className="bg-[#1A4A6B] py-20 px-5">
           <div className="max-w-2xl mx-auto text-center">
