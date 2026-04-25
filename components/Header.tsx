@@ -24,7 +24,7 @@ export default function Header() {
   };
 
   const navLinks = [
-    { href: '/blog' as const, label: t('blog') },
+    { href: '/simulator' as const, label: t('simulator') },
     { href: '/exchange' as const, label: t('exchange') },
     { href: '/consulting' as const, label: t('consulting') },
     { href: '/about' as const, label: t('about') },

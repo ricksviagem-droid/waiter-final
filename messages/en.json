@@ -5,6 +5,7 @@
   },
   "nav": {
     "blog": "Blog",
+    "simulator": "Free App",
     "exchange": "Exchange",
     "consulting": "Consulting",
     "about": "About",
@@ -50,9 +51,9 @@
   "freeOffering": {
     "title": "Everything you get for free.",
     "badge": "No credit card. No commitment.",
+    "app_title": "Career Simulator — 8 AI-powered modules",
+    "app_desc": "I built this app from scratch with everything I learned in 15 years of hospitality. Practice interviews in English, simulate real shifts, scan your level, generate your international CV and more. Completely free while in development — use it now.",
     "item1": "Free assessment + personal road map by email",
-    "item2": "Limited access to the AI conversation simulator",
-    "item3": "Free eBook: The Real Guide to Working Abroad",
     "item4": "Weekly blog with news and opportunities",
     "item5": "Exchange opportunities from our partners",
     "item6": "Access to the WhatsApp community"

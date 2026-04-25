@@ -5,6 +5,7 @@
   },
   "nav": {
     "blog": "Blog",
+    "simulator": "App Gratuito",
     "exchange": "Exchange",
     "consulting": "Consulting",
     "about": "Sobre",
@@ -50,9 +51,9 @@
   "freeOffering": {
     "title": "Tudo que você recebe de graça.",
     "badge": "Sem cartão de crédito. Sem compromisso.",
+    "app_title": "Simulador de Carreira — 8 módulos com IA",
+    "app_desc": "Construí esse app do zero com tudo que aprendi em 15 anos de hospitalidade. Treina entrevista em inglês, simula turnos reais, diagnostica seu nível, gera seu currículo internacional e muito mais. Tudo gratuito enquanto está em desenvolvimento — aproveite.",
     "item1": "Assessment gratuito + road map pessoal por e-mail",
-    "item2": "Acesso limitado ao simulador de conversas com IA",
-    "item3": "eBook gratuito: O Guia Real para Trabalhar no Exterior",
     "item4": "Blog semanal com novidades e oportunidades da área",
     "item5": "Oportunidades de intercâmbio dos nossos parceiros",
     "item6": "Acesso à comunidade no WhatsApp"
