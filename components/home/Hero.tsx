@@ -4,8 +4,8 @@ import { Link } from '@/i18n/navigation';
 
 const photos = [
   {
-    src: '/scenes/atlantis-palm.jpg',
-    alt: 'Atlantis The Palm Dubai aerial view',
+    src: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=85',
+    alt: 'Luxury resort aerial view',
   },
   {
     src: '/scenes/waiter-sommelier.jpg',

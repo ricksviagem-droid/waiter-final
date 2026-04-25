@@ -2,8 +2,8 @@ import Image from 'next/image';
 
 const strips = [
   {
-    src: '/scenes/atlantis-palm.jpg',
-    alt: 'Atlantis The Palm Dubai aerial view',
+    src: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700&q=85',
+    alt: 'Luxury resort aerial view',
     label: 'Atlantis The Royal',
     overlay: 'bg-[#1A4A6B]/45',
   },
