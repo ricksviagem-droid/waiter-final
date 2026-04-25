@@ -24,39 +24,65 @@ const items = [
   },
 ];
 
-// Phone mockup SVG art
 function PhoneMockup() {
+  const rows = [
+    { label: 'Entrevista com IA', color: '#C9963A', pct: 76 },
+    { label: 'Shift Simulator',   color: '#4ade80', pct: 52 },
+    { label: 'Daily Drill',       color: '#60a5fa', pct: 88 },
+    { label: 'Level Scan',        color: '#f472b6', pct: 41 },
+  ];
   return (
-    <svg viewBox="0 0 120 200" className="w-28 h-auto" fill="none">
-      {/* Phone body */}
-      <rect x="8" y="4" width="104" height="192" rx="16" fill="#0f2942" />
-      <rect x="12" y="8" width="96" height="184" rx="13" fill="#1A4A6B" />
-      {/* Screen */}
-      <rect x="16" y="18" width="88" height="158" rx="8" fill="#0d1f33" />
-      {/* Notch */}
-      <rect x="40" y="8" width="40" height="8" rx="4" fill="#0f2942" />
-      {/* Screen content — header bar */}
-      <rect x="20" y="22" width="80" height="14" rx="4" fill="#1A4A6B" />
-      <rect x="24" y="26" width="30" height="6" rx="2" fill="#C9963A" opacity="0.9" />
-      {/* Chat bubbles */}
-      <rect x="20" y="42" width="56" height="10" rx="5" fill="#1e3a52" />
-      <rect x="44" y="56" width="52" height="10" rx="5" fill="#C9963A" opacity="0.85" />
-      <rect x="20" y="70" width="48" height="10" rx="5" fill="#1e3a52" />
-      <rect x="50" y="84" width="46" height="10" rx="5" fill="#C9963A" opacity="0.85" />
-      {/* Score bar */}
-      <rect x="20" y="102" width="76" height="18" rx="6" fill="#132d42" />
-      <rect x="24" y="106" width="50" height="10" rx="4" fill="#2d6a4f" opacity="0.9" />
-      <text x="56" y="115" fontSize="6" fill="white" fontFamily="sans-serif" fontWeight="bold">85%</text>
-      {/* Module icons row */}
-      {[0,1,2,3].map(i => (
-        <rect key={i} x={20 + i * 20} y="128" width="16" height="16" rx="4" fill="#1e3a52" />
+    <svg viewBox="0 0 150 300" className="w-36 h-auto drop-shadow-2xl" fill="none">
+      {/* Metal body */}
+      <rect x="1" y="1" width="148" height="298" rx="34" fill="#141418" />
+      <rect x="2" y="2" width="146" height="296" rx="33" stroke="#3d3d44" strokeWidth="1" fill="none" />
+      {/* Screen glass */}
+      <rect x="7" y="7" width="136" height="286" rx="28" fill="#0b1a2d" />
+
+      {/* Side buttons */}
+      <rect x="0" y="90"  width="2.5" height="20" rx="1.25" fill="#2c2c30" />
+      <rect x="0" y="118" width="2.5" height="32" rx="1.25" fill="#2c2c30" />
+      <rect x="0" y="158" width="2.5" height="32" rx="1.25" fill="#2c2c30" />
+      <rect x="147.5" y="112" width="2.5" height="42" rx="1.25" fill="#2c2c30" />
+
+      {/* Dynamic Island */}
+      <rect x="46" y="17" width="58" height="16" rx="8" fill="#0b1a2d" />
+      <circle cx="93" cy="25" r="3.5" fill="#141418" />
+
+      {/* App header */}
+      <rect x="7" y="40" width="136" height="30" fill="#1A4A6B" />
+      <circle cx="21" cy="55" r="8" fill="#C9963A" opacity="0.95" />
+      <text x="33" y="52" fontSize="5.5" fill="#C9963A" fontFamily="sans-serif" fontWeight="800" letterSpacing="0.4">BRAZIL ABROAD · APP</text>
+      <text x="33" y="64" fontSize="4.5" fill="rgba(255,255,255,0.5)" fontFamily="sans-serif">Seu app de carreira · grátis</text>
+
+      {/* Banner strip */}
+      <rect x="7" y="70" width="136" height="14" fill="#132d42" />
+      <text x="14" y="80" fontSize="4.5" fill="#C9963A" fontFamily="sans-serif">Progresso desta semana</text>
+
+      {/* Module rows */}
+      {rows.map(({ label, color, pct }, i) => (
+        <g key={label}>
+          <rect x="7" y={88 + i * 38} width="136" height="30" fill="#0f2336" />
+          <rect x="7" y={88 + i * 38} width="3" height="30" fill={color} />
+          <text x="16" y={100 + i * 38} fontSize="5.5" fill={color} fontFamily="sans-serif" fontWeight="700">{label}</text>
+          <rect x="16" y={105 + i * 38} width="100" height="4" rx="2" fill="rgba(255,255,255,0.07)" />
+          <rect x="16" y={105 + i * 38} width={pct} height="4" rx="2" fill={color} opacity="0.65" />
+          <text x="120" y={111 + i * 38} fontSize="4.5" fill={color} fontFamily="sans-serif" fontWeight="600">{pct}%</text>
+        </g>
       ))}
-      <rect x="20" y="128" width="16" height="16" rx="4" fill="#C9963A" opacity="0.7" />
-      {/* Bottom bar */}
-      <rect x="20" y="152" width="76" height="18" rx="6" fill="#C9963A" opacity="0.9" />
-      <text x="34" y="164" fontSize="7" fill="white" fontFamily="sans-serif" fontWeight="bold">Treinar agora →</text>
+
+      {/* CTA button */}
+      <rect x="15" y="244" width="120" height="22" rx="11" fill="#C9963A" />
+      <text x="75" y="259" fontSize="6" fill="white" fontFamily="sans-serif" fontWeight="700" textAnchor="middle">Treinar agora →</text>
+
+      {/* Bottom nav */}
+      <rect x="7" y="270" width="136" height="18" fill="#09182a" />
+      <circle cx="34" cy="279" r="4"  fill="#C9963A" opacity="0.9" />
+      <circle cx="75" cy="279" r="4"  fill="rgba(255,255,255,0.2)" />
+      <circle cx="116" cy="279" r="4" fill="rgba(255,255,255,0.2)" />
+
       {/* Home indicator */}
-      <rect x="44" y="178" width="32" height="4" rx="2" fill="#ffffff" opacity="0.3" />
+      <rect x="52" y="291" width="46" height="3" rx="1.5" fill="white" opacity="0.2" />
     </svg>
   );
 }
