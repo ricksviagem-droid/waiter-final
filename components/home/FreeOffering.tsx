@@ -24,6 +24,110 @@ const items = [
   },
 ];
 
+function WorldLinkPhoneMockup() {
+  return (
+    <svg viewBox="0 0 150 300" className="w-36 h-auto drop-shadow-2xl" fill="none">
+      {/* Metal frame */}
+      <rect x="1" y="1" width="148" height="298" rx="34" fill="#141418" />
+      <rect x="2" y="2" width="146" height="296" rx="33" stroke="#3d3d44" strokeWidth="1" fill="none" />
+      <rect x="7" y="7" width="136" height="286" rx="28" fill="#0a1e24" />
+      {/* Buttons */}
+      <rect x="0" y="90" width="2.5" height="20" rx="1.25" fill="#2c2c30" />
+      <rect x="0" y="118" width="2.5" height="32" rx="1.25" fill="#2c2c30" />
+      <rect x="147.5" y="112" width="2.5" height="42" rx="1.25" fill="#2c2c30" />
+      {/* Dynamic Island */}
+      <rect x="46" y="17" width="58" height="16" rx="8" fill="#0a1e24" />
+      <circle cx="93" cy="25" r="3.5" fill="#141418" />
+
+      {/* Game header */}
+      <rect x="7" y="40" width="136" height="16" fill="#0d2030" />
+      <circle cx="17" cy="48" r="6" fill="#7c3aed" opacity="0.9" />
+      <text x="27" y="52" fontSize="5.5" fill="#a78bfa" fontFamily="sans-serif" fontWeight="800" letterSpacing="0.4">WORLD LINK</text>
+      <circle cx="136" cy="48" r="4" fill="#ef4444" />
+      <text x="122" y="45" fontSize="3.5" fill="#ef4444" fontFamily="sans-serif">LIVE</text>
+
+      {/* Camera controls */}
+      <rect x="7" y="56" width="136" height="11" fill="#080f18" />
+      <rect x="9" y="57.5" width="18" height="8" rx="4" fill="#C9963A" />
+      <text x="18" y="64" fontSize="4" fill="white" fontFamily="sans-serif" fontWeight="700" textAnchor="middle">ISO</text>
+      <text x="35" y="64" fontSize="4" fill="#555" fontFamily="sans-serif" textAnchor="middle">TOP</text>
+      <text x="51" y="64" fontSize="4" fill="#555" fontFamily="sans-serif" textAnchor="middle">CLOSE</text>
+      <text x="67" y="64" fontSize="4" fill="#555" fontFamily="sans-serif" textAnchor="middle">WIDE</text>
+      <text x="82" y="64" fontSize="4" fill="#555" fontFamily="sans-serif" textAnchor="middle">POV</text>
+
+      {/* ── GAME SCENE ── */}
+      {/* Sandy floor */}
+      <rect x="7" y="67" width="136" height="165" fill="#cbb98d" />
+      {/* Teal back wall */}
+      <rect x="7" y="67" width="136" height="26" fill="#2a7472" />
+      <polygon points="7,67 62,84 62,93 7,93" fill="#1c5250" />
+      <polygon points="143,67 88,84 88,93 143,93" fill="#1c5250" />
+      {/* Floor grid lines */}
+      <line x1="7" y1="118" x2="143" y2="118" stroke="#b8a06a" strokeWidth="0.4" opacity="0.45" />
+      <line x1="7" y1="143" x2="143" y2="143" stroke="#b8a06a" strokeWidth="0.4" opacity="0.45" />
+      <line x1="7" y1="168" x2="143" y2="168" stroke="#b8a06a" strokeWidth="0.4" opacity="0.45" />
+      <line x1="7" y1="193" x2="143" y2="193" stroke="#b8a06a" strokeWidth="0.4" opacity="0.45" />
+      <line x1="40" y1="67" x2="40" y2="232" stroke="#b8a06a" strokeWidth="0.4" opacity="0.3" />
+      <line x1="75" y1="67" x2="75" y2="232" stroke="#b8a06a" strokeWidth="0.4" opacity="0.3" />
+      <line x1="110" y1="67" x2="110" y2="232" stroke="#b8a06a" strokeWidth="0.4" opacity="0.3" />
+      {/* Large red rug / area marker */}
+      <circle cx="28" cy="195" r="20" fill="#c0392b" opacity="0.6" />
+      {/* Green trees */}
+      <circle cx="120" cy="115" r="14" fill="#27774a" opacity="0.82" />
+      <circle cx="127" cy="145" r="9" fill="#2ecc71" opacity="0.7" />
+      <circle cx="108" cy="200" r="8" fill="#27774a" opacity="0.72" />
+      {/* Table */}
+      <ellipse cx="65" cy="132" rx="11" ry="6.5" fill="#8b6a18" opacity="0.65" />
+      {/* Character — green shirt */}
+      <ellipse cx="40" cy="153" rx="5" ry="2.5" fill="rgba(0,0,0,0.12)" />
+      <circle cx="40" cy="145" r="4.5" fill="#d4a46c" />
+      <rect x="37" y="149" width="6" height="7.5" rx="2" fill="#27ae60" />
+      {/* Character — red shirt */}
+      <ellipse cx="58" cy="127" rx="4" ry="2" fill="rgba(0,0,0,0.1)" />
+      <circle cx="58" cy="120" r="4" fill="#d4a46c" />
+      <rect x="55.5" y="124" width="5" height="6.5" rx="1.5" fill="#e74c3c" />
+      {/* Character — dark suit */}
+      <ellipse cx="108" cy="155" rx="4" ry="2" fill="rgba(0,0,0,0.1)" />
+      <circle cx="108" cy="148" r="4" fill="#d4a46c" />
+      <rect x="105.5" y="152" width="5" height="6.5" rx="1.5" fill="#2c3e50" />
+      {/* Rick — player */}
+      <ellipse cx="75" cy="215" rx="6" ry="3" fill="rgba(0,0,0,0.14)" />
+      <circle cx="75" cy="204" r="5.5" fill="#d4a46c" />
+      <rect x="71.5" y="209" width="7" height="8.5" rx="2" fill="#f0e8d0" />
+      <rect x="61" y="193" width="28" height="9" rx="4.5" fill="rgba(0,0,0,0.76)" />
+      <text x="75" y="200.5" fontSize="5" fill="white" fontFamily="sans-serif" fontWeight="700" textAnchor="middle">Rick</text>
+      {/* TURNO EM CURSO panel */}
+      <rect x="67" y="74" width="70" height="46" rx="6" fill="rgba(8,24,36,0.91)" />
+      <text x="102" y="83" fontSize="3.8" fill="rgba(255,255,255,0.55)" fontFamily="sans-serif" textAnchor="middle" letterSpacing="0.6">TURNO EM CURSO</text>
+      <text x="102" y="97" fontSize="14" fill="#C9963A" fontFamily="sans-serif" fontWeight="800" textAnchor="middle">2:52</text>
+      <rect x="71" y="102" width="62" height="11" rx="5.5" fill="#C9963A" opacity="0.9" />
+      <text x="102" y="110.5" fontSize="4.5" fill="white" fontFamily="sans-serif" fontWeight="700" textAnchor="middle">Encerrar Turno</text>
+      {/* Minimap */}
+      <rect x="9" y="220" width="36" height="28" rx="4" fill="rgba(8,20,30,0.82)" />
+      <rect x="11" y="222" width="32" height="24" rx="3" fill="#0f2b38" />
+      <rect x="20" y="225" width="13" height="9" fill="#2a7472" opacity="0.65" />
+      <circle cx="24" cy="238" r="2.5" fill="#C9963A" />
+
+      {/* Bottom bar */}
+      <rect x="7" y="232" width="136" height="18" fill="#060e18" />
+      <circle cx="20" cy="241" r="3.5" fill="#7c3aed" opacity="0.9" />
+      <circle cx="29" cy="241" r="3.5" fill="#C9963A" opacity="0.9" />
+      <circle cx="38" cy="241" r="3.5" fill="#4ade80" opacity="0.9" />
+      <text x="48" y="244.5" fontSize="4" fill="#a78bfa" fontFamily="sans-serif">+128 online</text>
+      <rect x="95" y="234.5" width="40" height="11" rx="5.5" fill="#7c3aed" opacity="0.9" />
+      <text x="115" y="242.5" fontSize="4.5" fill="white" fontFamily="sans-serif" fontWeight="700" textAnchor="middle">Jogar</text>
+
+      {/* Nav */}
+      <rect x="7" y="250" width="136" height="18" fill="#040b14" />
+      <circle cx="34" cy="259" r="4" fill="#7c3aed" opacity="0.85" />
+      <circle cx="75" cy="259" r="4" fill="rgba(255,255,255,0.15)" />
+      <circle cx="116" cy="259" r="4" fill="rgba(255,255,255,0.15)" />
+      {/* Home indicator */}
+      <rect x="52" y="271" width="46" height="3" rx="1.5" fill="white" opacity="0.18" />
+    </svg>
+  );
+}
+
 function PhoneMockup() {
   const rows = [
     { label: 'Entrevista com IA', color: '#C9963A', pct: 76 },
@@ -218,36 +322,10 @@ export default function FreeOffering() {
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#C9963A]/10 blur-3xl rounded-full pointer-events-none" />
 
           <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8">
-            {/* Community art */}
-            <div className="shrink-0">
-              <svg viewBox="0 0 140 100" className="w-40 h-auto" fill="none">
-                <rect x="4" y="4" width="132" height="92" rx="12" fill="#0d0a1e" />
-                {/* Globe ring */}
-                <circle cx="70" cy="50" r="30" stroke="#7c3aed" strokeWidth="1" opacity="0.4" />
-                <ellipse cx="70" cy="50" rx="18" ry="30" stroke="#7c3aed" strokeWidth="1" opacity="0.3" />
-                <line x1="40" y1="50" x2="100" y2="50" stroke="#7c3aed" strokeWidth="1" opacity="0.3" />
-                <line x1="44" y1="35" x2="96" y2="35" stroke="#7c3aed" strokeWidth="0.8" opacity="0.25" />
-                <line x1="44" y1="65" x2="96" y2="65" stroke="#7c3aed" strokeWidth="0.8" opacity="0.25" />
-                {/* Center glow */}
-                <circle cx="70" cy="50" r="6" fill="#C9963A" opacity="0.9" />
-                <circle cx="70" cy="50" r="10" fill="#C9963A" opacity="0.15" />
-                {/* Node dots */}
-                {[[50,32],[90,32],[40,50],[100,50],[50,68],[90,68]].map(([x,y],i) => (
-                  <g key={i}>
-                    <line x1={x} y1={y} x2="70" y2="50" stroke="#7c3aed" strokeWidth="0.8" opacity="0.35" />
-                    <circle cx={x} cy={y} r="4" fill="#7c3aed" opacity="0.8" />
-                    <circle cx={x} cy={y} r="7" fill="#7c3aed" opacity="0.15" />
-                  </g>
-                ))}
-                {/* WORLD LINK label */}
-                <text x="70" y="14" fontSize="7" fill="#a78bfa" fontFamily="sans-serif" fontWeight="700" textAnchor="middle">WORLD LINK</text>
-                {/* Members count */}
-                <rect x="20" y="78" width="100" height="14" rx="5" fill="#1a1035" />
-                <circle cx="32" cy="85" r="4" fill="#7c3aed" opacity="0.7" />
-                <circle cx="40" cy="85" r="4" fill="#C9963A" opacity="0.7" />
-                <circle cx="48" cy="85" r="4" fill="#4ade80" opacity="0.7" />
-                <text x="58" y="89" fontSize="6" fill="#a78bfa" fontFamily="sans-serif">Comunidade global · Beta</text>
-              </svg>
+            {/* Game phone mockup */}
+            <div className="shrink-0 flex justify-center relative">
+              <div className="absolute inset-0 bg-purple-500/20 blur-3xl rounded-full scale-150 pointer-events-none" />
+              <WorldLinkPhoneMockup />
             </div>
 
             {/* Text */}
