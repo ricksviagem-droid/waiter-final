@@ -14,8 +14,8 @@ const strips = [
     overlay: 'bg-[#C9963A]/45',
   },
   {
-    src: 'https://images.pexels.com/photos/12999311/pexels-photo-12999311.jpeg?auto=compress&cs=tinysrgb&w=700&h=500',
-    alt: 'Luxury cruise ship at night',
+    src: '/scenes/cruise-star.jpg',
+    alt: 'Star of the Seas luxury cruise ship',
     label: 'Cruzeiro de Luxo',
     overlay: 'bg-[#1A4A6B]/50',
   },

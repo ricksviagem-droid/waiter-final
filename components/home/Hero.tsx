@@ -4,12 +4,12 @@ import { Link } from '@/i18n/navigation';
 
 const photos = [
   {
-    src: 'https://images.pexels.com/photos/28720826/pexels-photo-28720826.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750',
+    src: '/scenes/atlantis-palm.jpg',
     alt: 'Atlantis The Palm Dubai aerial view',
   },
   {
-    src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85',
-    alt: 'Fine dining service',
+    src: '/scenes/waiter-sommelier.jpg',
+    alt: 'Fine dining sommelier with wine',
   },
   {
     src: 'https://images.unsplash.com/photo-1574096079513-d8259312b785?w=900&q=85',
