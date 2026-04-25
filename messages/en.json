@@ -1,0 +1,174 @@
+{
+  "meta": {
+    "title": "Brazil Abroad — Your road map to the world",
+    "description": "International career consulting in hospitality. Work abroad with the right preparation and connections."
+  },
+  "nav": {
+    "blog": "Blog",
+    "exchange": "Exchange",
+    "consulting": "Consulting",
+    "about": "About",
+    "cta": "Start your journey"
+  },
+  "hero": {
+    "eyebrow": "Brazil Abroad · Est. 2025",
+    "h1": "Your road map to the",
+    "h1_highlight": "world.",
+    "subtitle": "Work in hospitality abroad. Earn in dollars. See the world.",
+    "honest": "No empty promises — a real path, built by someone who lived it.",
+    "cta_primary": "Take the free assessment",
+    "cta_secondary": "My story",
+    "card_badge": "$5K avg/month",
+    "card_name": "Ricardo Rogerio",
+    "card_sub": "15yr hospitality · Dubai · Atlantis The Royal"
+  },
+  "stats": {
+    "title": "The numbers that matter.",
+    "subtitle": "Not a promise. The reality of those who've done it.",
+    "s1_number": "$5K",
+    "s1_label": "Average monthly earnings abroad",
+    "s2_number": "$0",
+    "s2_label": "Cost of living on board",
+    "s3_number": "20+",
+    "s3_label": "Countries per contract",
+    "s4_number": "15 yrs",
+    "s4_label": "Founder experience"
+  },
+  "howItWorks": {
+    "title": "Three steps to change everything.",
+    "cta": "Start now — it's free",
+    "step1_number": "01",
+    "step1_title": "Take your free assessment",
+    "step1_desc": "understand where you stand today",
+    "step2_number": "02",
+    "step2_title": "Receive your personal road map",
+    "step2_desc": "your plan arrives by email in minutes",
+    "step3_number": "03",
+    "step3_title": "Start your journey",
+    "step3_desc": "with the right preparation and connections"
+  },
+  "freeOffering": {
+    "title": "Everything you get for free.",
+    "badge": "No credit card. No commitment.",
+    "item1": "Free assessment + personal road map by email",
+    "item2": "Limited access to the AI conversation simulator",
+    "item3": "Free eBook: The Real Guide to Working Abroad",
+    "item4": "Weekly blog with news and opportunities",
+    "item5": "Exchange opportunities from our partners",
+    "item6": "Access to the WhatsApp community"
+  },
+  "about": {
+    "label": "About Ricardo",
+    "title": "Built by someone who lived it.",
+    "p1": "15 years in hospitality. 7 in Dubai's luxury scene — Atlantis The Royal, Amazónico and Casa Blanca. I've seen who makes it abroad and who doesn't.",
+    "p2": "The difference is never luck. It's preparation and the right connection. That's why I created Brazil Abroad.",
+    "cta": "Read my full story",
+    "tag1": "Atlantis The Royal",
+    "tag2": "Amazónico Dubai",
+    "tag3": "Casa Blanca",
+    "tag4": "Ling Ling"
+  },
+  "testimonials": {
+    "title": "Real people. Real results.",
+    "video_placeholder": "Testimonial videos coming soon.",
+    "t1_name": "Ana Silva",
+    "t1_result": "Hired on a cruise ship — $4,800/mo",
+    "t2_name": "Carlos Mendes",
+    "t2_result": "5★ hotel in Dubai — $5,200/mo",
+    "t3_name": "Juliana Costa",
+    "t3_result": "Exchange in Ibiza — $3,900/mo"
+  },
+  "blog": {
+    "title": "From our blog.",
+    "cta": "View all articles",
+    "post1_category": "Cruises",
+    "post1_title": "How to get a job on a cruise ship in 2025",
+    "post1_date": "Jan 2025",
+    "post2_category": "Destinations",
+    "post2_title": "Dubai vs Cruises — which to choose?",
+    "post2_date": "Jan 2025",
+    "post3_category": "Career",
+    "post3_title": "3 things that get Brazilians rejected abroad",
+    "post3_date": "Jan 2025"
+  },
+  "partners": {
+    "title": "Our official partners",
+    "subtitle": "Connecting you to the best programs in the world"
+  },
+  "finalCta": {
+    "title": "Ready to start your journey?",
+    "subtitle": "Take your free assessment. 3 minutes. Could change everything.",
+    "cta": "Take the free assessment"
+  },
+  "footer": {
+    "slogan": "Your road map to the world.",
+    "link_blog": "Blog",
+    "link_exchange": "Exchange",
+    "link_consulting": "Consulting",
+    "link_about": "About",
+    "link_contact": "Contact",
+    "copyright": "Brazil Abroad © 2025 — All rights reserved",
+    "proudly": "Proudly connecting Brazilians to the world 🌍"
+  },
+  "whatsapp": {
+    "message": "Hello Ricardo, I completed the Brazil Abroad assessment and would like to know more."
+  },
+  "assessment": {
+    "title": "Free Assessment",
+    "subtitle": "Discover your profile and receive your personalized road map",
+    "step0_title": "Let's get started",
+    "step0_name": "Full name",
+    "step0_email": "Email",
+    "step0_cta": "Start assessment",
+    "progress": "Question {current} of {total}",
+    "q1": "Do you have experience in hospitality?",
+    "q1_a": "Yes, I have experience",
+    "q1_b": "Not yet, but I want to learn",
+    "q2": "Which area?",
+    "q2_a": "Restaurant",
+    "q2_b": "Hotel",
+    "q2_c": "Bar",
+    "q2_d": "Cruise ship",
+    "q2_e": "Other",
+    "q3": "How is your English today?",
+    "q3_a": "Basic — I understand a little",
+    "q3_b": "Intermediate — I get by",
+    "q3_c": "Advanced — I communicate well",
+    "q4": "What is your goal?",
+    "q4_a": "Work abroad",
+    "q4_b": "Go on an exchange program",
+    "q4_c": "Both",
+    "q5": "When do you want to take this step?",
+    "q5_a": "As soon as possible",
+    "q5_b": "In 6 months",
+    "q5_c": "In 1 year",
+    "next": "Next",
+    "back": "Back",
+    "finish": "See my result"
+  },
+  "result": {
+    "ready_label": "READY",
+    "ready_title": "Your profile is strong.",
+    "ready_desc": "You're closer than you think.",
+    "ready_next": "Schedule a consultation",
+    "almost_label": "ALMOST THERE",
+    "almost_title": "You have a solid foundation.",
+    "almost_desc": "A few targeted steps and you'll be ready.",
+    "almost_next": "Try the free simulator",
+    "builder_label": "BUILDER",
+    "builder_title": "Everyone starts somewhere.",
+    "builder_desc": "Here is your honest road map.",
+    "builder_next": "Start with the free eBook",
+    "whatsapp_cta": "Talk to Ricardo on WhatsApp",
+    "simulator_cta": "Try the free simulator"
+  },
+  "pages": {
+    "about_title": "About Ricardo Rogerio",
+    "blog_title": "Blog",
+    "exchange_title": "Exchange Programs",
+    "consulting_title": "Consulting",
+    "thankyou_title": "Thank you!",
+    "thankyou_subtitle": "Your road map is on its way to your email.",
+    "thankyou_whatsapp": "Talk to Ricardo now"
+  }
+}

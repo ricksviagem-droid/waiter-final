@@ -1,0 +1,174 @@
+{
+  "meta": {
+    "title": "Brazil Abroad — Seu mapa para o mundo",
+    "description": "Consultoria de carreiras internacionais em hospitalidade. Trabalhe no exterior com preparo e as conexões certas."
+  },
+  "nav": {
+    "blog": "Blog",
+    "exchange": "Exchange",
+    "consulting": "Consulting",
+    "about": "Sobre",
+    "cta": "Começar jornada"
+  },
+  "hero": {
+    "eyebrow": "Brazil Abroad · Est. 2025",
+    "h1": "Seu mapa para o",
+    "h1_highlight": "mundo.",
+    "subtitle": "Trabalhe em hospitalidade no exterior. Ganhe em dólar. Conheça o mundo.",
+    "honest": "Sem promessas falsas — um caminho real, construído por quem viveu isso.",
+    "cta_primary": "Fazer assessment gratuito",
+    "cta_secondary": "Minha história",
+    "card_badge": "$5K avg/month",
+    "card_name": "Ricardo Rogerio",
+    "card_sub": "15yr hospitality · Dubai · Atlantis The Royal"
+  },
+  "stats": {
+    "title": "Os números que importam.",
+    "subtitle": "Não é promessa. É a realidade de quem já fez.",
+    "s1_number": "$5K",
+    "s1_label": "Ganhos médios mensais no exterior",
+    "s2_number": "$0",
+    "s2_label": "Custo de vida a bordo",
+    "s3_number": "20+",
+    "s3_label": "Países por contrato",
+    "s4_number": "15 anos",
+    "s4_label": "Experiência do fundador"
+  },
+  "howItWorks": {
+    "title": "Três passos para mudar tudo.",
+    "cta": "Começar agora — é grátis",
+    "step1_number": "01",
+    "step1_title": "Faça seu assessment gratuito",
+    "step1_desc": "entenda onde você está hoje",
+    "step2_number": "02",
+    "step2_title": "Receba seu road map pessoal",
+    "step2_desc": "seu plano chega por e-mail em minutos",
+    "step3_number": "03",
+    "step3_title": "Comece sua jornada",
+    "step3_desc": "com o preparo e as conexões certas"
+  },
+  "freeOffering": {
+    "title": "Tudo que você recebe de graça.",
+    "badge": "Sem cartão de crédito. Sem compromisso.",
+    "item1": "Assessment gratuito + road map pessoal por e-mail",
+    "item2": "Acesso limitado ao simulador de conversas com IA",
+    "item3": "eBook gratuito: O Guia Real para Trabalhar no Exterior",
+    "item4": "Blog semanal com novidades e oportunidades da área",
+    "item5": "Oportunidades de intercâmbio dos nossos parceiros",
+    "item6": "Acesso à comunidade no WhatsApp"
+  },
+  "about": {
+    "label": "Sobre o Ricardo",
+    "title": "Construído por quem viveu isso.",
+    "p1": "15 anos em hospitalidade. 7 no cenário de luxo de Dubai — Atlantis The Royal, Amazónico e Casa Blanca. Vi quem consegue e quem não consegue trabalhar no exterior.",
+    "p2": "A diferença nunca é sorte. É preparo e a conexão certa. Por isso criei a Brazil Abroad.",
+    "cta": "Ler minha história completa",
+    "tag1": "Atlantis The Royal",
+    "tag2": "Amazónico Dubai",
+    "tag3": "Casa Blanca",
+    "tag4": "Ling Ling"
+  },
+  "testimonials": {
+    "title": "Pessoas reais. Resultados reais.",
+    "video_placeholder": "Vídeos de testemunhos em breve.",
+    "t1_name": "Ana Silva",
+    "t1_result": "Empregada em cruzeiro — $4.800/mês",
+    "t2_name": "Carlos Mendes",
+    "t2_result": "Hotel 5★ em Dubai — $5.200/mês",
+    "t3_name": "Juliana Costa",
+    "t3_result": "Intercâmbio em Ibiza — $3.900/mês"
+  },
+  "blog": {
+    "title": "Do nosso blog.",
+    "cta": "Ver todos os artigos",
+    "post1_category": "Cruzeiros",
+    "post1_title": "Como conseguir emprego num cruzeiro em 2025",
+    "post1_date": "Jan 2025",
+    "post2_category": "Destinos",
+    "post2_title": "Dubai vs Cruzeiros — qual escolher?",
+    "post2_date": "Jan 2025",
+    "post3_category": "Carreira",
+    "post3_title": "3 coisas que fazem brasileiros serem rejeitados no exterior",
+    "post3_date": "Jan 2025"
+  },
+  "partners": {
+    "title": "Nossos parceiros oficiais",
+    "subtitle": "Conectando você aos melhores programas do mundo"
+  },
+  "finalCta": {
+    "title": "Pronto para começar sua jornada?",
+    "subtitle": "Faça seu assessment gratuito. 3 minutos. Pode mudar tudo.",
+    "cta": "Fazer assessment gratuito"
+  },
+  "footer": {
+    "slogan": "Your road map to the world.",
+    "link_blog": "Blog",
+    "link_exchange": "Exchange",
+    "link_consulting": "Consulting",
+    "link_about": "Sobre",
+    "link_contact": "Contato",
+    "copyright": "Brazil Abroad © 2025 — All rights reserved",
+    "proudly": "Proudly connecting Brazilians to the world 🌍"
+  },
+  "whatsapp": {
+    "message": "Olá Ricardo, fiz o assessment da Brazil Abroad e gostaria de saber mais."
+  },
+  "assessment": {
+    "title": "Assessment Gratuito",
+    "subtitle": "Descubra seu perfil e receba seu road map personalizado",
+    "step0_title": "Vamos começar",
+    "step0_name": "Nome completo",
+    "step0_email": "E-mail",
+    "step0_cta": "Começar assessment",
+    "progress": "Pergunta {current} de {total}",
+    "q1": "Você tem experiência em hospitalidade?",
+    "q1_a": "Sim, tenho experiência",
+    "q1_b": "Ainda não, mas quero aprender",
+    "q2": "Qual área?",
+    "q2_a": "Restaurante",
+    "q2_b": "Hotel",
+    "q2_c": "Bar",
+    "q2_d": "Cruzeiro",
+    "q2_e": "Outra",
+    "q3": "Como está seu inglês hoje?",
+    "q3_a": "Básico — entendo pouco",
+    "q3_b": "Intermediário — me viro",
+    "q3_c": "Avançado — me comunico bem",
+    "q4": "Qual é seu objetivo?",
+    "q4_a": "Trabalhar no exterior",
+    "q4_b": "Fazer intercâmbio",
+    "q4_c": "Os dois",
+    "q5": "Quando quer dar esse passo?",
+    "q5_a": "O quanto antes",
+    "q5_b": "Em 6 meses",
+    "q5_c": "Em 1 ano",
+    "next": "Próxima",
+    "back": "Voltar",
+    "finish": "Ver meu resultado"
+  },
+  "result": {
+    "ready_label": "READY",
+    "ready_title": "Seu perfil é forte.",
+    "ready_desc": "Você está mais perto do que imagina.",
+    "ready_next": "Agendar consultoria",
+    "almost_label": "ALMOST THERE",
+    "almost_title": "Você tem uma boa base.",
+    "almost_desc": "Alguns passos certeiros e você estará pronto.",
+    "almost_next": "Experimentar o simulador grátis",
+    "builder_label": "BUILDER",
+    "builder_title": "Todo mundo começa em algum lugar.",
+    "builder_desc": "Aqui está seu road map honesto.",
+    "builder_next": "Começar com o eBook gratuito",
+    "whatsapp_cta": "Falar com Ricardo no WhatsApp",
+    "simulator_cta": "Experimentar o simulador grátis"
+  },
+  "pages": {
+    "about_title": "Sobre Ricardo Rogerio",
+    "blog_title": "Blog",
+    "exchange_title": "Intercâmbio",
+    "consulting_title": "Consultoria",
+    "thankyou_title": "Obrigado!",
+    "thankyou_subtitle": "Seu road map está a caminho do seu e-mail.",
+    "thankyou_whatsapp": "Falar com Ricardo agora"
+  }
+}
