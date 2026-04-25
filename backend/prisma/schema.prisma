@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  clerkId      String        @unique
+  email        String        @unique
+  name         String
+  settings     Settings?
+  transactions Transaction[]
+  goals             Goal[]
+  events            Event[]
+  pushSubscriptions PushSubscription[]
+  createdAt         DateTime      @default(now())
+}
+
+model Settings {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currencyMain         String   @default("BRL")
+  currenciesSecondary  String[] @default([])
+  salaryAmount         Float
+  salaryDay            Int
+  loanBalance          Float    @default(0)
+  loanMonthlyPayment   Float    @default(0)
+  dangerZoneThreshold  Float    @default(500)
+  initialBalance       Float
+  currentBalance       Float
+  fixedExpenses        Json     @default("[]")
+  isMuted              Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  amount    Float
+  type      String
+  category  String
+  merchant  String?
+  note      String?
+  source    String   @default("manual")
+  rawSms    String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, date])
+}
+
+model Goal {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  targetAmount  Float
+  targetDate    DateTime
+  currentAmount Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Event {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  date          DateTime
+  type          String
+  amountImpact  Float?
+  createdAt     DateTime @default(now())
+
+  @@index([userId, date])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}

@@ -37,6 +37,7 @@ const MODULES = [
   { id:'menu-master', label:'MENU MASTER',   name:'Menu Master',         desc:'Upload your food or drink bible — AI turns it into a memorisation game.', icon:'📋',  color:'#2dd4bf', href:'/menu-master', badge:'B2B',   meta:'PDF · Quiz · Score · Reveal',    freq:750 },
   { id:'resume',      label:'RESUME AI',     name:'Professional Resume', desc:'Build or upgrade your hospitality CV — AI writes it in perfect English.',   icon:'📄',  color:'#a78bfa', href:'/resume',      badge:'NEW',   meta:'Generate · Improve · Download',  freq:820 },
   { id:'pos',         label:'POS SIMULATOR', name:'MICROS Simulator',    desc:'Real POS training — open tables, enter orders, comments, hold & fire.',      icon:'🖥️',  color:'#f59e0b', href:'/pos',         badge:'GAME',  meta:'8 orders · timer · scoring',     freq:580 },
+  { id:'safe-spend',  label:'BUDGET',        name:'Safe to Spend',       desc:'Know exactly how much you can spend — income, expenses and savings plan.',      icon:'💚',  color:'#4ade80', href:'/safe-to-spend', badge:'NEW',  meta:'Calculator · Tips · 50/30/20',   freq:640 },
 ]
 
 export default function LandingPage() {
@@ -180,7 +181,7 @@ export default function LandingPage() {
                 <div style={{ fontSize: 11, color: MUTED }}>AI Instructor · Available 24/7</div>
               </div>
               <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                <div style={{ fontSize: 26, fontWeight: 900, color: TEXT, lineHeight: 1 }}>9</div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: TEXT, lineHeight: 1 }}>10</div>
                 <div style={{ fontSize: 9, color: MUTED, fontWeight: 600, letterSpacing: 1 }}>MODULES</div>
               </div>
             </div>
