@@ -72,6 +72,13 @@ export default function AssessmentResultPage() {
         </a>
 
         <Link
+          href="/interview"
+          className="w-full bg-[#1A4A6B] text-white font-medium py-4 rounded-full text-center text-sm font-[family-name:var(--font-dm-sans)] hover:bg-[#153d5a] transition-colors"
+        >
+          {t('simulator_cta')}
+        </Link>
+
+        <Link
           href="/"
           className="w-full border border-[#e8e0d0] text-[#777] py-4 rounded-full text-center text-sm font-[family-name:var(--font-dm-sans)] hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-colors"
         >
