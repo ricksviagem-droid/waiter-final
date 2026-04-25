@@ -8,6 +8,7 @@ import Ticker from '@/components/home/Ticker';
 import Manifesto from '@/components/home/Manifesto';
 import FreeOffering from '@/components/home/FreeOffering';
 import About from '@/components/home/About';
+import PhotoStrip from '@/components/home/PhotoStrip';
 import Testimonials from '@/components/home/Testimonials';
 import BlogPreview from '@/components/home/BlogPreview';
 import Partners from '@/components/home/Partners';
@@ -25,6 +26,7 @@ export default function HomePage() {
         <Manifesto />
         <FreeOffering />
         <About />
+        <PhotoStrip />
         <Testimonials />
         <BlogPreview />
         <Partners />

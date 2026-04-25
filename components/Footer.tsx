@@ -12,15 +12,20 @@ export default function Footer() {
           {/* Logo + slogan */}
           <div>
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-9 h-9 rounded-full bg-[#C9963A] flex items-center justify-center shrink-0 shadow-sm">
-                <svg viewBox="0 0 20 20" fill="none" width="15" height="15">
-                  <circle cx="10" cy="10" r="7.5" stroke="white" strokeWidth="1.2" opacity="0.85"/>
-                  <ellipse cx="10" cy="10" rx="3.5" ry="7.5" stroke="white" strokeWidth="1" opacity="0.55"/>
-                  <line x1="2.5" y1="10" x2="17.5" y2="10" stroke="white" strokeWidth="1" opacity="0.55"/>
-                  <path d="M3.5 6.5 Q10 5 16.5 6.5" stroke="white" strokeWidth="0.7" opacity="0.35" fill="none"/>
-                  <path d="M3.5 13.5 Q10 15 16.5 13.5" stroke="white" strokeWidth="0.7" opacity="0.35" fill="none"/>
-                  <circle cx="8" cy="11.5" r="1.6" fill="white" opacity="0.95"/>
-                  <circle cx="8" cy="11.5" r="0.7" fill="#C9963A" opacity="0.9"/>
+              <div className="w-9 h-9 rounded-full bg-[#C9963A] flex items-center justify-center shrink-0 shadow-md">
+                <svg viewBox="0 0 22 22" fill="none" width="16" height="16">
+                  <circle cx="11" cy="11" r="8.5" stroke="white" strokeWidth="1.3" opacity="0.75"/>
+                  <ellipse cx="11" cy="11" rx="4" ry="8.5" stroke="white" strokeWidth="0.9" opacity="0.42"/>
+                  <line x1="2.5" y1="11" x2="19.5" y2="11" stroke="white" strokeWidth="0.9" opacity="0.42"/>
+                  <path d="M4 7.5 Q11 6 18 7.5" stroke="white" strokeWidth="0.7" opacity="0.25" fill="none"/>
+                  <path d="M4 14.5 Q11 16 18 14.5" stroke="white" strokeWidth="0.7" opacity="0.25" fill="none"/>
+                  {/* Flight path: Brasil → Dubai */}
+                  <path d="M8.5 13.5 Q13.5 4 17.5 8" stroke="white" strokeWidth="1.1" strokeDasharray="1.6 1.2" fill="none" opacity="0.85"/>
+                  {/* Brasil dot */}
+                  <circle cx="8.5" cy="13.5" r="2" fill="white"/>
+                  <circle cx="8.5" cy="13.5" r="0.8" fill="#C9963A" opacity="0.9"/>
+                  {/* Dubai dot */}
+                  <circle cx="17.5" cy="8" r="1.3" fill="white" opacity="0.85"/>
                 </svg>
               </div>
               <div className="flex flex-col leading-none gap-0.5">

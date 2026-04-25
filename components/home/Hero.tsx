@@ -4,16 +4,16 @@ import { Link } from '@/i18n/navigation';
 
 const photos = [
   {
-    src: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=900&q=80',
-    alt: 'Dubai skyline',
+    src: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900&q=85',
+    alt: 'Luxury resort aerial view',
   },
   {
-    src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80',
+    src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85',
     alt: 'Fine dining service',
   },
   {
-    src: 'https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80',
-    alt: 'Cruise ship',
+    src: 'https://images.unsplash.com/photo-1574096079513-d8259312b785?w=900&q=85',
+    alt: 'Luxury bartender',
   },
 ];
 
