@@ -11,8 +11,16 @@ export default function Footer() {
 
           {/* Logo + slogan */}
           <div>
-            <div className="font-[family-name:var(--font-fraunces)] text-2xl font-semibold mb-2">
-              Brazil <span className="text-[#C9963A]">Abroad</span>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="w-9 h-9 rounded-full bg-[#C9963A] flex items-center justify-center shrink-0">
+                <span className="font-[family-name:var(--font-fraunces)] text-white text-[11px] font-bold tracking-tight">BA</span>
+              </div>
+              <div className="flex flex-col leading-none gap-0.5">
+                <span className="font-[family-name:var(--font-fraunces)] text-[0.58rem] font-semibold text-[#C9963A] tracking-[0.22em] uppercase">Consultoria</span>
+                <span className="font-[family-name:var(--font-fraunces)] text-[1.2rem] font-semibold text-white tracking-tight leading-none">
+                  Brazil <span className="text-[#C9963A]">Abroad</span>
+                </span>
+              </div>
             </div>
             <p className="text-[#C9963A] text-sm italic font-[family-name:var(--font-fraunces)]">
               {t('slogan')}
@@ -36,7 +44,9 @@ export default function Footer() {
           <div className="flex gap-3">
             {/* Instagram */}
             <a
-              href="#"
+              href="https://instagram.com/conexaobrazil_dubai"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Instagram"
               className="w-10 h-10 rounded-full border border-[#333] flex items-center justify-center text-[#888] hover:text-white hover:border-white transition-colors"
             >
@@ -47,7 +57,9 @@ export default function Footer() {
 
             {/* YouTube */}
             <a
-              href="#"
+              href="https://youtube.com/@conexaobrazil_dubai"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="YouTube"
               className="w-10 h-10 rounded-full border border-[#333] flex items-center justify-center text-[#888] hover:text-white hover:border-white transition-colors"
             >

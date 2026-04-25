@@ -39,13 +39,16 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-0.5 shrink-0">
-          <span className="font-[family-name:var(--font-fraunces)] text-[1.2rem] font-semibold text-[#1a1a1a] tracking-tight">
-            Brazil&nbsp;
-          </span>
-          <span className="font-[family-name:var(--font-fraunces)] text-[1.2rem] font-semibold text-[#C9963A] tracking-tight">
-            Abroad
-          </span>
+        <Link href="/" className="flex items-center gap-2.5 shrink-0">
+          <div className="w-8 h-8 rounded-full bg-[#1A4A6B] flex items-center justify-center shrink-0">
+            <span className="font-[family-name:var(--font-fraunces)] text-white text-[11px] font-bold tracking-tight">BA</span>
+          </div>
+          <div className="flex flex-col leading-none gap-0.5">
+            <span className="font-[family-name:var(--font-fraunces)] text-[0.55rem] font-semibold text-[#C9963A] tracking-[0.22em] uppercase">Consultoria</span>
+            <span className="font-[family-name:var(--font-fraunces)] text-[1.1rem] font-semibold text-[#1a1a1a] tracking-tight leading-none">
+              Brazil <span className="text-[#C9963A]">Abroad</span>
+            </span>
+          </div>
         </Link>
 
         {/* Desktop nav */}

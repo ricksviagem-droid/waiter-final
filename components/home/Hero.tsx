@@ -4,19 +4,19 @@ import { Link } from '@/i18n/navigation';
 
 const venueImages = [
   {
-    src: 'https://images.unsplash.com/photo-1596436100905-c4f6f5a5b0a2?w=600&q=80',
-    alt: 'Atlantis The Royal Dubai',
-    style: 'absolute top-0 left-0 w-[75%] h-[58%] rounded-[12px] shadow-xl z-10',
+    src: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80',
+    alt: 'Luxury Dubai hotel',
+    style: 'absolute top-0 left-0 w-[75%] h-[58%] rounded-[12px] shadow-xl z-10 overflow-hidden',
   },
   {
-    src: 'https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=600&q=80',
-    alt: 'Cruise ship',
-    style: 'absolute bottom-0 right-0 w-[68%] h-[52%] rounded-[12px] shadow-xl z-20',
+    src: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+    alt: 'Fine dining restaurant',
+    style: 'absolute bottom-0 right-0 w-[68%] h-[52%] rounded-[12px] shadow-xl z-20 overflow-hidden',
   },
   {
-    src: 'https://images.unsplash.com/photo-1551024709-8f23befc548e?w=600&q=80',
-    alt: 'Luxury bar',
-    style: 'absolute top-[28%] left-[18%] w-[56%] h-[44%] rounded-[12px] shadow-2xl z-30',
+    src: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800&q=80',
+    alt: 'Luxury cocktail bar',
+    style: 'absolute top-[28%] left-[18%] w-[56%] h-[44%] rounded-[12px] shadow-2xl z-30 overflow-hidden',
   },
 ];
 
@@ -78,6 +78,7 @@ export default function Hero() {
                     fill
                     className="object-cover rounded-[12px]"
                     sizes="300px"
+                    unoptimized
                   />
                   {/* subtle dark overlay */}
                   <div className="absolute inset-0 bg-[#1A4A6B]/10 rounded-[12px]" />
