@@ -181,6 +181,74 @@ export default function FreeOffering() {
           </div>
         </a>
 
+        {/* World Link — Community Club Bonus */}
+        <a
+          href="https://worldlink-production.up.railway.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group block bg-gradient-to-br from-[#0d1f33] to-[#1a1035] border border-purple-500/30 rounded-[16px] p-6 mb-4 hover:border-purple-400/60 transition-all relative overflow-hidden"
+        >
+          <div className="absolute top-0 left-0 w-48 h-48 bg-purple-600/10 blur-3xl rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#C9963A]/10 blur-3xl rounded-full pointer-events-none" />
+
+          <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8">
+            {/* Community art */}
+            <div className="shrink-0">
+              <svg viewBox="0 0 140 100" className="w-40 h-auto" fill="none">
+                <rect x="4" y="4" width="132" height="92" rx="12" fill="#0d0a1e" />
+                {/* Globe ring */}
+                <circle cx="70" cy="50" r="30" stroke="#7c3aed" strokeWidth="1" opacity="0.4" />
+                <ellipse cx="70" cy="50" rx="18" ry="30" stroke="#7c3aed" strokeWidth="1" opacity="0.3" />
+                <line x1="40" y1="50" x2="100" y2="50" stroke="#7c3aed" strokeWidth="1" opacity="0.3" />
+                <line x1="44" y1="35" x2="96" y2="35" stroke="#7c3aed" strokeWidth="0.8" opacity="0.25" />
+                <line x1="44" y1="65" x2="96" y2="65" stroke="#7c3aed" strokeWidth="0.8" opacity="0.25" />
+                {/* Center glow */}
+                <circle cx="70" cy="50" r="6" fill="#C9963A" opacity="0.9" />
+                <circle cx="70" cy="50" r="10" fill="#C9963A" opacity="0.15" />
+                {/* Node dots */}
+                {[[50,32],[90,32],[40,50],[100,50],[50,68],[90,68]].map(([x,y],i) => (
+                  <g key={i}>
+                    <line x1={x} y1={y} x2="70" y2="50" stroke="#7c3aed" strokeWidth="0.8" opacity="0.35" />
+                    <circle cx={x} cy={y} r="4" fill="#7c3aed" opacity="0.8" />
+                    <circle cx={x} cy={y} r="7" fill="#7c3aed" opacity="0.15" />
+                  </g>
+                ))}
+                {/* WORLD LINK label */}
+                <text x="70" y="14" fontSize="7" fill="#a78bfa" fontFamily="sans-serif" fontWeight="700" textAnchor="middle">WORLD LINK</text>
+                {/* Members count */}
+                <rect x="20" y="78" width="100" height="14" rx="5" fill="#1a1035" />
+                <circle cx="32" cy="85" r="4" fill="#7c3aed" opacity="0.7" />
+                <circle cx="40" cy="85" r="4" fill="#C9963A" opacity="0.7" />
+                <circle cx="48" cy="85" r="4" fill="#4ade80" opacity="0.7" />
+                <text x="58" y="89" fontSize="6" fill="#a78bfa" fontFamily="sans-serif">Comunidade global · Beta</text>
+              </svg>
+            </div>
+
+            {/* Text */}
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex items-center gap-2 justify-center md:justify-start mb-3">
+                <span className="inline-flex items-center gap-1.5 bg-purple-500/15 border border-purple-500/40 text-purple-300 text-[9px] font-bold tracking-[0.15em] uppercase px-3 py-1 rounded-full font-[family-name:var(--font-dm-sans)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                  Bônus Exclusivo
+                </span>
+                <span className="text-white/30 text-[9px] font-[family-name:var(--font-dm-sans)]">Comunidade · Beta</span>
+              </div>
+              <h3 className="font-[family-name:var(--font-fraunces)] text-lg font-semibold text-white mb-2">
+                World Link — O clube da carreira global
+              </h3>
+              <p className="text-white/60 text-xs leading-relaxed font-[family-name:var(--font-dm-sans)] mb-3 max-w-md">
+                Comunidade exclusiva para profissionais de hospitalidade que querem trabalhar no exterior. Networking real, oportunidades compartilhadas, suporte mútuo. Em fase de testes — acesso gratuito agora.
+              </p>
+              <span className="inline-flex items-center gap-1.5 text-purple-300 text-xs font-semibold font-[family-name:var(--font-dm-sans)] group-hover:gap-2.5 transition-all">
+                Entrar na comunidade
+                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+              </span>
+            </div>
+          </div>
+        </a>
+
         {/* Other items */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {items.map(({ href, icon, key }) => {

@@ -304,6 +304,125 @@ export default function SimulatorPage() {
           </div>
         </section>
 
+        {/* WORLD LINK — Community Club Bonus */}
+        <section className="py-20 px-5 bg-gradient-to-br from-[#0d0a1e] to-[#0d1f33] relative overflow-hidden">
+          {/* Background glows */}
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-[#C9963A]/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="max-w-5xl mx-auto relative">
+
+            {/* Badge */}
+            <div className="flex justify-center mb-10">
+              <span className="inline-flex items-center gap-2 bg-purple-500/15 border border-purple-500/50 text-purple-300 text-xs font-bold tracking-[0.15em] uppercase px-5 py-2 rounded-full font-[family-name:var(--font-dm-sans)]">
+                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                Bônus Exclusivo · Comunidade · Beta
+              </span>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+
+              {/* Art side */}
+              <div className="flex justify-center order-2 md:order-1">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-purple-600/20 blur-3xl rounded-full scale-150 pointer-events-none" />
+                  <div className="absolute inset-0 bg-[#C9963A]/10 blur-2xl rounded-full scale-125 pointer-events-none" />
+
+                  <svg viewBox="0 0 260 240" className="w-72 h-auto relative z-10" fill="none">
+                    {/* Background panel */}
+                    <rect x="20" y="20" width="220" height="200" rx="20" fill="#0d0a1e" stroke="#7c3aed" strokeWidth="1" strokeOpacity="0.4" />
+
+                    {/* Header bar */}
+                    <rect x="20" y="20" width="220" height="36" rx="20" fill="#1a1035" />
+                    <rect x="20" y="38" width="220" height="18" fill="#1a1035" />
+                    <circle cx="42" cy="38" r="10" fill="#7c3aed" opacity="0.85" />
+                    <text x="57" y="43" fontSize="9" fill="#a78bfa" fontFamily="sans-serif" fontWeight="700">WORLD LINK COMMUNITY</text>
+
+                    {/* Globe */}
+                    <circle cx="130" cy="115" r="42" stroke="#7c3aed" strokeWidth="1.2" opacity="0.5" />
+                    <ellipse cx="130" cy="115" rx="25" ry="42" stroke="#7c3aed" strokeWidth="1" opacity="0.35" />
+                    <line x1="88" y1="115" x2="172" y2="115" stroke="#7c3aed" strokeWidth="1" opacity="0.35" />
+                    <line x1="93" y1="95" x2="167" y2="95" stroke="#7c3aed" strokeWidth="0.8" opacity="0.25" />
+                    <line x1="93" y1="135" x2="167" y2="135" stroke="#7c3aed" strokeWidth="0.8" opacity="0.25" />
+
+                    {/* Center gold dot */}
+                    <circle cx="130" cy="115" r="8" fill="#C9963A" opacity="0.9" />
+                    <circle cx="130" cy="115" r="14" fill="#C9963A" opacity="0.12" />
+
+                    {/* Network nodes */}
+                    {[[100,82],[160,82],[82,115],[178,115],[100,148],[160,148],[130,70],[130,160]].map(([x,y],i) => (
+                      <g key={i}>
+                        <line x1={x} y1={y} x2="130" y2="115" stroke="#7c3aed" strokeWidth="0.8" opacity="0.4" />
+                        <circle cx={x} cy={y} r="5" fill="#7c3aed" opacity={0.7 + (i%3)*0.1} />
+                        <circle cx={x} cy={y} r="9" fill="#7c3aed" opacity="0.12" />
+                      </g>
+                    ))}
+
+                    {/* Members strip */}
+                    <rect x="30" y="172" width="200" height="36" rx="10" fill="#1a1035" stroke="#7c3aed" strokeWidth="0.5" strokeOpacity="0.4" />
+                    <text x="42" y="187" fontSize="7" fill="#a78bfa" fontFamily="sans-serif">Membros ativos</text>
+                    <circle cx="42" cy="200" r="6" fill="#7c3aed" opacity="0.8" />
+                    <circle cx="54" cy="200" r="6" fill="#C9963A" opacity="0.8" />
+                    <circle cx="66" cy="200" r="6" fill="#4ade80" opacity="0.8" />
+                    <circle cx="78" cy="200" r="6" fill="#f472b6" opacity="0.8" />
+                    <circle cx="90" cy="200" r="6" fill="#60a5fa" opacity="0.8" />
+                    <text x="104" y="204" fontSize="7" fill="#a78bfa" fontFamily="sans-serif" fontWeight="600">+128 profissionais · global</text>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Text side */}
+              <div className="order-1 md:order-2">
+                <h2 className="font-[family-name:var(--font-fraunces)] text-2xl md:text-3xl font-semibold text-white mb-4 leading-tight">
+                  O clube dos profissionais<br />
+                  <em className="text-purple-300 italic">que pensam global.</em>
+                </h2>
+                <p className="text-white/70 text-sm leading-relaxed font-[family-name:var(--font-dm-sans)] mb-5">
+                  World Link é a comunidade exclusiva para quem quer ou já trabalha no exterior. Networking real, oportunidades compartilhadas, suporte de quem entende o caminho. Não é grupo de WhatsApp — é uma plataforma feita pra isso.
+                </p>
+
+                <div className="flex flex-col gap-3 mb-7">
+                  {[
+                    { icon: '🌍', title: 'Comunidade global', desc: 'Profissionais do Brasil e do mundo, todos buscando oportunidades no exterior.' },
+                    { icon: '🎮', title: 'Gamificado para te engajar', desc: 'Conquistas, rankings e desafios que tornam o aprendizado e o networking mais dinâmicos.' },
+                    { icon: '💬', title: 'Conversações reais do dia a dia', desc: 'Pratica situações reais de hospitalidade com outros profissionais — não com robôs.' },
+                    { icon: '🔓', title: 'Acesso gratuito agora', desc: 'Estamos em fase de testes. Acesso 100% livre enquanto construímos a plataforma ideal.' },
+                  ].map(({ icon, title, desc }) => (
+                    <div key={title} className="flex gap-3 items-start">
+                      <span className="text-xl shrink-0">{icon}</span>
+                      <div>
+                        <p className="text-white text-sm font-semibold font-[family-name:var(--font-dm-sans)]">{title}</p>
+                        <p className="text-white/55 text-xs font-[family-name:var(--font-dm-sans)] leading-relaxed">{desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-purple-500/10 border border-purple-500/30 rounded-[12px] p-4 mb-6">
+                  <p className="text-purple-300 text-xs font-semibold font-[family-name:var(--font-dm-sans)]">
+                    Bônus exclusivo — fase beta
+                  </p>
+                  <p className="text-white/60 text-xs font-[family-name:var(--font-dm-sans)] mt-1">
+                    O World Link é um projeto paralelo que criei porque acredito que comunidade é o que faz a diferença. Acesso gratuito agora — quando lançar oficialmente, haverá planos pagos.
+                  </p>
+                </div>
+
+                <a
+                  href="https://worldlink-production.up.railway.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-purple-600 text-white font-semibold px-7 py-3.5 rounded-full hover:bg-purple-700 transition-colors font-[family-name:var(--font-dm-sans)] text-sm"
+                >
+                  Entrar no World Link
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Free while in beta + feedback */}
         <section className="bg-[#1A4A6B] py-20 px-5">
           <div className="max-w-2xl mx-auto text-center">
