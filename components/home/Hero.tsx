@@ -58,6 +58,20 @@ export default function Hero() {
                 {t('cta_secondary')}
               </Link>
             </div>
+
+            {/* Trust badges */}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-1">
+              {[
+                { icon: '⭐', label: '15 anos de expertise' },
+                { icon: '🏨', label: 'Atlantis The Royal' },
+                { icon: '🤖', label: 'App com IA — grátis' },
+              ].map(({ icon, label }) => (
+                <span key={label} className="flex items-center gap-1.5 text-xs text-[#777] font-[family-name:var(--font-dm-sans)]">
+                  <span>{icon}</span>
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* ── Right column — washed photo panel ── */}
