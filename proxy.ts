@@ -5,8 +5,8 @@ export default createMiddleware(routing);
 
 export const config = {
   matcher: [
-    '/',
-    '/(pt|en)/:path*',
-    '/((?!_next|_vercel|api|.*\\..*).*)',
+    // Apply locale routing to Brazil Abroad pages only
+    // Excludes waiter AI standalone modules and Next.js internals
+    '/((?!interview|shift|level-scan|daily-drill|training|resume|menu-master|pos|work-abroad|preview|api|_next|_vercel|.*\\..*).*)',
   ],
 };
