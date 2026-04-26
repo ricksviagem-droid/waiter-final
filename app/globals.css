@@ -27,3 +27,52 @@ body {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+
+/* ── Ocean Edition keyframes ── */
+@keyframes kenburns {
+  0%   { transform: scale(1.02) translate(0, 0); }
+  100% { transform: scale(1.12) translate(-1.5%, -1%); }
+}
+@keyframes lightleak {
+  0%, 100% { transform: translate(0,0) scale(1); opacity: 0.85; }
+  50%      { transform: translate(2%, -2%) scale(1.06); opacity: 1; }
+}
+@keyframes pulseRing {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(1.9); opacity: 0;   }
+}
+@keyframes shimmer {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(280%);  }
+}
+@keyframes marqueeL {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-33.3333%); }
+}
+@keyframes marqueeR {
+  0%   { transform: translateX(-33.3333%); }
+  100% { transform: translateX(0); }
+}
+@keyframes wapulse {
+  0% { box-shadow: 0 14px 36px rgba(37,211,102,0.55), 0 0 0 0 rgba(37,211,102,0.5); }
+  70% { box-shadow: 0 14px 36px rgba(37,211,102,0.55), 0 0 0 18px rgba(37,211,102,0); }
+  100% { box-shadow: 0 14px 36px rgba(37,211,102,0.55), 0 0 0 0 rgba(37,211,102,0); }
+}
+@keyframes popin {
+  0% { opacity: 0; transform: translateY(8px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes lbFade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes lbPop  { from { opacity: 0; transform: scale(0.94) translateY(20px) } to { opacity: 1; transform: scale(1) translateY(0) } }
+
+/* Ocean body override (active only when .ocean-page is set) */
+body.ocean-page {
+  background: #051C36;
+  color: #F8F1E5;
+  overflow-x: hidden;
+}
+@media (min-width: 901px) and (pointer: fine) {
+  body.ocean-page { cursor: none; }
+  body.ocean-page button { cursor: none; }
+}
+body.ocean-page ::selection { background: #D4A574; color: #051C36; }
