@@ -34,14 +34,14 @@ export const SOCIAL = {
 
 export const STR = {
   pt: {
-    nav: { mentors: 'Mentores', road: 'Como funciona', apps: 'Apps de IA', gallery: 'Blog', trusted: 'Parceiros', start: 'Falar no WhatsApp' },
+    nav: { assessment: 'Assessment', road: 'Como Funciona', about: 'Sobre', start: 'Falar no WhatsApp' },
     hero: {
       kicker: 'Hub de mentoria · brasileiros pelo mundo',
       title1: 'Seu inglês,',
       title2: 'sua carreira lá fora.',
       sub1: 'Conectamos brasileiros a mentores experientes em cruzeiros, hotéis 5★ e restaurantes premiados.',
       sub2: 'Inglês é a ferramenta. A carreira é o destino.',
-      cta1: 'Falar com um mentor',
+      cta1: 'Fazer Assessment Gratuito',
       cta2: 'Como funciona',
       scroll: 'Role para descobrir',
     },
@@ -182,14 +182,14 @@ export const STR = {
     },
   },
   en: {
-    nav: { mentors: 'Mentors', road: 'How it works', apps: 'AI apps', gallery: 'Blog', trusted: 'Partners', start: 'Talk on WhatsApp' },
+    nav: { assessment: 'Assessment', road: 'How it Works', about: 'About', start: 'Talk on WhatsApp' },
     hero: {
       kicker: 'Mentorship hub · Brazilians worldwide',
       title1: 'Your English,',
       title2: 'your career abroad.',
       sub1: 'We connect Brazilians with experienced mentors at cruises, 5★ hotels and award-winning restaurants.',
       sub2: 'English is the tool. Career is the destination.',
-      cta1: 'Talk to a mentor',
+      cta1: 'Take Free Assessment',
       cta2: 'How it works',
       scroll: 'Scroll to explore',
     },

@@ -86,11 +86,17 @@ export default function AssessmentPage() {
       setLoading(true);
       const profile = determineProfile(newAnswers);
 
+      const answersText = questions.map((q, i) => {
+        const key = newAnswers[i + 1];
+        const opt = q.options.find(o => o.key === key);
+        return { question: q.q, answer: opt?.label ?? key ?? '' };
+      });
+
       try {
         await fetch('/api/brevo/send', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, profile }),
+          body: JSON.stringify({ name, email, profile, answersText }),
         });
       } catch {
         // Email failure is non-blocking
