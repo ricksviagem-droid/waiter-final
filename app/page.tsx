@@ -153,9 +153,42 @@ export default function LandingPage() {
               Your team.<br />
               <span style={{ color: BLUE }}>Perfectly prepared.</span>
             </h1>
-            <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.7, margin: '0 0 22px' }}>
+            <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.7, margin: '0 0 16px' }}>
               From menu knowledge to POS mastery — train smarter, serve better, and keep every guest coming back.
             </p>
+
+            {/* YouTube Video */}
+            <div style={{
+              position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden',
+              borderRadius: 12, marginBottom: 16, border: `1px solid ${BORD}`,
+              boxShadow: `0 4px 24px rgba(0,0,0,0.4)`,
+            }}>
+              <iframe
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                src="https://www.youtube.com/embed/KXnjAxuFS6M"
+                title="WaiterAI — Professional English Training for Hospitality"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+
+            {/* Assessment CTA */}
+            <button
+              onClick={() => router.push('/assessment')}
+              style={{
+                width: '100%', padding: '15px 20px', marginBottom: 18,
+                background: `linear-gradient(135deg, ${BLUE}, #2563EB)`,
+                color: '#fff', fontWeight: 800, fontSize: 15,
+                borderRadius: 12, border: 'none', cursor: 'pointer',
+                letterSpacing: 0.3, boxShadow: `0 4px 20px ${BLUE}55`,
+                fontFamily: 'var(--font-geist-sans, system-ui, sans-serif)',
+                transition: 'opacity 0.15s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            >
+              Start Your Free Assessment →
+            </button>
 
             {/* Instructor card */}
             <div style={{
