@@ -28,7 +28,7 @@ export const SOCIAL = {
   youtube:   'https://youtube.com/@brazilabroad',
   linkedin:  'https://linkedin.com/company/brazilabroad',
   tiktok:    'https://tiktok.com/@brazilabroad',
-  email:     'mailto:contato@brazilabroad.com',
+  email:     'mailto:ricardo@brazilabroad.com',
   phone:     'tel:+5571300000000',
 };
 
@@ -113,7 +113,7 @@ export const STR = {
       contact: {
         title: 'Fale com a gente',
         wa: '+55 71 9 9999-0000',
-        email: 'contato@brazilabroad.com',
+        email: 'ricardo@brazilabroad.com',
         phone: '+55 71 3000-0000',
         addr: 'Av. Tancredo Neves, 1632 · Sala 405 · Salvador, BA · Brasil',
       },
@@ -256,7 +256,7 @@ export const STR = {
       contact: {
         title: 'Talk to us',
         wa: '+55 71 9 9999-0000',
-        email: 'contact@brazilabroad.com',
+        email: 'ricardo@brazilabroad.com',
         phone: '+55 71 3000-0000',
         addr: 'Av. Tancredo Neves, 1632 · Suite 405 · Salvador, BA · Brazil',
       },

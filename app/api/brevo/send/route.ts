@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Brevo not configured' }, { status: 500 });
   }
 
-  const sender = { name: 'Ricardo — Brazil Abroad', email: 'ricardo.rogerios@hotmail.com' };
+  const sender = { name: 'Ricardo — Brazil Abroad', email: 'ricardo@brazilabroad.com' };
 
   const answersSummary = answersText
     ?.map((a) => `${a.question}: ${a.answer}`)
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
   try {
     await sendBrevoEmail(apiKey, {
       sender,
-      to: [{ email: 'ricardo.rogerios@hotmail.com', name: 'Ricardo' }],
+      to: [{ email: 'ricardo@brazilabroad.com', name: 'Ricardo' }],
       subject: `Novo lead — ${name}`,
       htmlContent: `
         <div style="font-family:Arial,sans-serif;max-width:600px;padding:24px;color:#1a1a1a">
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
         </div>
       `,
     });
-    console.log('[Brevo] Email interno enviado para ricardo.rogerios@hotmail.com');
+    console.log('[Brevo] Email interno enviado para ricardo@brazilabroad.com');
   } catch (err) {
     errors.push(`email1: ${String(err)}`);
     console.error('[Brevo] Falha no email interno:', err);
@@ -112,20 +112,20 @@ export async function POST(req: Request) {
     await sendBrevoEmail(apiKey, {
       sender,
       to: [{ email, name }],
-      subject: 'Recebemos seu perfil — Brazil Abroad',
+      subject: 'Seu perfil foi analisado — Brazil Abroad',
       htmlContent: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px 24px;color:#1a1a1a">
           <p style="color:#C9963A;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Brazil Abroad</p>
           <h1 style="font-size:26px;font-weight:700;margin:0 0 24px">Olá, ${name} 👋</h1>
           ${aiParagraphs}
           <div style="margin:36px 0">
-            <a href="https://waiter-final-7bp6.vercel.app"
+            <a href="https://www.brazilabroad.com/assessment"
                style="display:block;background:#1A4A6B;color:white;font-weight:700;padding:16px 28px;border-radius:50px;text-decoration:none;font-size:15px;text-align:center;margin-bottom:12px">
-              Fazer Teste de Nivelamento Gratuito →
+              Voltar ao site →
             </a>
             <a href="https://calendly.com/ricardo-rogerios/30min"
                style="display:block;border:2px solid #1A4A6B;color:#1A4A6B;font-weight:700;padding:14px 28px;border-radius:50px;text-decoration:none;font-size:15px;text-align:center">
-              Agendar Consulta Gratuita
+              Agendar Diagnóstico Gratuito
             </a>
           </div>
           <hr style="margin:32px 0;border:none;border-top:1px solid #eee"/>
