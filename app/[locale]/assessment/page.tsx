@@ -93,7 +93,7 @@ export default function AssessmentPage() {
       });
 
       try {
-        await fetch('/api/brevo/send', {
+        await fetch('/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, profile, answersText }),

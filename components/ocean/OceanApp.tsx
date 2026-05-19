@@ -5,17 +5,9 @@ import { OceanProvider } from './OceanProvider';
 import { useSmoothScroll, PlaneCursor, LoadingCurtain } from './chrome';
 import { WhatsAppFAB, SocialRail, MobileStickyBar, OceanScrollProgress } from './OceanWidgets';
 import OceanHero from './OceanHero';
-import OceanStats from './OceanStats';
-import OceanAbout from './OceanAbout';
-import OceanMentors from './OceanMentors';
 import OceanRoadmap from './OceanRoadmap';
-import OceanEnglish from './OceanEnglish';
-import OceanJobs from './OceanJobs';
-import OceanApps from './OceanApps';
-import OceanBlog from './OceanBlog';
-import OceanTestimonials from './OceanTestimonials';
-import OceanPartners from './OceanPartners';
-import OceanCTA from './OceanCTA';
+import OceanAbout from './OceanAbout';
+import OceanPackages from './OceanPackages';
 import OceanFooter from './OceanFooter';
 
 function OceanInner() {
@@ -35,17 +27,9 @@ function OceanInner() {
 
       <main>
         <OceanHero />
-        <OceanStats />
-        <OceanAbout />
-        <OceanMentors />
         <OceanRoadmap />
-        <OceanEnglish />
-        <OceanJobs />
-        <OceanApps />
-        <OceanBlog />
-        <OceanTestimonials />
-        <OceanPartners />
-        <OceanCTA />
+        <OceanAbout />
+        <OceanPackages />
       </main>
 
       <OceanFooter />

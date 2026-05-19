@@ -67,21 +67,7 @@ export default function OceanHero() {
           opacity,
         }}
       >
-        <div style={{ marginBottom: 16 }}>
-          <Eyebrow color={PAL.gold}>{t.hero.kicker}</Eyebrow>
-        </div>
-
-        <h1 style={{ fontFamily: 'var(--font-fraunces), Fraunces, serif', fontSize: 'clamp(40px, 6vw, 80px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 0.96, margin: '0 0 16px', color: PAL.cream, maxWidth: '18ch' }}>
-          <RevealWords delay={200}>{t.hero.title1}</RevealWords>
-          {' '}
-          <RevealWords delay={500} italic color={PAL.gold}>{t.hero.title2}</RevealWords>
-        </h1>
-
-        <p style={{ maxWidth: 540, fontFamily: 'var(--font-inter), Inter, sans-serif', fontSize: 'clamp(14px, 1.1vw, 16px)', color: 'rgba(248,241,229,0.75)', lineHeight: 1.6, fontWeight: 300, margin: '0 0 28px' }}>
-          {t.hero.sub1} {t.hero.sub2}
-        </p>
-
-        {/* YouTube embed */}
+        {/* YouTube embed — primeira dobra */}
         <div style={{
           position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden',
           borderRadius: 16, marginBottom: 28,
@@ -97,11 +83,29 @@ export default function OceanHero() {
           />
         </div>
 
-        {/* CTAs */}
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+        {/* CTA abaixo do vídeo */}
+        <div style={{ marginBottom: 32, textAlign: 'center' }}>
           <Link href="/assessment" style={{ textDecoration: 'none' }}>
-            <MagneticButton primary>{t.hero.cta1}</MagneticButton>
+            <MagneticButton primary style={{ padding: '18px 36px', fontSize: 14 }}>Fazer Assessment Gratuito</MagneticButton>
           </Link>
+        </div>
+
+        <div style={{ marginBottom: 16 }}>
+          <Eyebrow color={PAL.gold}>{t.hero.kicker}</Eyebrow>
+        </div>
+
+        <h1 style={{ fontFamily: 'var(--font-fraunces), Fraunces, serif', fontSize: 'clamp(40px, 6vw, 80px)', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 0.96, margin: '0 0 16px', color: PAL.cream, maxWidth: '18ch' }}>
+          <RevealWords delay={200}>{t.hero.title1}</RevealWords>
+          {' '}
+          <RevealWords delay={500} italic color={PAL.gold}>{t.hero.title2}</RevealWords>
+        </h1>
+
+        <p style={{ maxWidth: 540, fontFamily: 'var(--font-inter), Inter, sans-serif', fontSize: 'clamp(14px, 1.1vw, 16px)', color: 'rgba(248,241,229,0.75)', lineHeight: 1.6, fontWeight: 300, margin: '0 0 28px' }}>
+          {t.hero.sub1} {t.hero.sub2}
+        </p>
+
+        {/* CTAs secundários */}
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
           <a href="#road" style={{ textDecoration: 'none' }}>
             <MagneticButton>{t.hero.cta2}</MagneticButton>
           </a>
