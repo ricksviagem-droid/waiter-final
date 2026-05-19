@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Fraunces, DM_Sans } from 'next/font/google';
+import { Fraunces, DM_Sans, Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -15,6 +15,12 @@ const fraunces = Fraunces({
 const dmSans = DM_Sans({
   subsets: ['latin'],
   variable: '--font-dm-sans',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
   display: 'swap',
 });
 
@@ -40,7 +46,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${fraunces.variable} ${dmSans.variable}`}>
+    <html lang={locale} className={`${fraunces.variable} ${dmSans.variable} ${inter.variable}`}>
       <body className="min-h-screen antialiased">
         <NextIntlClientProvider messages={messages}>
           {children}
