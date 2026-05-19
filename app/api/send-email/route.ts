@@ -19,8 +19,8 @@ function createTransport() {
     port: 587,
     secure: false,
     auth: {
-      user: SENDER_EMAIL,
-      pass: process.env.BREVO_API_KEY ?? '',
+      user: process.env.BREVO_USER ?? '',
+      pass: process.env.BREVO_PASS ?? '',
     },
   });
 }
@@ -37,8 +37,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
 
-  if (!process.env.BREVO_API_KEY) {
-    console.error('[send-email] BREVO_API_KEY not set');
+  if (!process.env.BREVO_USER || !process.env.BREVO_PASS) {
+    console.error('[send-email] BREVO_USER ou BREVO_PASS não configurado');
     return NextResponse.json({ error: 'Email not configured' }, { status: 500 });
   }
 
