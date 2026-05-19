@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   const content = profileContent[profile as keyof typeof profileContent] ?? profileContent.builder;
 
   const emailBody = {
-    sender: { name: 'Ricardo — Brazil Abroad', email: 'ricardo@brazilabroad.com' },
+    sender: { name: 'Ricardo — Brazil Abroad', email: 'ricardo.rogerios@hotmail.com' },
     to: [{ email, name }],
     subject: 'Seu road map Brazil Abroad está pronto 🌍',
     htmlContent: `

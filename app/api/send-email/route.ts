@@ -4,6 +4,10 @@ import OpenAI from 'openai';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY ?? '' });
 
+const SENDER_EMAIL = 'ricardo.rogerios@hotmail.com';
+const SENDER_NAME = 'Ricardo — Brazil Abroad';
+const INTERNAL_EMAIL = 'ricardo.rogerios@hotmail.com';
+
 interface AnswerItem {
   question: string;
   answer: string;
@@ -15,7 +19,7 @@ function createTransport() {
     port: 587,
     secure: false,
     auth: {
-      user: 'ricardo@brazilabroad.com',
+      user: SENDER_EMAIL,
       pass: process.env.BREVO_API_KEY ?? '',
     },
   });
@@ -53,8 +57,8 @@ export async function POST(req: Request) {
   // ── EMAIL INTERNO para Ricardo ──────────────────────────────────────────
   try {
     await transport.sendMail({
-      from: '"Ricardo — Brazil Abroad" <ricardo@brazilabroad.com>',
-      to: 'ricardo@brazilabroad.com',
+      from: `"${SENDER_NAME}" <${SENDER_EMAIL}>`,
+      to: INTERNAL_EMAIL,
       subject: `Novo lead — ${name}`,
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;padding:24px;color:#1a1a1a">
@@ -68,7 +72,7 @@ export async function POST(req: Request) {
         </div>
       `,
     });
-    console.log('[send-email] Email interno enviado para ricardo@brazilabroad.com');
+    console.log(`[send-email] Email interno enviado para ${INTERNAL_EMAIL}`);
   } catch (err) {
     errors.push(`email_interno: ${String(err)}`);
     console.error('[send-email] Falha no email interno:', err);
@@ -109,7 +113,7 @@ export async function POST(req: Request) {
   // ── EMAIL para o usuário ────────────────────────────────────────────────
   try {
     await transport.sendMail({
-      from: '"Ricardo — Brazil Abroad" <ricardo@brazilabroad.com>',
+      from: `"${SENDER_NAME}" <${SENDER_EMAIL}>`,
       to: email,
       subject: 'Seu perfil foi analisado — Brazil Abroad',
       html: `
