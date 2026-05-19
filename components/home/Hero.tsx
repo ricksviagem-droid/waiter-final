@@ -1,21 +1,5 @@
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
-
-const photos = [
-  {
-    src: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=85',
-    alt: 'Luxury resort aerial view',
-  },
-  {
-    src: '/scenes/waiter-sommelier.jpg',
-    alt: 'Fine dining sommelier with wine',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1574096079513-d8259312b785?w=900&q=85',
-    alt: 'Luxury bartender',
-  },
-];
 
 export default function Hero() {
   const t = useTranslations('hero');
@@ -74,85 +58,24 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* ── Right column — washed photo panel ── */}
-          <div className="relative h-[460px] md:h-[540px]">
-
-            {/* Photo grid — 3 cells with brand-color wash */}
-            <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-1.5 rounded-2xl overflow-hidden">
-
-              {/* Top — full width */}
-              <div className="col-span-2 relative overflow-hidden">
-                <Image
-                  src={photos[0].src}
-                  alt={photos[0].alt}
-                  fill
-                  className="object-cover scale-105"
-                  sizes="600px"
-                  unoptimized
-                />
-                <div className="absolute inset-0 bg-[#1A4A6B]/55" />
-              </div>
-
-              {/* Bottom-left */}
-              <div className="relative overflow-hidden">
-                <Image
-                  src={photos[1].src}
-                  alt={photos[1].alt}
-                  fill
-                  className="object-cover scale-105"
-                  sizes="300px"
-                  unoptimized
-                />
-                <div className="absolute inset-0 bg-[#C9963A]/50" />
-              </div>
-
-              {/* Bottom-right */}
-              <div className="relative overflow-hidden">
-                <Image
-                  src={photos[2].src}
-                  alt={photos[2].alt}
-                  fill
-                  className="object-cover scale-105"
-                  sizes="300px"
-                  unoptimized
-                />
-                <div className="absolute inset-0 bg-[#1A4A6B]/55" />
-              </div>
+          {/* ── Right column — YouTube video ── */}
+          <div className="relative w-full">
+            <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl"
+              style={{ paddingBottom: '56.25%', height: 0 }}>
+              <iframe
+                src="https://www.youtube.com/embed/KXnjAxuFS6M"
+                title="Brazil Abroad — Seu mapa para o mundo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+              />
             </div>
-
-            {/* ── Vignette — dissolves the panel into the page ── */}
-            {/* Left edge: fades fully into page bg */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FDFAF4] via-[#FDFAF4]/10 to-transparent pointer-events-none z-10" />
-            {/* Top edge */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#FDFAF4] via-transparent to-transparent pointer-events-none z-10" />
-            {/* Bottom edge */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#FDFAF4] via-transparent to-transparent pointer-events-none z-10" />
-
-            {/* ── Badge ── */}
-            <div className="absolute top-6 right-4 z-20 bg-[#C9963A] text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg font-[family-name:var(--font-dm-sans)] whitespace-nowrap">
-              {t('card_badge')}
+            {/* Badge */}
+            <div className="mt-3 flex justify-end">
+              <span className="bg-[#C9963A] text-white text-xs font-semibold px-4 py-2 rounded-full shadow font-[family-name:var(--font-dm-sans)] whitespace-nowrap">
+                {t('card_badge')}
+              </span>
             </div>
-
-            {/* ── Ricardo card ── */}
-            <div className="absolute bottom-8 left-8 z-20 bg-white/90 backdrop-blur-sm rounded-[12px] shadow-xl px-4 py-3 flex items-center gap-3 max-w-[230px]">
-              <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 relative border-2 border-[#C9963A]">
-                <Image
-                  src="/scenes/rick.jpeg"
-                  alt="Ricardo Rogerio"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div>
-                <p className="font-[family-name:var(--font-fraunces)] text-sm font-semibold text-[#1a1a1a] leading-tight">
-                  {t('card_name')}
-                </p>
-                <p className="text-[#777777] text-[11px] font-[family-name:var(--font-dm-sans)] leading-tight mt-0.5">
-                  {t('card_sub')}
-                </p>
-              </div>
-            </div>
-
           </div>
         </div>
       </div>

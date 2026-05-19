@@ -57,7 +57,7 @@ export default function Footer() {
           <div className="flex gap-3">
             {/* Instagram */}
             <a
-              href="https://instagram.com/conexaobrazil_dubai"
+              href="https://instagram.com/brazilabroad"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -70,7 +70,7 @@ export default function Footer() {
 
             {/* YouTube */}
             <a
-              href="https://youtube.com/@conexaobrazil_dubai"
+              href="https://youtube.com/@brazilabroad"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="YouTube"
