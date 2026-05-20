@@ -59,6 +59,19 @@ export default function AssessmentResultPage() {
           </div>
         </div>
 
+        {/* Email sent notice */}
+        <div className="rounded-[14px] border border-[#e8e0d0] bg-white px-6 py-5 flex gap-4 items-start">
+          <span className="text-2xl mt-0.5">📧</span>
+          <div>
+            <p className="font-semibold text-sm text-[#1a1a1a] font-[family-name:var(--font-dm-sans)] mb-1">
+              Seu diagnóstico foi enviado por email
+            </p>
+            <p className="text-xs text-[#777] font-[family-name:var(--font-dm-sans)] leading-relaxed">
+              Enviamos uma avaliação personalizada do seu perfil com o próximo passo recomendado. Verifique sua caixa de entrada e também a pasta de spam.
+            </p>
+          </div>
+        </div>
+
         {/* CTA buttons */}
         <a
           href="https://calendly.com/ricardo-rogerios/30min"
