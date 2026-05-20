@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY ?? '' });
 
+const BREVO_KEY = process.env.BREVO_API_KEY ?? '';
 const SENDER_EMAIL = 'ricardo.rogerios@hotmail.com';
 const SENDER_NAME = 'Ricardo — Brazil Abroad';
 const INTERNAL_EMAIL = 'ricardo.rogerios@hotmail.com';
@@ -13,16 +13,24 @@ interface AnswerItem {
   answer: string;
 }
 
-function createTransport() {
-  return nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.BREVO_USER ?? '',
-      pass: process.env.BREVO_PASS ?? '',
+async function sendEmail(to: string, subject: string, html: string) {
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': BREVO_KEY,
+      'Content-Type': 'application/json',
     },
+    body: JSON.stringify({
+      sender: { name: SENDER_NAME, email: SENDER_EMAIL },
+      to: [{ email: to }],
+      subject,
+      htmlContent: html,
+    }),
   });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Brevo error: ${err}`);
+  }
 }
 
 export async function POST(req: Request) {
@@ -37,13 +45,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
 
-  if (!process.env.BREVO_USER || !process.env.BREVO_PASS) {
-    console.error('[send-email] BREVO_USER ou BREVO_PASS não configurado');
-    return NextResponse.json({ error: 'Email not configured' }, { status: 500 });
-  }
-
-  const transport = createTransport();
-
   const answersHtml = answersText
     ?.map((a) => `<p style="margin:6px 0"><strong>${a.question}</strong><br/>${a.answer}</p>`)
     .join('') ?? '';
@@ -56,22 +57,19 @@ export async function POST(req: Request) {
 
   // ── EMAIL INTERNO para Ricardo ──────────────────────────────────────────
   try {
-    await transport.sendMail({
-      from: `"${SENDER_NAME}" <${SENDER_EMAIL}>`,
-      to: INTERNAL_EMAIL,
-      subject: `Novo lead — ${name}`,
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;padding:24px;color:#1a1a1a">
-          <h2 style="margin-bottom:16px">Novo lead — Brazil Abroad</h2>
-          <p><strong>Nome:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Perfil:</strong> ${profile.toUpperCase()}</p>
-          <hr style="margin:20px 0;border:none;border-top:1px solid #eee"/>
-          <h3>Respostas do Assessment</h3>
-          ${answersHtml || '<p>Sem respostas registradas.</p>'}
-        </div>
-      `,
-    });
+    await sendEmail(
+      INTERNAL_EMAIL,
+      `Novo lead — ${name}`,
+      `<div style="font-family:Arial,sans-serif;max-width:600px;padding:24px;color:#1a1a1a">
+        <h2 style="margin-bottom:16px">Novo lead — Brazil Abroad</h2>
+        <p><strong>Nome:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Perfil:</strong> ${profile.toUpperCase()}</p>
+        <hr style="margin:20px 0;border:none;border-top:1px solid #eee"/>
+        <h3>Respostas do Assessment</h3>
+        ${answersHtml || '<p>Sem respostas registradas.</p>'}
+      </div>`
+    );
     console.log(`[send-email] Email interno enviado para ${INTERNAL_EMAIL}`);
   } catch (err) {
     errors.push(`email_interno: ${String(err)}`);
@@ -86,12 +84,11 @@ export async function POST(req: Request) {
       input: [
         {
           role: 'system',
-          content:
-            'Você é Ricardo, fundador do Brazil Abroad. Escreva de forma pessoal, encorajadora e profissional. Português brasileiro. Máximo 4 parágrafos curtos. Não use saudação no início — o email já tem "Olá, [Nome]". Não inclua assinatura — ela já está no template.',
+          content: 'Você é Ricardo, fundador do Brazil Abroad. Escreva de forma pessoal, encorajadora e profissional. Português brasileiro. Máximo 4 parágrafos curtos. Não use saudação no início. Não inclua assinatura.',
         },
         {
           role: 'user',
-          content: `Escreva o corpo de um email para ${name}, que fez o assessment da Brazil Abroad. Perfil: ${profile}. Respostas:\n${answersSummary}\n\nAvalie o perfil de forma encorajadora, destaque o potencial e indique o próximo passo concreto: agendar o diagnóstico gratuito.`,
+          content: `Email para ${name}, perfil: ${profile}. Respostas:\n${answersSummary}\n\nAvalie o perfil de forma encorajadora e indique o próximo passo: agendar o diagnóstico gratuito.`,
         },
       ],
     });
@@ -104,34 +101,28 @@ export async function POST(req: Request) {
   const aiParagraphs = aiContent
     .split('\n\n')
     .filter(Boolean)
-    .map(
-      (p) =>
-        `<p style="color:#444;font-size:15px;line-height:1.75;margin-bottom:18px">${p.replace(/\n/g, '<br/>')}</p>`
-    )
+    .map((p) => `<p style="color:#444;font-size:15px;line-height:1.75;margin-bottom:18px">${p.replace(/\n/g, '<br/>')}</p>`)
     .join('');
 
   // ── EMAIL para o usuário ────────────────────────────────────────────────
   try {
-    await transport.sendMail({
-      from: `"${SENDER_NAME}" <${SENDER_EMAIL}>`,
-      to: email,
-      subject: 'Seu perfil foi analisado — Brazil Abroad',
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px 24px;color:#1a1a1a">
-          <p style="color:#C9963A;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Brazil Abroad</p>
-          <h1 style="font-size:26px;font-weight:700;margin:0 0 24px">Olá, ${name} 👋</h1>
-          ${aiParagraphs}
-          <div style="margin:36px 0">
-            <a href="https://calendly.com/ricardo-rogerios/30min"
-               style="display:block;background:#1A4A6B;color:white;font-weight:700;padding:16px 28px;border-radius:50px;text-decoration:none;font-size:15px;text-align:center">
-              Agendar Diagnóstico Gratuito →
-            </a>
-          </div>
-          <hr style="margin:32px 0;border:none;border-top:1px solid #eee"/>
-          <p style="font-size:13px;color:#777">Ricardo — Brazil Abroad | Fit for Duty</p>
+    await sendEmail(
+      email,
+      'Seu perfil foi analisado — Brazil Abroad',
+      `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px 24px;color:#1a1a1a">
+        <p style="color:#C9963A;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Brazil Abroad</p>
+        <h1 style="font-size:26px;font-weight:700;margin:0 0 24px">Olá, ${name} 👋</h1>
+        ${aiParagraphs}
+        <div style="margin:36px 0">
+          <a href="https://calendly.com/ricardo-rogerios/30min"
+             style="display:block;background:#1A4A6B;color:white;font-weight:700;padding:16px 28px;border-radius:50px;text-decoration:none;font-size:15px;text-align:center">
+            Agendar Diagnóstico Gratuito →
+          </a>
         </div>
-      `,
-    });
+        <hr style="margin:32px 0;border:none;border-top:1px solid #eee"/>
+        <p style="font-size:13px;color:#777">Ricardo — Brazil Abroad | Fit for Duty</p>
+      </div>`
+    );
     console.log(`[send-email] Email enviado para ${email}`);
   } catch (err) {
     errors.push(`email_usuario: ${String(err)}`);
