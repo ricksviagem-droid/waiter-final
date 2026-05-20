@@ -150,7 +150,7 @@ export async function POST(req: Request) {
     </a>
 
     <hr style="margin:32px 0;border:none;border-top:1px solid #eee"/>
-    <p style="font-size:13px;color:#777">Ricardo Rogerio — Brazil Abroad | Fit for Duty | @brazilabroad</p>
+    <p style="font-size:13px;color:#777">Ricardo Rogerio — Brazil Abroad | Fit for Duty | @brazilabroad_</p>
 
   </div>`;
 
