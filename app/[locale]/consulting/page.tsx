@@ -101,7 +101,7 @@ export default function ConsultingPage() {
               Uma sessão com Ricardo vale mais que meses de tentativa e erro.
             </p>
             <a
-              href="https://wa.me/971508108328?text=Olá%20Ricardo%2C%20quero%20agendar%20uma%20consultoria."
+              href="https://wa.me/5511962794747?text=Olá%20Ricardo%2C%20quero%20agendar%20uma%20consultoria."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-[#C9963A] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#b8872f] transition-colors font-[family-name:var(--font-dm-sans)] text-sm"
@@ -218,7 +218,7 @@ export default function ConsultingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="https://wa.me/971508108328?text=Olá%20Ricardo%2C%20quero%20agendar%20uma%20consultoria."
+                href="https://wa.me/5511962794747?text=Olá%20Ricardo%2C%20quero%20agendar%20uma%20consultoria."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-[#1A4A6B] text-white font-medium text-sm px-7 py-3.5 rounded-full text-center hover:bg-[#153d5a] transition-colors font-[family-name:var(--font-dm-sans)]"

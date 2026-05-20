@@ -180,7 +180,7 @@ export default function AboutPage() {
                 Fazer assessment gratuito
               </Link>
               <a
-                href="https://wa.me/971508108328?text=Olá%20Ricardo%2C%20li%20sua%20história%20e%20quero%20saber%20mais."
+                href="https://wa.me/5511962794747?text=Olá%20Ricardo%2C%20li%20sua%20história%20e%20quero%20saber%20mais."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="border border-[#1a1a1a] text-[#1a1a1a] font-medium text-sm px-7 py-3.5 rounded-full text-center hover:bg-[#1a1a1a] hover:text-white transition-colors font-[family-name:var(--font-dm-sans)]"

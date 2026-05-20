@@ -17,7 +17,7 @@ export default function AssessmentResultPage() {
   const profile = (params.get('profile') ?? 'builder') as 'ready' | 'almost' | 'builder';
   const name = params.get('name') ?? '';
   const cfg = profileConfig[profile];
-  const phone = '971508108328';
+  const phone = '5511962794747';
   const waMsg = encodeURIComponent(t('whatsapp_cta'));
 
   return (

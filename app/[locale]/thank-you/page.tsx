@@ -35,7 +35,7 @@ export default function ThankYouPage() {
           {/* Actions */}
           <div className="flex flex-col gap-3 w-full mt-2">
             <a
-              href="https://wa.me/971508108328?text=Olá%20Ricardo%2C%20fiz%20o%20assessment%20da%20Brazil%20Abroad%20e%20quero%20conversar."
+              href="https://wa.me/5511962794747?text=Olá%20Ricardo%2C%20fiz%20o%20assessment%20da%20Brazil%20Abroad%20e%20quero%20conversar."
               target="_blank"
               rel="noopener noreferrer"
               className="w-full bg-[#25D366] text-white font-medium py-4 rounded-full text-center text-sm font-[family-name:var(--font-dm-sans)] hover:bg-[#1db954] transition-colors flex items-center justify-center gap-2"

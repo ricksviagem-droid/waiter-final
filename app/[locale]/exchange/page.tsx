@@ -104,7 +104,7 @@ export default function ExchangePage() {
                 : 'Talk to Ricardo. He can point you to unlisted opportunities.'}
             </p>
             <a
-              href={`https://wa.me/971508108328?text=${encodeURIComponent(isPt ? 'Olá Ricardo, vi as vagas no Brazil Abroad e quero saber mais.' : 'Hello Ricardo, I saw the jobs on Brazil Abroad and want to know more.')}`}
+              href={`https://wa.me/5511962794747?text=${encodeURIComponent(isPt ? 'Olá Ricardo, vi as vagas no Brazil Abroad e quero saber mais.' : 'Hello Ricardo, I saw the jobs on Brazil Abroad and want to know more.')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-[#C9963A] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#b8872f] transition-colors font-[family-name:var(--font-dm-sans)] text-sm"

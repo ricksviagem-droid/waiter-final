@@ -444,7 +444,7 @@ export default function SimulatorPage() {
                 Começar agora — é grátis
               </a>
               <a
-                href="https://wa.me/971508108328?text=Olá%20Ricardo%2C%20testei%20o%20simulador%20e%20quero%20deixar%20meu%20feedback."
+                href="https://wa.me/5511962794747?text=Olá%20Ricardo%2C%20testei%20o%20simulador%20e%20quero%20deixar%20meu%20feedback."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="border border-white/30 text-white font-medium px-7 py-3.5 rounded-full hover:bg-white/10 transition-colors font-[family-name:var(--font-dm-sans)] text-sm flex items-center justify-center gap-2"
