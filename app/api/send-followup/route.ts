@@ -144,7 +144,7 @@ export async function POST(req: Request) {
       <p style="font-size:12px;color:#999;margin:0">Copie a chave acima e pague pelo app do seu banco</p>
     </div>
 
-    <a href="https://calendly.com/ricardo-rogerios/30min"
+    <a href="https://calendly.com/ricardo-rogerios/diagnostico-gratuito-_-brazil-abroad"
        style="display:block;background:#C9963A;color:white;font-weight:700;padding:16px 28px;border-radius:50px;text-decoration:none;font-size:15px;text-align:center;margin-bottom:32px">
       Quero começar — Pagar via Pix →
     </a>

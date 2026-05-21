@@ -74,7 +74,7 @@ export default function AssessmentResultPage() {
 
         {/* CTA buttons */}
         <a
-          href="https://calendly.com/ricardo-rogerios/30min"
+          href="https://calendly.com/ricardo-rogerios/diagnostico-gratuito-_-brazil-abroad"
           target="_blank"
           rel="noopener noreferrer"
           className="w-full font-medium py-4 rounded-full text-center text-sm font-[family-name:var(--font-dm-sans)] transition-colors"

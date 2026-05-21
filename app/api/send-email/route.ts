@@ -118,7 +118,7 @@ export async function POST(req: Request) {
 
         <div style="margin:32px 0">
           <p style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#777;margin-bottom:12px">Próximo passo</p>
-          <a href="https://calendly.com/ricardo-rogerios/30min"
+          <a href="https://calendly.com/ricardo-rogerios/diagnostico-gratuito-_-brazil-abroad"
              style="display:block;background:#C9963A;color:white;font-weight:700;padding:16px 28px;border-radius:50px;text-decoration:none;font-size:15px;text-align:center">
             Agendar meu diagnóstico gratuito →
           </a>
