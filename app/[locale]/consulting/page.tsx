@@ -100,14 +100,22 @@ export default function ConsultingPage() {
             <p className="text-white/70 text-base font-[family-name:var(--font-dm-sans)] mb-8">
               Uma sessão com Ricardo vale mais que meses de tentativa e erro.
             </p>
-            <a
-              href="https://wa.me/5511962794747?text=Olá%20Ricardo%2C%20quero%20agendar%20uma%20consultoria."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#C9963A] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#b8872f] transition-colors font-[family-name:var(--font-dm-sans)] text-sm"
-            >
-              Agendar consultoria
-            </a>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="/planos"
+                className="inline-flex items-center gap-2 bg-[#C9963A] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#b8872f] transition-colors font-[family-name:var(--font-dm-sans)] text-sm"
+              >
+                Ver planos e preços →
+              </Link>
+              <a
+                href="https://wa.me/5511962794747?text=Olá%20Ricardo%2C%20quero%20agendar%20uma%20consultoria."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-white/10 text-white font-semibold px-7 py-3.5 rounded-full hover:bg-white/20 transition-colors font-[family-name:var(--font-dm-sans)] text-sm border border-white/30"
+              >
+                Falar no WhatsApp
+              </a>
+            </div>
           </div>
         </section>
 
@@ -217,14 +225,12 @@ export default function ConsultingPage() {
               Não precisa ter tudo pronto. Precisa dar o primeiro passo.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a
-                href="https://wa.me/5511962794747?text=Olá%20Ricardo%2C%20quero%20agendar%20uma%20consultoria."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#1A4A6B] text-white font-medium text-sm px-7 py-3.5 rounded-full text-center hover:bg-[#153d5a] transition-colors font-[family-name:var(--font-dm-sans)]"
+              <Link
+                href="/planos"
+                className="bg-[#C9963A] text-white font-medium text-sm px-7 py-3.5 rounded-full text-center hover:bg-[#b8872f] transition-colors font-[family-name:var(--font-dm-sans)]"
               >
-                Falar com Ricardo
-              </a>
+                Ver planos e preços →
+              </Link>
               <Link
                 href="/assessment"
                 className="border border-[#1a1a1a] text-[#1a1a1a] font-medium text-sm px-7 py-3.5 rounded-full text-center hover:bg-[#1a1a1a] hover:text-white transition-colors font-[family-name:var(--font-dm-sans)]"

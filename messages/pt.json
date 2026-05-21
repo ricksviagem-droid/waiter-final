@@ -8,6 +8,7 @@
     "simulator": "App Gratuito",
     "exchange": "Exchange",
     "consulting": "Consulting",
+    "plans": "Planos",
     "about": "Sobre",
     "cta": "Começar jornada"
   },
@@ -106,6 +107,7 @@
     "link_blog": "Blog",
     "link_exchange": "Exchange",
     "link_consulting": "Consulting",
+    "link_planos": "Planos",
     "link_about": "Sobre",
     "link_contact": "Contato",
     "copyright": "Brazil Abroad © 2026 — All rights reserved",

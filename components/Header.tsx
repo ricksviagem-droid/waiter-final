@@ -27,6 +27,7 @@ export default function Header() {
     { href: '/simulator' as const, label: t('simulator') },
     { href: '/exchange' as const, label: t('exchange') },
     { href: '/consulting' as const, label: t('consulting') },
+    { href: '/planos' as const, label: t('plans') },
     { href: '/about' as const, label: t('about') },
   ];
 

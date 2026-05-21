@@ -42,7 +42,7 @@ export default function Footer() {
 
           {/* Nav links */}
           <nav className="flex flex-col gap-3">
-            {(['blog', 'exchange', 'consulting', 'about'] as const).map((key) => (
+            {(['blog', 'exchange', 'consulting', 'planos', 'about'] as const).map((key) => (
               <Link
                 key={key}
                 href={`/${key}`}
@@ -57,7 +57,7 @@ export default function Footer() {
           <div className="flex gap-3">
             {/* Instagram */}
             <a
-              href="https://instagram.com/brazilabroad"
+              href="https://instagram.com/brazilabroad_"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
