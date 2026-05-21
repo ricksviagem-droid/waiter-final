@@ -31,8 +31,8 @@ export async function GET() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        sender: { name: 'Brazil Abroad', email: 'ricardo.rogerios@hotmail.com' },
-        to: [{ email: 'ricardo.rogerios@hotmail.com' }],
+        sender: { name: 'Brazil Abroad', email: 'Ricardo@brazilabroad.com' },
+        to: [{ email: 'Ricardo@brazilabroad.com' }],
         subject: 'Teste — Brazil Abroad funcionando!',
         htmlContent: '<h1>Funcionou! 🎉</h1><p>O sistema de emails está operacional.</p>',
       }),

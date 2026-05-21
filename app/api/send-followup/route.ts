@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY ?? '' });
 
 const BREVO_KEY = process.env.BREVO_API_KEY ?? '';
-const SENDER_EMAIL = 'ricardo.rogerios@hotmail.com';
+const SENDER_EMAIL = 'Ricardo@brazilabroad.com';
 const SENDER_NAME = 'Ricardo — Brazil Abroad';
 
 async function sendEmail(to: string, subject: string, html: string) {
