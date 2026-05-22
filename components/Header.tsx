@@ -96,12 +96,14 @@ export default function Header() {
           </button>
 
           {/* CTA button */}
-          <Link
-            href="/assessment"
+          <a
+            href="https://wa.me/5511962794747?text=Ol%C3%A1%20Ricardo%2C%20assisti%20ao%20v%C3%ADdeo%20e%20quero%20saber%20mais%20sobre%20a%20consultoria."
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden sm:inline-flex items-center bg-[#1A4A6B] text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-[#153d5a] transition-colors font-[family-name:var(--font-dm-sans)]"
           >
             {t('cta')}
-          </Link>
+          </a>
 
           {/* Hamburger */}
           <button
@@ -135,13 +137,15 @@ export default function Header() {
               {label}
             </Link>
           ))}
-          <Link
-            href="/assessment"
+          <a
+            href="https://wa.me/5511962794747?text=Ol%C3%A1%20Ricardo%2C%20assisti%20ao%20v%C3%ADdeo%20e%20quero%20saber%20mais%20sobre%20a%20consultoria."
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setIsOpen(false)}
             className="mt-2 bg-[#1A4A6B] text-white text-sm font-medium px-5 py-3 rounded-full text-center font-[family-name:var(--font-dm-sans)]"
           >
             {t('cta')}
-          </Link>
+          </a>
         </div>
       )}
     </header>

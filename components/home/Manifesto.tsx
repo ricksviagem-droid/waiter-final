@@ -1,10 +1,8 @@
-import { Link } from '@/i18n/navigation';
-
 const pillars = [
   {
-    icon: '🎯',
-    title: 'Assessment + Road Map',
-    desc: 'Diagnóstico gratuito do seu perfil real. Seu plano personalizado chega por e-mail em minutos.',
+    icon: '📱',
+    title: 'Consultoria pelo WhatsApp',
+    desc: 'Video call 1:1 com Ricardo. Você escolhe o dia e o horário. Sem formulários, sem e-mail.',
     color: '#1A4A6B',
   },
   {
@@ -72,9 +70,8 @@ export default function Manifesto() {
 
         {/* Subtext */}
         <p className="text-white/55 text-base md:text-lg text-center font-[family-name:var(--font-dm-sans)] leading-relaxed mb-16 max-w-2xl mx-auto">
-          Não somos uma promessa. Somos um sistema completo — do diagnóstico ao emprego.
-          Assessment real. Treinamento com IA. Comunidade global. Vagas dos melhores recrutadores.
-          Consultoria de quem viveu 15 anos no exterior.
+          Não somos uma promessa. Somos um sistema completo — da primeira conversa ao emprego.
+          Consultoria real. Treinamento com IA. Comunidade global. Vagas dos melhores recrutadores.
         </p>
 
         {/* Pillars grid */}
@@ -114,15 +111,17 @@ export default function Manifesto() {
             Sem cartão de crédito. Sem compromisso. Aproveite enquanto está em desenvolvimento.
           </p>
 
-          <Link
-            href="/assessment"
+          <a
+            href="https://wa.me/5511962794747?text=Ol%C3%A1%20Ricardo%2C%20assisti%20ao%20v%C3%ADdeo%20e%20quero%20saber%20mais%20sobre%20a%20consultoria."
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-[#C9963A] text-white font-semibold px-8 py-4 rounded-full hover:bg-[#b8872f] transition-colors font-[family-name:var(--font-dm-sans)] text-base"
           >
-            Começar agora — é de graça
+            Falar com Ricardo agora
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
-          </Link>
+          </a>
         </div>
 
       </div>

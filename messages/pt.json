@@ -9,7 +9,7 @@
     "exchange": "Exchange",
     "consulting": "Consulting",
     "about": "Sobre",
-    "cta": "Começar jornada"
+    "cta": "Falar com Ricardo"
   },
   "hero": {
     "eyebrow": "Brazil Abroad · Est. 2025",
@@ -17,7 +17,7 @@
     "h1_highlight": "mundo.",
     "subtitle": "Trabalhe em hospitalidade no exterior. Ganhe em dólar. Conheça o mundo.",
     "honest": "Sem promessas falsas — um caminho real, construído por quem viveu isso.",
-    "cta_primary": "Fazer assessment gratuito",
+    "cta_primary": "Falar com Ricardo",
     "cta_secondary": "Minha história",
     "card_badge": "$5K avg/month",
     "card_name": "Ricardo Rogerio",
@@ -37,13 +37,13 @@
   },
   "howItWorks": {
     "title": "Três passos para mudar tudo.",
-    "cta": "Começar agora — é grátis",
+    "cta": "Falar com Ricardo agora",
     "step1_number": "01",
-    "step1_title": "Faça seu assessment gratuito",
-    "step1_desc": "entenda onde você está hoje",
+    "step1_title": "Assista ao vídeo",
+    "step1_desc": "entenda o processo em minutos",
     "step2_number": "02",
-    "step2_title": "Receba seu road map pessoal",
-    "step2_desc": "seu plano chega por e-mail em minutos",
+    "step2_title": "Fale pelo WhatsApp",
+    "step2_desc": "escolha um dia e horário para sua video call",
     "step3_number": "03",
     "step3_title": "Comece sua jornada",
     "step3_desc": "com o preparo e as conexões certas"
@@ -53,7 +53,7 @@
     "badge": "Sem cartão de crédito. Sem compromisso.",
     "app_title": "Simulador de Carreira — 8 módulos com IA",
     "app_desc": "Construí esse app do zero com tudo que aprendi em 15 anos de hospitalidade. Treina entrevista em inglês, simula turnos reais, diagnostica seu nível, gera seu currículo internacional e muito mais. Tudo gratuito enquanto está em desenvolvimento — aproveite.",
-    "item1": "Assessment gratuito + road map pessoal por e-mail",
+    "item1": "Consultoria 1:1 via video call no WhatsApp",
     "item4": "Blog semanal com novidades e oportunidades da área",
     "item5": "Oportunidades de intercâmbio dos nossos parceiros",
     "item6": "Acesso à comunidade no WhatsApp"
@@ -98,8 +98,8 @@
   },
   "finalCta": {
     "title": "Pronto para começar sua jornada?",
-    "subtitle": "Faça seu assessment gratuito. 3 minutos. Pode mudar tudo.",
-    "cta": "Fazer assessment gratuito"
+    "subtitle": "Fale com Ricardo pelo WhatsApp. Simples assim.",
+    "cta": "Falar com Ricardo no WhatsApp"
   },
   "footer": {
     "slogan": "Your road map to the world.",
@@ -112,7 +112,7 @@
     "proudly": "Proudly connecting Brazilians to the world 🌍"
   },
   "whatsapp": {
-    "message": "Olá Ricardo, fiz o assessment da Brazil Abroad e gostaria de saber mais."
+    "message": "Olá Ricardo, assisti ao vídeo e quero saber mais sobre a consultoria."
   },
   "assessment": {
     "title": "Assessment Gratuito",

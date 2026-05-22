@@ -74,10 +74,10 @@ const included = [
 ];
 
 const steps = [
-  { n: '01', pt: 'Faça o assessment gratuito', en: 'Complete the free assessment' },
-  { n: '02', pt: 'Ricardo analisa seu perfil', en: 'Ricardo reviews your profile' },
-  { n: '03', pt: 'Agende sua sessão no WhatsApp', en: 'Book your session via WhatsApp' },
-  { n: '04', pt: 'Sessão 1:1 — 60 minutos', en: '1:1 session — 60 minutes' },
+  { n: '01', pt: 'Assista ao vídeo no site', en: 'Watch the video on the site' },
+  { n: '02', pt: 'Fale com Ricardo pelo WhatsApp', en: 'Message Ricardo on WhatsApp' },
+  { n: '03', pt: 'Escolha um dia e horário', en: 'Pick a day and time' },
+  { n: '04', pt: 'Video call 1:1 pelo WhatsApp', en: '1:1 video call on WhatsApp' },
 ];
 
 export default function ConsultingPage() {
@@ -218,19 +218,13 @@ export default function ConsultingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="https://wa.me/5511962794747?text=Olá%20Ricardo%2C%20quero%20agendar%20uma%20consultoria."
+                href="https://wa.me/5511962794747?text=Ol%C3%A1%20Ricardo%2C%20assisti%20ao%20v%C3%ADdeo%20e%20quero%20saber%20mais%20sobre%20a%20consultoria."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-[#1A4A6B] text-white font-medium text-sm px-7 py-3.5 rounded-full text-center hover:bg-[#153d5a] transition-colors font-[family-name:var(--font-dm-sans)]"
               >
-                Falar com Ricardo
+                Falar com Ricardo no WhatsApp
               </a>
-              <Link
-                href="/assessment"
-                className="border border-[#1a1a1a] text-[#1a1a1a] font-medium text-sm px-7 py-3.5 rounded-full text-center hover:bg-[#1a1a1a] hover:text-white transition-colors font-[family-name:var(--font-dm-sans)]"
-              >
-                Fazer assessment gratuito
-              </Link>
             </div>
           </div>
         </section>

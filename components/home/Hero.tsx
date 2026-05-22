@@ -1,6 +1,8 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
+const WA_URL = 'https://wa.me/5511962794747?text=Ol%C3%A1%20Ricardo%2C%20assisti%20ao%20v%C3%ADdeo%20e%20quero%20saber%20mais%20sobre%20a%20consultoria.';
+
 export default function Hero() {
   const t = useTranslations('hero');
 
@@ -29,12 +31,14 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 mt-2">
-              <Link
-                href="/assessment"
+              <a
+                href={WA_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-[#1A4A6B] text-white font-medium text-sm px-7 py-3.5 rounded-full text-center hover:bg-[#153d5a] transition-colors font-[family-name:var(--font-dm-sans)]"
               >
                 {t('cta_primary')}
-              </Link>
+              </a>
               <Link
                 href="/about"
                 className="border border-[#1a1a1a] text-[#1a1a1a] font-medium text-sm px-7 py-3.5 rounded-full text-center hover:bg-[#1a1a1a] hover:text-white transition-colors font-[family-name:var(--font-dm-sans)]"

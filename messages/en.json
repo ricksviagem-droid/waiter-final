@@ -9,7 +9,7 @@
     "exchange": "Exchange",
     "consulting": "Consulting",
     "about": "About",
-    "cta": "Start your journey"
+    "cta": "Talk to Ricardo"
   },
   "hero": {
     "eyebrow": "Brazil Abroad · Est. 2025",
@@ -17,7 +17,7 @@
     "h1_highlight": "world.",
     "subtitle": "Work in hospitality abroad. Earn in dollars. See the world.",
     "honest": "No empty promises — a real path, built by someone who lived it.",
-    "cta_primary": "Take the free assessment",
+    "cta_primary": "Talk to Ricardo",
     "cta_secondary": "My story",
     "card_badge": "$5K avg/month",
     "card_name": "Ricardo Rogerio",
@@ -37,13 +37,13 @@
   },
   "howItWorks": {
     "title": "Three steps to change everything.",
-    "cta": "Start now — it's free",
+    "cta": "Talk to Ricardo now",
     "step1_number": "01",
-    "step1_title": "Take your free assessment",
-    "step1_desc": "understand where you stand today",
+    "step1_title": "Watch the video",
+    "step1_desc": "understand the process in minutes",
     "step2_number": "02",
-    "step2_title": "Receive your personal road map",
-    "step2_desc": "your plan arrives by email in minutes",
+    "step2_title": "Message on WhatsApp",
+    "step2_desc": "pick a day and time for your video call",
     "step3_number": "03",
     "step3_title": "Start your journey",
     "step3_desc": "with the right preparation and connections"
@@ -53,7 +53,7 @@
     "badge": "No credit card. No commitment.",
     "app_title": "Career Simulator — 8 AI-powered modules",
     "app_desc": "I built this app from scratch with everything I learned in 15 years of hospitality. Practice interviews in English, simulate real shifts, scan your level, generate your international CV and more. Completely free while in development — use it now.",
-    "item1": "Free assessment + personal road map by email",
+    "item1": "1:1 consulting via WhatsApp video call",
     "item4": "Weekly blog with news and opportunities",
     "item5": "Exchange opportunities from our partners",
     "item6": "Access to the WhatsApp community"
@@ -98,8 +98,8 @@
   },
   "finalCta": {
     "title": "Ready to start your journey?",
-    "subtitle": "Take your free assessment. 3 minutes. Could change everything.",
-    "cta": "Take the free assessment"
+    "subtitle": "Message Ricardo on WhatsApp. That simple.",
+    "cta": "Talk to Ricardo on WhatsApp"
   },
   "footer": {
     "slogan": "Your road map to the world.",
@@ -112,7 +112,7 @@
     "proudly": "Proudly connecting Brazilians to the world 🌍"
   },
   "whatsapp": {
-    "message": "Hello Ricardo, I completed the Brazil Abroad assessment and would like to know more."
+    "message": "Hello Ricardo, I watched the video and would like to know more about the consulting."
   },
   "assessment": {
     "title": "Free Assessment",

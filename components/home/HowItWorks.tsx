@@ -116,15 +116,17 @@ export default function HowItWorks() {
         </div>
 
         <div className="flex justify-center">
-          <Link
-            href="/assessment"
+          <a
+            href="https://wa.me/5511962794747?text=Ol%C3%A1%20Ricardo%2C%20assisti%20ao%20v%C3%ADdeo%20e%20quero%20saber%20mais%20sobre%20a%20consultoria."
+            target="_blank"
+            rel="noopener noreferrer"
             className="bg-[#1A4A6B] text-white font-medium px-8 py-4 rounded-full hover:bg-[#153d5a] transition-colors font-[family-name:var(--font-dm-sans)] text-sm inline-flex items-center gap-2"
           >
             {t('cta')}
             <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
-          </Link>
+          </a>
         </div>
       </div>
     </section>
