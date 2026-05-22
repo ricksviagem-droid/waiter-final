@@ -173,12 +173,14 @@ export default function AboutPage() {
               A Brazil Abroad existe para encurtar esse caminho. Tudo que levei anos para aprender, você acessa hoje.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link
-                href="/assessment"
+              <a
+                href="https://wa.me/5511962794747?text=Ol%C3%A1%20Ricardo%2C%20assisti%20ao%20v%C3%ADdeo%20e%20quero%20saber%20mais%20sobre%20a%20consultoria."
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-[#1A4A6B] text-white font-medium text-sm px-7 py-3.5 rounded-full text-center hover:bg-[#153d5a] transition-colors font-[family-name:var(--font-dm-sans)]"
               >
-                Fazer assessment gratuito
-              </Link>
+                Falar com Ricardo no WhatsApp
+              </a>
               <a
                 href="https://wa.me/5511962794747?text=Olá%20Ricardo%2C%20li%20sua%20história%20e%20quero%20saber%20mais."
                 target="_blank"

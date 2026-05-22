@@ -111,17 +111,19 @@ export default function BlogPage() {
           {/* CTA */}
           <div className="mt-16 bg-[#1A4A6B] rounded-[16px] p-8 text-center">
             <h2 className="font-[family-name:var(--font-fraunces)] text-xl font-semibold text-white mb-3">
-              Quer conteúdo personalizado para o seu perfil?
+              Quer dar o próximo passo na sua carreira?
             </h2>
             <p className="text-white/70 text-sm mb-6 font-[family-name:var(--font-dm-sans)]">
-              Faça o assessment e receba um road map feito para você.
+              Fale com Ricardo diretamente pelo WhatsApp.
             </p>
-            <Link
-              href="/assessment"
+            <a
+              href="https://wa.me/5511962794747?text=Ol%C3%A1%20Ricardo%2C%20assisti%20ao%20v%C3%ADdeo%20e%20quero%20saber%20mais%20sobre%20a%20consultoria."
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-[#C9963A] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#b8872f] transition-colors font-[family-name:var(--font-dm-sans)] text-sm"
             >
-              Fazer assessment gratuito
-            </Link>
+              Falar com Ricardo no WhatsApp
+            </a>
           </div>
         </section>
       </main>

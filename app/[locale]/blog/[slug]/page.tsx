@@ -43,7 +43,7 @@ const posts: Record<string, {
         body: 'O ritmo é intenso: turnos duplos, pouco tempo livre nos primeiros contratos. Mas quem resiste ao primeiro contrato quase sempre assina o segundo — porque os ganhos valem muito, e a experiência muda a perspectiva de carreira para sempre.',
       },
     ],
-    cta_text: 'Quer saber se você já está pronto? Faça o assessment gratuito e descubra seu perfil.',
+    cta_text: 'Quer dar o próximo passo? Fale com Ricardo direto pelo WhatsApp.',
   },
 
   'dubai-vs-cruzeiros-qual-escolher': {
