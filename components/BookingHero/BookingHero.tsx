@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import PixBlock from './PixBlock';
 
 const steps = [
@@ -54,25 +55,27 @@ export default function BookingHero() {
       >
         {/* ── TOPO: Logo + Badge + H1 ── */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '28px' }}>
-          {/* Logo placeholder */}
+          {/* Logo */}
           <div
             style={{
               width: '130px',
               height: '130px',
               borderRadius: '50%',
-              background: '#0f2340',
+              overflow: 'hidden',
               border: '2px solid #c9a35a',
               boxShadow: '0 0 32px rgba(201,163,90,0.35)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               marginBottom: '20px',
-              flexDirection: 'column',
-              gap: '2px',
+              flexShrink: 0,
             }}
           >
-            <span style={{ color: '#c9a35a', fontSize: '10px', fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase', fontFamily: 'var(--font-dm-sans)' }}>BRAZIL</span>
-            <span style={{ color: '#e0bd72', fontSize: '10px', fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase', fontFamily: 'var(--font-dm-sans)' }}>ABROAD</span>
+            <Image
+              src="/logo.png"
+              alt="Brazil Abroad"
+              width={130}
+              height={130}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              priority
+            />
           </div>
 
           {/* Badge */}
